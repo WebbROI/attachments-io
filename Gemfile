@@ -9,6 +9,9 @@ gem 'sqlite3', group: :development
 # Use PostrgreSQL for production
 gem 'pg', group: :production
 
+# For heroku
+gem 'rails_12factor', group: :production
+
 # OAuth for Google SSO
 gem 'oauth'
 gem 'omniauth-google-apps'
