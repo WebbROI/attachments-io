@@ -9,7 +9,7 @@ gem 'sqlite3', group: :development
 # Use PostrgreSQL for production
 gem 'pg', group: :production
 
-# For heroku
+# For Heroku
 gem 'rails_12factor', group: :production
 
 # OAuth for Google SSO
@@ -18,6 +18,9 @@ gem 'omniauth-google-apps'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.0'
+
+# Twitter Bootstrap
+gem 'bootstrap-sass', '~> 2.3.2.2'
 
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'

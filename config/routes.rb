@@ -9,8 +9,11 @@ Mvp::Application.routes.draw do
   root 'welcome#index'
 
   # Google SSO
+  match '/signin/apps(/:domain)' => 'signin#apps', via: :get, constraints: { domain: /[0-z\.]+/ }, as: :sign_in_apps
+  match '/signin/google' => 'signin#google', via: :get, as: :sign_in_google
   match '/auth/:provider/callback' => 'sessions#create', via: [:get, :post]
-  match '/signout' => 'sessions#destroy', via: :get, as: :signout
+  match '/signout' => 'sessions#destroy', via: :get, as: :sign_out
+  match '/auth/failure' => 'signin#failure', via: [:get, :post]
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

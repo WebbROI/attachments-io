@@ -1,0 +1,24 @@
+<div class="row-fluid">
+  <div class="span6 offset3">
+
+    <%= form_tag '/auth/google_apps', class: 'well' do %>
+
+        <p class="text-center"><%= image_tag 'google_logo.png', width: '300px' %></p>
+
+        <div class="control-group">
+          <%= label_tag :domain, nil, class: 'control-label' %>
+          <div class="controls">
+            <%= text_field_tag :domain, nil, class: 'span12' %>
+            <span class="muted">For example: webbroi.com</span>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <div class="controls">
+            <%= button_tag 'Continue', { type: :submit, class: 'btn btn-block' } %>
+          </div>
+        </div>
+
+    <% end %>
+  </div>
+</div>
