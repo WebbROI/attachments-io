@@ -9,31 +9,19 @@ class SessionsController < ApplicationController
     user = User.find_by_email(auth[:info][:email])
 
     if user
-
-      puts 'USER FOUNDED'
-
-      if auth[:credentials].empty?
-        puts 'WE DON\'T HAVE CREDENTAILS :('
-      else
-        puts 'WE HAVE CREDENTAILS'
+      unless auth[:credentials].empty?
+        user.update_tokens(tokens_params)
       end
     else
       user = User.create_with_omniauth(user_params)
-      puts 'USER NOT FOUND'
-
       if auth[:credentials].empty?
-        puts 'WE DON\'T HAVE CREDENTAILS :('
-
         return redirect_to '/auth/google_oauth2'
       else
-        puts 'WE HAVE CREDENTAILS'
+        user.update_tokens(tokens_params)
       end
     end
 
-    #puts auth.inspect
-    #puts auth['credentials'].inspect
-    #user = User.find_by_uid(auth['uid']) || User.create_with_omniauth(user_params)
-    #session[:user_id] = user.uid
+    session[:user_id] = user.uid
     redirect_to root_path, notice: 'Signed in!'
   end
 
@@ -46,11 +34,15 @@ class SessionsController < ApplicationController
 
   def user_params
     omni = ActionController::Parameters.new(request.env['omniauth.auth'])
-
-    puts omni.inspect
-
     omni.require(:uid)
     omni.require(:info).permit(:first_name, :last_name, :full_name, :email)
+
+    omni
+  end
+
+  def tokens_params
+    omni = ActionController::Parameters.new(request.env['omniauth.auth'][:credentials])
+    omni.permit(:token, :refresh_token, :expires_at)
 
     omni
   end
