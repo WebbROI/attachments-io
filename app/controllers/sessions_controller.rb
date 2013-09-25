@@ -5,6 +5,7 @@ class SessionsController < ApplicationController
   def create
     auth = request.env['omniauth.auth']
     puts auth.inspect
+    puts auth['info'].inspect
     puts auth['credentials'].inspect
     puts auth['credentials']['token'].inspect
     user = User.find_by_uid(auth['uid']) || User.create_with_omniauth(user_params)
