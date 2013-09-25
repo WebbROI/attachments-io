@@ -5,11 +5,35 @@ class SessionsController < ApplicationController
   def create
     auth = request.env['omniauth.auth']
     puts auth.inspect
-    puts auth['info'].inspect
-    puts auth['credentials'].inspect
-    puts auth['credentials']['token'].inspect
-    user = User.find_by_uid(auth['uid']) || User.create_with_omniauth(user_params)
-    session[:user_id] = user.uid
+    puts auth[:credentials].inspect
+    user = User.find_by_email(auth[:info][:email])
+
+    if user
+
+      puts 'USER FOUNDED'
+
+      if auth[:credentials].empty?
+        puts 'WE DON\'T HAVE CREDENTAILS :('
+      else
+        puts 'WE HAVE CREDENTAILS'
+      end
+    else
+      user = User.create_with_omniauth(user_params)
+      puts 'USER NOT FOUND'
+
+      if auth[:credentials].empty?
+        puts 'WE DON\'T HAVE CREDENTAILS :('
+
+        return redirect_to '/auth/google_oauth2'
+      else
+        puts 'WE HAVE CREDENTAILS'
+      end
+    end
+
+    #puts auth.inspect
+    #puts auth['credentials'].inspect
+    #user = User.find_by_uid(auth['uid']) || User.create_with_omniauth(user_params)
+    #session[:user_id] = user.uid
     redirect_to root_path, notice: 'Signed in!'
   end
 

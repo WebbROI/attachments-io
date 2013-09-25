@@ -14,6 +14,7 @@ gem 'rails_12factor', group: :production
 
 # OAuth for Google SSO
 gem 'oauth'
+gem 'omniauth-google-oauth2'
 gem 'omniauth-google-apps'
 
 # Use SCSS for stylesheets

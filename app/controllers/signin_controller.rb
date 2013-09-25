@@ -12,6 +12,7 @@ class SigninController < ApplicationController
   end
 
   def google
+    redirect_to '/auth/google_oauth2'
   end
 
   def failure
