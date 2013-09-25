@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   require 'google/client'
   require 'google/contact'
   require 'google/user'
+  require 'google/debug'
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
