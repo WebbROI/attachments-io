@@ -6,7 +6,6 @@ Rails.application.config.middleware.use OmniAuth::Builder do
   provider :google_oauth2, '613215852608', 'IR0NrvPqgVHXe80XrkRI8n04',
            {
                scope: 'userinfo.email, userinfo.profile, plus.me, https://mail.google.com/',
-               prompt: 'select_account',
                access_type: 'offline',
                approval_prompt: 'force'
            }
