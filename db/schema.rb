@@ -11,21 +11,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130925201455) do
+ActiveRecord::Schema.define(version: 20130927134825) do
 
-  create_table "tokens", force: true do |t|
-    t.integer "user_id"
+  create_table "user_tokens", force: true do |t|
+    t.string  "user_id"
     t.string  "token"
     t.string  "refresh_token"
-    t.string  "expires_at"
+    t.integer "expires_at"
   end
 
   create_table "users", force: true do |t|
-    t.string "email"
-    t.string "first_name"
-    t.string "last_name"
-    t.string "full_name"
-    t.string "uid"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "email",             default: "", null: false
+    t.string   "picture"
+    t.string   "uid"
+    t.string   "persistence_token",              null: false
+    t.integer  "login_count",       default: 0,  null: false
+    t.datetime "current_login_at"
+    t.string   "current_login_ip"
+    t.datetime "last_login_at"
+    t.string   "last_login_ip"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end

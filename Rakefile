@@ -3,4 +3,4 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-Mvp::Application.load_tasks
+AttachmentsIO::Application.load_tasks

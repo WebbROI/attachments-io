@@ -9,4 +9,4 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-Mvp::Application.config.secret_key_base = '319755994afa289b2989be3dfda5dfd9d27ea4ba7ec78e979f4d0a48d75fd455746881dc732db4ca782aa0f80cac8d90015b4785ee5351438fed4afa2cceed67'
+AttachmentsIO::Application.config.secret_key_base = 'd74c328f74c147f3e8f587237a6d85cd29c73eeb1d4139b36e258bcceeaee028858829f32be35e0859e510220a90723f145266dc450397a763f06cbfb86c9f8f'

@@ -1,8 +1,6 @@
 <div class="row-fluid">
   <div class="span6 offset3">
-
-    <%= form_tag '/auth/google_apps', class: 'well' do %>
-
+    <%= form_tag nil, class: 'well' do %>
         <p class="text-center"><%= image_tag 'google_logo.png', width: '300px' %></p>
 
         <div class="control-group">
@@ -18,7 +16,6 @@
             <%= button_tag 'Continue', { type: :submit, class: 'btn btn-block' } %>
           </div>
         </div>
-
     <% end %>
   </div>
 </div>

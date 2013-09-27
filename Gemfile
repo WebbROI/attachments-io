@@ -3,19 +3,27 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.0'
 
-# Use sqlite3 for development
-gem 'sqlite3', group: :development
+# Development gems
+group :development do
+  # Use sqlite3 as the database for Active Record
+  gem 'sqlite3'
+end
 
-# Use PostrgreSQL for production
-gem 'pg', group: :production
+# Production gems
+group :production do
+  # Use PostrgreSQL for production
+  gem 'pg', group: :production
 
-# For Heroku
-gem 'rails_12factor', group: :production
+  # For Heroku
+  gem 'rails_12factor', group: :production
+end
+
+# Authentication
+gem 'authlogic', '~> 3.3.0'
 
 # OAuth for Google SSO
 gem 'oauth'
 gem 'omniauth-google-oauth2'
-gem 'omniauth-google-apps'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.0'

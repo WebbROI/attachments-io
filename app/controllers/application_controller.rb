@@ -1,26 +1,27 @@
 class ApplicationController < ActionController::Base
-
-  # TODO: fix it
-  require 'google/client'
-  require 'google/contact'
-  require 'google/user'
-  require 'google/debug'
-
-  # Prevent CSRF attacks by raising an exception.
-  # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
-
-  def authenticate_user!
-    redirect_to '/auth/google_apps' unless user_signed_in?
-  end
+  helper_method :current_user_session, :current_user, :user_sign_in?
 
   private
+    def current_user_session
+      return @current_user_session if defined? @current_user_session
+      @current_user_session = UserSession.find
+    end
 
-  def current_user
-    @current_user ||= User.find_by_id(session[:user_id]) if user_signed_in?
-  end
+    def current_user
+      return @current_user if defined? @current_user
+      @current_user = current_user_session && current_user_session.user
+    end
 
-  def user_signed_in?
-    session[:user_id] && User.find_by_id(session[:user_id])
-  end
+    def user_sign_in?
+      !!current_user
+    end
+
+    def authenticate_user!
+      redirect_to root_path, flash: { error: 'You need sign in to view this page' } unless user_sign_in?
+    end
+
+    def not_authenticated_user!
+      redirect_to root_path, flash: { error: 'This page only for guests' } if user_sign_in?
+    end
 end
