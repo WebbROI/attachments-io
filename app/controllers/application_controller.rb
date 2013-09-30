@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::Base
+  require 'google/API'
+
   protect_from_forgery with: :exception
   helper_method :current_user_session, :current_user, :user_sign_in?
 

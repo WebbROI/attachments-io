@@ -23,13 +23,12 @@ end
 gem 'authlogic', '~> 3.3.0'
 
 # Google OAuth2
-gem 'oauth'
-gem 'omniauth-google-oauth2'
+gem 'oauth', '~> 0.4.7'
+gem 'omniauth-google-oauth2', '~> 0.2.1'
+gem 'google-api-client', '~> 0.6.4'
 
 # SAML for Google SSO
 gem 'ruby-openid', '~> 2.3.0'
-#gem 'rack-openid', '~> 1.3.1'
-#gem 'omniauth-openid', '~> 1.0.1'
 gem 'open_id_authentication', '~> 1.2.0'
 
 # Use SCSS for stylesheets

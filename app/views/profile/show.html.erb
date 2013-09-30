@@ -1,2 +1,11 @@
-<h1>Profile#show</h1>
-<p>Find me in app/views/profile/show.html.erb</p>
+<div class="page-header">
+  <h1><%= "#{@user.first_name} #{@user.last_name}" %></h1>
+</div>
+
+<h3>User information</h3>
+<p><strong>Gender:</strong> <%= @user_info.gender %></p>
+<p><strong>ID:</strong> <%= @user_info.id %></p>
+<p><strong>Display name:</strong> <%= @user_info.display_name %></p>
+<p><strong>URL:</strong> <%= link_to @user_info.display_name, @user_info.url, target: '_blank' %></p>
+<p><strong>Living:</strong> <%= @user_info.places_lived.first.value %></p>
+<p>And others..</p>

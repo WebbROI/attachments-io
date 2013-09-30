@@ -1,29 +1,31 @@
 <div class="google-navbar clearfix">
-  <ul class="pull-left">
-    <li class="brand"><strong><%= link_to 'Attachments.IO', root_path %></strong></li>
-  </ul>
-  <% if user_sign_in? %>
-      <ul class="pull-left">
-        <li><%= link_to 'start synchronization', '#' %></li>
-        <li><%= link_to 'list of my synchronizations', '#' %></li>
-        <li><%= link_to 'settings', '#' %></li>
-      </ul>
+  <div class="container">
+    <ul class="pull-left">
+      <li class="brand"><strong><%= link_to 'Attachments.IO', root_path %></strong></li>
+    </ul>
+    <% if user_sign_in? %>
+        <ul class="pull-left">
+          <li><%= link_to 'start synchronization', '#' %></li>
+          <li><%= link_to 'list of my synchronizations', '#' %></li>
+          <li><%= link_to 'settings', '#' %></li>
+        </ul>
 
-      <ul class="pull-right">
-        <li>
-          <%= current_user.profile_picture(16) %>
-          <%= link_to "#{current_user.first_name} #{current_user.last_name}", profile_path %>
-        </li>
-        <li><small><%= link_to 'Sign out', sign_out_path %></small></li>
-      </ul>
-  <% else %>
-      <ul class="pull-right">
-        <li>
-          Sign in via
-          <%= link_to 'Google Account', sign_in_google_path %>
-          or
-          <%= link_to 'Google Apps', sign_in_apps_path %>
-        </li>
-      </ul>
-  <% end %>
+        <ul class="pull-right">
+          <li>
+            <%= current_user.profile_picture(16) %>
+            <%= link_to "#{current_user.first_name} #{current_user.last_name}", profile_path %>
+          </li>
+          <li><small><%= link_to 'Sign out', sign_out_path %></small></li>
+        </ul>
+    <% else %>
+        <ul class="pull-right">
+          <li>
+            Sign in via
+            <%= link_to 'Google Account', sign_in_google_path %>
+            or
+            <%= link_to 'Google Apps', sign_in_apps_path %>
+          </li>
+        </ul>
+    <% end %>
+  </div>
 </div>

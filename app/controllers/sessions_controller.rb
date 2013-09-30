@@ -15,11 +15,19 @@ class SessionsController < ApplicationController
     end
 
     unless auth[:credentials].empty?
-      user.update_tokens(tokens_params)
+      issued_at = Time.now.to_i
+      expires_in = auth[:credentials][:expires_at].to_i - issued_at
+
+      user.update_tokens({ access_token: auth[:credentials][:token],
+                           issued_at: issued_at,
+                           expires_in: expires_in })
     end
 
     if first_login
-      redirect_to root_path, flash: { success: 'SYNCHRONIZATION!' }
+      # TODO: add load information
+      # @user.load_info
+
+      redirect_to root_path, flash: { success: 'Thank you for using our service! Synchronization was started!' }
     else
       redirect_to root_path, flash: { success: 'You successful login!' }
     end
@@ -38,10 +46,5 @@ class SessionsController < ApplicationController
       omni.require(:info).permit(:first_name, :last_name, :full_name, :email, :image)
 
       omni
-    end
-
-    def tokens_params
-      omni = ActionController::Parameters.new(request.env['omniauth.auth'][:credentials])
-      omni.permit(:token, :refresh_token, :expires_at)
     end
 end

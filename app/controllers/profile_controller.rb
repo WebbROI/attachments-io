@@ -3,6 +3,8 @@ class ProfileController < ApplicationController
 
   def show
     @user = current_user
+    @user_info = @user.load_info
+    puts @user_info.inspect
   end
 
   def edit

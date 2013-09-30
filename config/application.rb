@@ -2,8 +2,11 @@ require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
 
+# Google constants
 GOOGLE_API_KEY = '613215852608'
 GOOGLE_API_SECRET = 'IR0NrvPqgVHXe80XrkRI8n04'
+GOOGLE_APPLICATION_NAME = 'Attachments.IO'
+GOOGLE_APPLICATION_VERSION = '1.0.0'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.

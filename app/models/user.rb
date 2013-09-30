@@ -32,4 +32,26 @@ class User < ActiveRecord::Base
 
     ActionController::Base.helpers.image_tag(picture, options)
   end
+
+  def tokens
+    user_tokens
+  end
+
+  def api
+    return @user_api if defined? @user_api
+    @user_api = Google::API.new(tokens: tokens.formatted)
+
+    if @user_api.update_token!
+      tokens.update_attributes(@user_api.tokens)
+    end
+
+    @user_api
+  end
+
+  def load_info
+    api.execute(
+        api_method: api.load_api('plus').people.get,
+        parameters: { userId: 'me' }
+    ).data
+  end
 end
