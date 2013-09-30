@@ -17,6 +17,10 @@ AttachmentsIO::Application.routes.draw do
   # Google OAuth2 Callback
   match '/auth/google/callback' => 'sessions#create_google', via: [:get, :post]
 
+  # Synchronization
+  match '/sync/start' => 'sync#start', via: :get, as: :sync_start
+  match '/sync/details/:id' => 'sync#details', via: :get, as: :sync_details
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

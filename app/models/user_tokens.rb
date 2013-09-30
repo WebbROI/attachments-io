@@ -1,4 +1,6 @@
 class UserTokens < ActiveRecord::Base
+  belongs_to :user
+
   def formatted
     {
         access_token: access_token,

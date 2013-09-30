@@ -26,10 +26,17 @@ gem 'authlogic', '~> 3.3.0'
 gem 'oauth', '~> 0.4.7'
 gem 'omniauth-google-oauth2', '~> 0.2.1'
 gem 'google-api-client', '~> 0.6.4'
+gem 'gmail_xoauth', '~> 0.4.1'
 
 # SAML for Google SSO
 gem 'ruby-openid', '~> 2.3.0'
 gem 'open_id_authentication', '~> 1.2.0'
+
+# For mail parsing
+gem 'mail', '~> 2.5.4'
+
+# Charset encoding
+gem 'russian', '~> 0.6.0'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.0'

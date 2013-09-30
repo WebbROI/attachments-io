@@ -11,7 +11,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130930171456) do
+ActiveRecord::Schema.define(version: 20130930201257) do
+
+  create_table "user_synchronizations", force: true do |t|
+    t.integer "user_id"
+    t.integer "status"
+    t.integer "started_at"
+    t.integer "finished_at"
+    t.integer "file_count"
+  end
 
   create_table "user_tokens", force: true do |t|
     t.string  "user_id"

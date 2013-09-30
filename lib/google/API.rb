@@ -3,6 +3,8 @@ require 'google/api_client'
 module Google
   class API
 
+    FOLDER_MIME = 'application/vnd.google-apps.folder'
+
     def initialize(params = nil)
       @client = Google::APIClient.new(
           application_name: GOOGLE_APPLICATION_NAME,
@@ -25,9 +27,9 @@ module Google
       end
     end
 
-    def load_api(name)
-      return @apis[name] if @apis[name]
-      @apis[name] = @client.discovered_api(name)
+    def load_api(name, version = nil)
+      return @apis[name] unless @apis[name].nil?
+      @apis[name] = @client.discovered_api(name, version)
       @apis[name]
     end
 
@@ -56,6 +58,58 @@ module Google
 
     def execute(options = nil)
       @client.execute(options)
+    end
+
+    def load_files
+      execute(
+          api_method: load_api('drive', 'v2').files.list,
+          parameters: {
+              q: "(trashed = false) and (mimeType != 'application/vnd.google-apps.document') and (mimeType != 'application/vnd.google-apps.spreadsheet') and (mimeType != 'application/vnd.google-apps.form')",
+              fields: 'items(fileSize,id,mimeType,title,alternateLink,parents(id,isRoot))'
+          }
+      )
+    end
+
+    def upload_file(params)
+      puts params.inspect
+
+      file = load_api('drive', 'v2').files.insert.request_schema.new(
+          'title' => params[:title],
+          'description' => params[:description],
+          'mimeType' => params[:mime_type],
+          'parents' => ['id' => params[:parent_id]]
+      )
+
+      media = Google::APIClient::UploadIO.new(params[:path], params[:mime_type], params[:title])
+
+      execute(
+          api_method: load_api('drive', 'v2').files.insert,
+          body_object: file,
+          media: media,
+          parameters: {
+              'uploadType' => 'multipart',
+              'alt' => 'json',
+              'visibility' => 'PRIVATE'
+          }
+      )
+    end
+
+    def create_folder(params)
+      parameters = { title: params[:title], mimeType: FOLDER_MIME }
+
+      if params[:parent_id]
+        parameters[:parents] = [ id: params[:parent_id]]
+      end
+
+      schema = load_api('drive', 'v2').files.insert.request_schema.new(parameters)
+
+      execute(
+          api_method: load_api('drive', 'v2').files.insert,
+          body_object: schema,
+          parameters: {
+              visibility: 'PRIVATE'
+          }
+      )
     end
   end
 end

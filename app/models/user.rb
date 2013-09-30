@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
   has_one :user_tokens, dependent: :destroy
+  has_many :user_synchronizations, dependent: :destroy
 
   acts_as_authentic
 
@@ -37,6 +38,10 @@ class User < ActiveRecord::Base
     user_tokens
   end
 
+  def synchronizations
+    user_synchronizations
+  end
+
   def api
     return @user_api if defined? @user_api
     @user_api = Google::API.new(tokens: tokens.formatted)
@@ -53,5 +58,15 @@ class User < ActiveRecord::Base
         api_method: api.load_api('plus').people.get,
         parameters: { userId: 'me' }
     ).data
+  end
+
+  def start_synchronization
+    sync = UserSynchronization.create!({ user_id: id, status: UserSynchronization::STATUS_INPROCESS, started_at: Time.now.to_i, file_count: 0 })
+
+    Thread.new do
+      sync.start
+    end
+
+    sync
   end
 end
