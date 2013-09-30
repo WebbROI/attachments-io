@@ -11,7 +11,7 @@ AttachmentsIO::Application.routes.draw do
 
   # Sign In / Sign Out
   match '/signin/google' => 'signin#google', via: :get, as: :sign_in_google
-  match '/signin/apps' => 'signin#apps', via: [:get, :post], as: :sign_in_apps
+  match '/signin/apps(/:domain)' => 'signin#apps', via: [:get, :post], as: :sign_in_apps
   match '/signout' => 'sessions#destroy', via: [:get, :delete], as: :sign_out
 
   # Google OAuth2 Callback

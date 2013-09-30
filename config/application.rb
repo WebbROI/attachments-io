@@ -2,6 +2,9 @@ require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
 
+GOOGLE_API_KEY = '613215852608'
+GOOGLE_API_SECRET = 'IR0NrvPqgVHXe80XrkRI8n04'
+
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(:default, Rails.env)

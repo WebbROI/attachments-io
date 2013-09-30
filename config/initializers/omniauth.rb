@@ -1,11 +1,8 @@
 Rails.application.config.middleware.use OmniAuth::Builder do
-  provider :google_oauth2, '613215852608', 'IR0NrvPqgVHXe80XrkRI8n04',
+  provider :google_oauth2, GOOGLE_API_KEY, GOOGLE_API_SECRET,
            {
                name: :google,
                scope: 'userinfo.email, userinfo.profile, plus.me, https://mail.google.com/',
                access_type: 'offline'
            }
-
-  #require 'openid/store/filesystem'
-  #provider :open_id, :name => 'google_open_id', :identifier => 'https://www.google.com/accounts/o8/id'
 end
