@@ -22,4 +22,14 @@ class User < ActiveRecord::Base
       create_user_tokens(attributes)
     end
   end
+
+  def profile_picture(width = nil, height = nil, options = nil)
+    if options.nil?
+      options = { width: width, height: height }
+    else
+      options.merge!({ width: width, height: height })
+    end
+
+    ActionController::Base.helpers.image_tag(picture, options)
+  end
 end

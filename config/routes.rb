@@ -5,6 +5,10 @@ AttachmentsIO::Application.routes.draw do
   # You can have the root of your site routed with "root"
   root 'pages#home'
 
+  # User profile
+  match '/profile' => 'profile#show', via: :get, as: :profile
+  match '/profile/edit' => 'profile#edit', via: [:get, :post], as: :profile_edit
+
   # Sign In / Sign Out
   match '/signin/google' => 'signin#google', via: :get, as: :sign_in_google
   match '/signin/apps' => 'signin#apps', via: [:get, :post], as: :sign_in_apps

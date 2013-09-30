@@ -3,15 +3,26 @@ class SessionsController < ApplicationController
   before_filter :not_authenticated_user!, only: :create_google
 
   def create_google
+    first_login = false
     auth = request.env['omniauth.auth']
-    user = User.find_by_email(auth[:info][:email]) || User.create_with_omniauth(user_params)
+    user = User.find_by_email(auth[:info][:email])
+
+    if user.nil?
+      user = User.create_with_omniauth(user_params)
+      first_login = true
+    else
+      UserSession.create(user, true)
+    end
 
     unless auth[:credentials].empty?
       user.update_tokens(tokens_params)
     end
 
-    UserSession.create(user, true)
-    redirect_to root_path, flash: { success: 'You successful login!' }
+    if first_login
+      redirect_to root_path, flash: { success: 'SYNCHRONIZATION!' }
+    else
+      redirect_to root_path, flash: { success: 'You successful login!' }
+    end
   end
 
   def destroy

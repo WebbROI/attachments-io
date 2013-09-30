@@ -16,3 +16,40 @@
 #wrapper {
   padding: 20px 0;
 }
+
+.google-navbar {
+  color: #ddd;
+  padding: 1px 40px 0;
+  background: #2d2d2d;
+  border-bottom: 1px solid #000;
+
+  .brand {
+    font-size: 16px;
+  }
+
+  a {
+    color: #bbb;
+
+    &:hover {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    &:active {
+      color: #ddd;
+    }
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+      font-size: 13px;
+      float: left;
+      padding: 5px 0;
+      margin: 0 5px;
+    }
+  }
+}
