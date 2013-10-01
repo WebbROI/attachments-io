@@ -5,7 +5,7 @@ class CreateUserSynchronizations < ActiveRecord::Migration
       t.integer :status
       t.integer :started_at
       t.integer :finished_at
-      t.integer :file_countra
+      t.integer :file_count
     end
   end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130930201257) do
+ActiveRecord::Schema.define(version: 20131001110956) do
 
   create_table "user_synchronizations", force: true do |t|
     t.integer "user_id"
@@ -19,6 +19,8 @@ ActiveRecord::Schema.define(version: 20130930201257) do
     t.integer "started_at"
     t.integer "finished_at"
     t.integer "file_count"
+    t.integer "email_count"
+    t.integer "email_parsed"
   end
 
   create_table "user_tokens", force: true do |t|
