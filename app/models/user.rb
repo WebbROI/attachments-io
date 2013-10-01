@@ -53,7 +53,7 @@ class User < ActiveRecord::Base
   #
 
   def start_synchronization
-    sync = UserSynchronization.create!({ user_id: id, status: UserSynchronization::STATUS_INPROCESS, started_at: Time.now.to_i, file_count: 0 })
+    sync = UserSynchronization.create!({ user_id: id, status: UserSynchronization::STATUS_INPROCESS, started_at: Time.now.to_i })
 
     Thread.new do
       sync.start
