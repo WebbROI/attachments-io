@@ -14,25 +14,9 @@ class User < ActiveRecord::Base
     end
   end
 
-  def update_tokens(attributes)
-    tokens = user_tokens()
-
-    if tokens
-      tokens.update_attributes(attributes)
-    else
-      create_user_tokens(attributes)
-    end
-  end
-
-  def profile_picture(width = nil, height = nil, options = nil)
-    if options.nil?
-      options = { width: width, height: height }
-    else
-      options.merge!({ width: width, height: height })
-    end
-
-    ActionController::Base.helpers.image_tag(picture, options)
-  end
+  #
+  # Aliases
+  #
 
   def tokens
     user_tokens
@@ -41,6 +25,10 @@ class User < ActiveRecord::Base
   def synchronizations
     user_synchronizations
   end
+
+  #
+  # Google API
+  #
 
   def api
     return @user_api if defined? @user_api
@@ -60,6 +48,10 @@ class User < ActiveRecord::Base
     ).data
   end
 
+  #
+  # Synchronization
+  #
+
   def start_synchronization
     sync = UserSynchronization.create!({ user_id: id, status: UserSynchronization::STATUS_INPROCESS, started_at: Time.now.to_i, file_count: 0 })
 
@@ -68,5 +60,29 @@ class User < ActiveRecord::Base
     end
 
     sync
+  end
+
+  #
+  # Helpers
+  #
+
+  def update_tokens(attributes)
+    tokens = user_tokens()
+
+    if tokens
+      tokens.update_attributes(attributes)
+    else
+      create_user_tokens(attributes)
+    end
+  end
+
+  def profile_picture(width = nil, height = nil, options = nil)
+    if options.nil?
+      options = { width: width, height: height }
+    else
+      options.merge!({ width: width, height: height })
+    end
+
+    ActionController::Base.helpers.image_tag(picture, options)
   end
 end

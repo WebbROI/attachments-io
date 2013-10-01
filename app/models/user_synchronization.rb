@@ -13,6 +13,30 @@ class UserSynchronization < ActiveRecord::Base
   scope :inprocess, -> { where(status: UserSynchronization::STATUS_INPROCESS) }
   scope :finished, -> { where(status: UserSynchronization::STATUS_FINISHED) }
 
+  #
+  # Helpers
+  #
+
+  def status_readable
+    STATUS_TEXT[status]
+  end
+
+  def finished?
+    status == STATUS_FINISHED
+  end
+
+  def inprocess?
+    status == STATUS_INPROCESS
+  end
+
+  def error?
+    status == STATUS_ERROR
+  end
+
+  #
+  # Synchronization
+  #
+
   def start
     initialize_variables
 
@@ -32,10 +56,6 @@ class UserSynchronization < ActiveRecord::Base
     finish_synchronization
   end
 
-  def status_readable
-    STATUS_TEXT[status]
-  end
-
   private
     def initialize_variables
       @user = user
@@ -52,16 +72,28 @@ class UserSynchronization < ActiveRecord::Base
     end
 
     def load_labels_and_emails
+      email_count = 0
+      last_sync = user.synchronizations.finished.last
+      if last_sync.nil?
+        search_query = 'X-GM-RAW has:attachment'
+      else
+        time = Time.at(last_sync.started_at)
+        search_query = "X-GM-RAW \"has:attachment after:#{time.year}/#{time.month}/0#{time.day}\""
+      end
+
       @imap.list('', '%').each do |label|
         next unless label.attr.find_index(:Noselect).nil?
 
         @imap.select(label.name)
-        emails = @imap.search('X-GM-RAW has:attachment')
+        emails = @imap.search(search_query)
 
         next if emails.empty?
 
         @emails[label.name] = emails
+        email_count += emails.count
       end
+
+      update_attribute(:email_count, email_count)
 
       puts '*** Labels and mails ids was successful loaded'
     end
@@ -106,6 +138,8 @@ class UserSynchronization < ActiveRecord::Base
       mail.attachments.each do |attachment|
         process_attachment(mail, attachment, label)
       end
+
+      update_attribute(:email_parsed, email_parsed.to_i + 1)
 
       puts "*** Email: #{mail.subject} was successful processed"
     end
@@ -164,6 +198,8 @@ class UserSynchronization < ActiveRecord::Base
     end
 
     def finish_synchronization
-      update_attribute(:status, STATUS_FINISHED)
+      update_attributes({ status: STATUS_FINISHED, finished_at: Time.now.to_i })
+
+      puts '*** Finish synchronization'
     end
 end

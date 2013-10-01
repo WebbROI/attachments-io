@@ -2,6 +2,32 @@
   <h2><%= "Synchronization ##{@sync.id}" %></h2>
 </div>
 
+<% if @sync.inprocess? %>
+    <% if @sync.email_count.nil? %>
+        <p><strong>Getting the emails..</strong><strong class="pull-right"><small>0%</small></strong></p>
+    <% elsif @sync.email_count.zero? %>
+        <p><strong>Nothing to synchronize..</strong><strong class="pull-right"><small>0%</small></strong></p>
+    <% else %>
+        <p><strong>Emails parsed <%= @sync.email_parsed.to_i %> of <%= @sync.email_count %></strong><strong class="pull-right"><small><%= (@sync.email_parsed.to_i / @sync.email_count.to_f * 100).to_i %>%</small></strong></p>
+    <% end %>
+    <div class="progress progress-striped active">
+      <div class="bar bar-warning" style="width: <%= @sync.email_parsed.to_i / @sync.email_count.to_f * 100 %>%;"></div>
+    </div>
+<% elsif @sync.finished? %>
+    <% if @sync.email_count.zero? %>
+        <p><strong>Nothing to synchronize..</strong><strong class="pull-right"><small>100%</small></strong></p>
+    <% else %>
+        <p><strong>Emails parsed <%= @sync.email_count %></strong><strong class="pull-right"><small>100%</small></strong></p>
+    <% end %>
+    <div class="progress active">
+      <div class="bar bar-success" style="width: 100%;"></div>
+    </div>
+<% end %>
+
 <div class="well">
-  <p><strong>Status:</strong> <%= @sync.status_readable %></p>
+  <strong>Status:</strong> <%= @sync.status_readable %><br>
+  <strong>Started at:</strong> <%= Time.at(@sync.started_at).to_formatted_s(:long) %><br>
+  <% if @sync.finished? %>
+      <strong>Finished at:</strong> <%= Time.at(@sync.started_at).to_formatted_s(:long) %>
+  <% end %>
 </div>
