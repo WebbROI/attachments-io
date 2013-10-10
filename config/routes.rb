@@ -11,11 +11,15 @@ AttachmentsIO::Application.routes.draw do
 
   # Sign In / Sign Out
   match '/signin/google' => 'signin#google', via: :get, as: :sign_in_google
-  match '/signin/apps' => 'signin#apps', via: [:get, :post], as: :sign_in_apps
+  match '/signin/apps(/:domain)' => 'signin#apps', via: [:get, :post], constraints: { domain: /[0-z\.]+/ }, as: :sign_in_apps
   match '/signout' => 'sessions#destroy', via: [:get, :delete], as: :sign_out
 
   # Google OAuth2 Callback
   match '/auth/google/callback' => 'sessions#create_google', via: [:get, :post]
+
+  # Synchronization
+  match '/sync/start' => 'sync#start', via: :get, as: :sync_start
+  match '/sync/details/:id' => 'sync#details', via: :get, as: :sync_details
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

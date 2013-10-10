@@ -1,2 +1,42 @@
-<h1>Profile#show</h1>
-<p>Find me in app/views/profile/show.html.erb</p>
+<div class="page-header">
+  <h1><%= "#{@user.first_name} #{@user.last_name}" %></h1>
+</div>
+
+<div class="page-header">
+  <h4>Synchronizations</h4>
+</div>
+
+<% if @syncs.empty? %>
+    <p>Not yet synchronized. Please, <%= link_to 'start synchronization', sync_start_path %>.</p>
+<% else %>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Status</th>
+          <th>Started</th>
+          <th>Finished</th>
+          <th>Emails</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @syncs.each do |sync| %>
+        <tr>
+          <td><%= sync.id %></td>
+          <td><%= sync.status_readable %></td>
+          <td><%= Time.at(sync.started_at).to_formatted_s(:long) %></td>
+          <td>
+            <% if sync.finished? %>
+                <%= Time.at(sync.finished_at).to_formatted_s(:long) %>
+            <% else %>
+                -
+            <% end %>
+          </td>
+          <td><%= sync.email_count.to_i %></td>
+          <td><%= link_to 'Details', sync_details_path(sync) %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+<% end %>

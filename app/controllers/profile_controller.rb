@@ -3,6 +3,7 @@ class ProfileController < ApplicationController
 
   def show
     @user = current_user
+    @syncs = @user.synchronizations
   end
 
   def edit
