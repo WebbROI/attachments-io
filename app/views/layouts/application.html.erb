@@ -10,12 +10,10 @@
 
 <%= render 'partials/navbar' %>
 
-<div id="wrapper" class="container">
-  <div class="row">
-    <div class="span12">
-      <%= render 'partials/flash_messages' %>
-      <%= yield %>
-    </div>
+<div id="wrapper">
+  <div class="container">
+    <%= render 'partials/flash_messages' %>
+    <%= yield %>
   </div>
 </div>
 

@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
   has_one :user_tokens, dependent: :destroy
+  has_one :user_settings, dependent: :destroy
   has_many :user_synchronizations, dependent: :destroy
 
   acts_as_authentic
@@ -14,6 +15,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def initialize_settings
+    create_user_settings({ subject_folder: false, convert_files: false })
+  end
+
   #
   # Aliases
   #
@@ -24,6 +29,10 @@ class User < ActiveRecord::Base
 
   def synchronizations
     user_synchronizations
+  end
+
+  def settings
+    user_settings
   end
 
   #
@@ -62,6 +71,10 @@ class User < ActiveRecord::Base
     sync
   end
 
+  def now_synchronizes?
+    false
+  end
+
   #
   # Helpers
   #
@@ -76,13 +89,7 @@ class User < ActiveRecord::Base
     end
   end
 
-  def profile_picture(width = nil, height = nil, options = nil)
-    if options.nil?
-      options = { width: width, height: height }
-    else
-      options.merge!({ width: width, height: height })
-    end
-
+  def profile_picture(options = {})
     ActionController::Base.helpers.image_tag(picture, options)
   end
 end

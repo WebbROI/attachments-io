@@ -1,15 +1,21 @@
-<div class="page-header">
-  <h1><%= "#{@user.first_name} #{@user.last_name}" %></h1>
-</div>
+<h1>
+  <span class="circular small ui image">
+    <%= current_user.profile_picture %>
+  </span>
+  <%= "#{@user.first_name} #{@user.last_name}" %>
+</h1>
 
-<div class="page-header">
-  <h4>Synchronizations</h4>
-</div>
+<%= link_to sync_start_path, class: 'ui red button' do %>
+  <i class="refresh icon"></i>
+  Start synchronization
+<% end %>
+
+<h2 class="ui header">Synchronizations</h2>
 
 <% if @syncs.empty? %>
     <p>Not yet synchronized. Please, <%= link_to 'start synchronization', sync_start_path %>.</p>
 <% else %>
-    <table class="table">
+    <table class="ui table segment">
       <thead>
         <tr>
           <th>#</th>
@@ -22,9 +28,16 @@
       </thead>
       <tbody>
         <% @syncs.each do |sync| %>
-        <tr>
+        <tr class="<%= sync_status_class(sync.status) %>">
           <td><%= sync.id %></td>
-          <td><%= sync.status_readable %></td>
+          <td>
+            <% if sync.finished? %>
+                <i class="icon checkmark"></i>
+            <% else %>
+                <i class="icon attention"></i>
+            <% end %>
+            <%= sync.status_readable %>
+          </td>
           <td><%= Time.at(sync.started_at).to_formatted_s(:long) %></td>
           <td>
             <% if sync.finished? %>

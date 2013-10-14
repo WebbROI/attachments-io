@@ -11,7 +11,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131001110956) do
+ActiveRecord::Schema.define(version: 20131014123102) do
+
+  create_table "user_settings", force: true do |t|
+    t.integer "user_id"
+    t.boolean "subject_folder"
+    t.boolean "convert_files"
+  end
+
+  create_table "user_synchronization_files", force: true do |t|
+    t.integer  "user_synchronization_id"
+    t.string   "filename"
+    t.integer  "size"
+    t.string   "link"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "user_synchronizations", force: true do |t|
     t.integer "user_id"

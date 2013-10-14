@@ -1,8 +1,11 @@
-source 'https://rubygems.org'
 ruby '2.0.0'
+source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.0'
+
+# Puma
+gem 'puma'
 
 # Development gems
 group :development do
@@ -41,6 +44,11 @@ gem 'russian', '~> 0.6.0'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.0'
 
+# Use Semantic-UI
+gem 'therubyracer', platforms: :ruby # or any other runtime
+gem 'less-rails'
+gem 'semantic-ui-rails'
+
 # Twitter Bootstrap
 gem 'bootstrap-sass', '~> 2.3.2.2'
 
@@ -49,9 +57,6 @@ gem 'uglifier', '>= 1.3.0'
 
 # Use CoffeeScript for .js.coffee assets and views
 gem 'coffee-rails', '~> 4.0.0'
-
-# See https://github.com/sstephenson/execjs#readme for more supported runtimes
-# gem 'therubyracer', platforms: :ruby
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'

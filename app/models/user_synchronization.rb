@@ -1,8 +1,11 @@
 class UserSynchronization < ActiveRecord::Base
+  include ActionView::Helpers
+
   require 'net/imap'
   require 'gmail_xoauth/imap_xoauth2_authenticator'
 
   belongs_to :user
+  has_many :user_synchronization_files, dependent: :destroy
 
   STATUS_ERROR = 0
   STATUS_INPROCESS = 1
@@ -31,6 +34,22 @@ class UserSynchronization < ActiveRecord::Base
 
   def error?
     status == STATUS_ERROR
+  end
+
+  #
+  # Aliases
+  #
+
+  def files
+    user_synchronization_files
+  end
+
+  #
+  # Synchronization Files
+  #
+
+  def add_file(params)
+    user_synchronization_files.create!({ filename: params[:filename], size: params[:size], link: params[:link] })
   end
 
   #
@@ -103,7 +122,7 @@ class UserSynchronization < ActiveRecord::Base
 
       items.each do |item|
         if item.mime_type == Google::API::FOLDER_MIME
-          if item.title == 'MVP' && item.parents[0].is_root
+          if item.title == 'Attachments.IO' && item.parents[0].is_root
             @main_folder = { id: item.id, link: item.alternate_link }
           else
             @folders[item.title] = {id: item.id, parent_id: item.parents[0].id, link: item.alternate_link}
@@ -114,7 +133,7 @@ class UserSynchronization < ActiveRecord::Base
       end
 
       if @main_folder.nil?
-        result = @user_api.create_folder(title: 'MVP').data
+        result = @user_api.create_folder(title: 'Attachments.IO').data
         @main_folder = { id: result.id, link: result.alternate_link }
       end
 
@@ -140,6 +159,16 @@ class UserSynchronization < ActiveRecord::Base
       end
 
       update_attribute(:email_parsed, email_parsed.to_i + 1)
+      Puub.instance.publish("user_#{@user.id}",
+                            {
+                                event: 'progressbar',
+                                data: {
+                                    id: id,
+                                    action: 'update',
+                                    parsed: email_parsed.to_i,
+                                    count: email_count.to_i
+                                }
+                            })
 
       puts "*** Email: #{mail.subject} was successful processed"
     end
@@ -183,7 +212,19 @@ class UserSynchronization < ActiveRecord::Base
                                        parent_id: @folders[label][:id] })
 
       @files[filename] = { size: attachment.body.decoded.size, link: result.data.alternate_link }
-      #@synchronization.add_file(filename: filename, size: @files[filename][:size], link: @files[filename][:link], status: SynchronizationFile::UPLOADED)
+      add_file({ filename: filename, size: @files[filename][:size], link: @files[filename][:link] })
+      Puub.instance.publish("user_#{@user.id}",
+                            {
+                                event: 'synchronization_add_file',
+                                data: {
+                                    id: id,
+                                    file: {
+                                        name: filename,
+                                        size: number_to_human_size(@files[filename][:size]),
+                                        link: @files[filename][:link]
+                                    }
+                                }
+                            })
       temp.unlink
 
       puts "*** File #{filename} was successful uploaded"
@@ -199,6 +240,7 @@ class UserSynchronization < ActiveRecord::Base
 
     def finish_synchronization
       update_attributes({ status: STATUS_FINISHED, finished_at: Time.now.to_i })
+      Puub.instance.publish("user_#{@user.id}", { event: 'synchronization_update', data: { id: id, action: 'reload_page' } })
 
       puts '*** Finish synchronization'
     end

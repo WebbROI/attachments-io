@@ -1,30 +1,28 @@
-<div class="google-navbar clearfix">
+<div class="ui inverted main menu">
   <div class="container">
-    <ul class="pull-left">
-      <li class="brand"><strong><%= link_to 'Attachments.IO', root_path %></strong></li>
-    </ul>
-    <% if user_sign_in? %>
-        <ul class="pull-left">
-          <li><%= link_to 'start synchronization', sync_start_path %></li>
-          <li><%= link_to 'settings', '#' %></li>
-        </ul>
+    <%= link_to 'Attachments.IO', root_path, class: 'header item' %>
 
-        <ul class="pull-right">
-          <li>
-            <%= current_user.profile_picture(16) %>
-            <%= link_to "#{current_user.first_name} #{current_user.last_name}", profile_path %>
-          </li>
-          <li><small><%= link_to 'Sign out', sign_out_path %></small></li>
-        </ul>
+    <% if user_sign_in? %>
+        <div class="right menu">
+          <%= link_to profile_path, class: 'item' do %>
+            <i class="user icon"></i>
+            <%= "#{current_user.first_name} #{current_user.last_name}" %>
+          <% end %>
+          <%= link_to user_settings_path, class: 'item' do %>
+            <i class="settings icon"></i>
+            Settings
+          <% end %>
+          <%= link_to sign_out_path, class: 'item' do %>
+            <i class="sign out icon"></i>
+            Sign out
+          <% end %>
+        </div>
     <% else %>
-        <ul class="pull-right">
-          <li>
-            Sign in via
-            <%= link_to 'Google Account', sign_in_google_path %>
-            or
-            <%= link_to 'Google Apps', sign_in_apps_path %>
-          </li>
-        </ul>
+        <div class="right menu">
+          <span class="item"><i class="sign in icon"></i></span>
+          <%= link_to 'Google Account', sign_in_google_path, class: 'item' %>
+          <%= link_to 'Google Apps', sign_in_apps_path, class: 'item' %>
+        </div>
     <% end %>
   </div>
 </div>

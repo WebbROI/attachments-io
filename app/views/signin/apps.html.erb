@@ -1,19 +1,10 @@
-<div class="signin">
-  <%= form_tag nil, class: 'well apps-form row-fluid' do %>
-      <p class="text-center"><%= image_tag 'google_logo.png', width: '300px' %></p>
+<%= form_tag nil, class: 'ui form segment', id: 'sign-in-apps' do %>
+  <p class="text-center"><%= image_tag 'google_logo.png', width: '300px' %></p>
 
-      <div class="control-group">
-        <%= label_tag :domain, nil, class: 'control-label' %>
-        <div class="controls">
-          <%= text_field_tag :domain, nil, class: 'span12' %>
-          <span class="muted">For example: webbroi.com</span>
-        </div>
-      </div>
+  <div class="field">
+    <%= label_tag :domain %>
+    <%= text_field_tag :domain, nil, placeholder: 'example.com' %>
+  </div>
 
-      <div class="control-group">
-        <div class="controls">
-          <%= button_tag 'Continue', { type: :submit, class: 'btn btn-block' } %>
-        </div>
-      </div>
-  <% end %>
-</div>
+  <%= submit_tag 'Continue', class: 'ui blue submit button' %>
+<% end %>

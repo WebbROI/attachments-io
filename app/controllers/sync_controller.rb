@@ -2,6 +2,10 @@ class SyncController < ApplicationController
   before_filter :authenticate_user!
 
   def start
+    if current_user.now_synchronizes?
+      redirect_to profile_path, flash: { error: 'You already have synchronization in process..' } and return
+    end
+
     sync = current_user.start_synchronization
     redirect_to sync_details_path(sync)
   end

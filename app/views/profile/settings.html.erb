@@ -1,0 +1,24 @@
+<h2 class="ui header">
+  <i class="settings icon"></i>
+  Account Settings
+</h2>
+
+<%= render partial: 'partials/errors', locals: { model: @settings } %>
+
+<%= form_for @settings, url: user_settings_path do |f| %>
+
+  <div class="ui form segment">
+    <div class="inline field">
+      <%= f.check_box :subject_folder %>
+      <%= f.label :subject_folder, 'Create folders for emails' %>
+    </div>
+    <div class="inline field">
+      <%= f.check_box :convert_files %>
+      <%= f.label :convert_files, 'Convert files to Google Drive format' %>
+    </div>
+  </div>
+
+  <%= f.submit 'Update settings', class: 'ui blue submit button' %>
+  <%= f.submit 'Update & Start synchronization', class: 'ui red submit button' %>
+
+<% end %>

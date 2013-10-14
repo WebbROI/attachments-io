@@ -1,33 +1,114 @@
-<div class="page-header">
-  <h2><%= "Synchronization ##{@sync.id}" %></h2>
-</div>
+<div id="synchronization-<%= @sync.id %>">
+  <h1><%= "Synchronization ##{@sync.id}" %></h1>
 
-<% if @sync.inprocess? %>
-    <% if @sync.email_count.nil? %>
-        <p><strong>Getting the emails..</strong><strong class="pull-right"><small>0%</small></strong></p>
-    <% elsif @sync.email_count.zero? %>
-        <p><strong>Nothing to synchronize..</strong><strong class="pull-right"><small>0%</small></strong></p>
-    <% else %>
-        <p><strong>Emails parsed <%= @sync.email_parsed.to_i %> of <%= @sync.email_count %></strong><strong class="pull-right"><small><%= (@sync.email_parsed.to_i / @sync.email_count.to_f * 100).to_i %>%</small></strong></p>
-    <% end %>
-    <div class="progress progress-striped active">
-      <div class="bar bar-warning" style="width: <%= @sync.email_parsed.to_i / @sync.email_count.to_f * 100 %>%;"></div>
-    </div>
-<% elsif @sync.finished? %>
-    <% if @sync.email_count.zero? %>
-        <p><strong>Nothing to synchronize..</strong><strong class="pull-right"><small>100%</small></strong></p>
-    <% else %>
-        <p><strong>Emails parsed <%= @sync.email_count %></strong><strong class="pull-right"><small>100%</small></strong></p>
-    <% end %>
-    <div class="progress active">
-      <div class="bar bar-success" style="width: 100%;"></div>
-    </div>
-<% end %>
+  <% if @sync.inprocess? %>
 
-<div class="well">
-  <strong>Status:</strong> <%= @sync.status_readable %><br>
-  <strong>Started at:</strong> <%= Time.at(@sync.started_at).to_formatted_s(:long) %><br>
-  <% if @sync.finished? %>
-      <strong>Finished at:</strong> <%= Time.at(@sync.started_at).to_formatted_s(:long) %>
+    <div class="ui message info">
+      <div class="header"><i class="loading icon"></i> Synchronization in process. Please wait..</div>
+    </div>
+
+    <div class="ui grid">
+      <div class="left floated six wide column" id="progress-title">
+        <% if @sync.email_count.nil? %>
+          Gettings emails...
+        <% elsif @sync.email_count.zero? %>
+          Nothing to synchronize..
+        <% elsif @sync.email_count %>
+          Emails parsed <%= @sync.email_parsed.to_i %> of <%= @sync.email_count.to_i %>
+        <% end %>
+      </div>
+      <div class="right aligned floated two wide column" id="progress-percentage">
+        <% if !@sync.email_count.nil? && !@sync.email_count.zero? %>
+          <%= (@sync.email_parsed.to_i / @sync.email_count.to_f * 100).to_i %>%
+        <% end %>
+      </div>
+    </div>
+      <div class="ui successful progress" id="progressbar-<%= @sync.id %>">
+        <% if !@sync.email_count.nil? && !@sync.email_count.zero? %>
+          <div class="bar" style="width: <%= @sync.email_parsed.to_i / @sync.email_count.to_f * 100 %>%;"></div>
+        <% else %>
+          <div class="bar" style="width: 0;"></div>
+        <% end %>
+    </div>
+
+  <% elsif @sync.finished? %>
+
+    <div class="ui message success">
+      <div class="header"><i class="check icon"></i> Successful finished!</div>
+    </div>
+
   <% end %>
+
+  <% if @sync.finished? %>
+    <h2>
+      <i class="info icon"></i>
+      Synchronization info
+    </h2>
+    <div class="ui connected items">
+      <div class="item">
+        <div class="content">
+          <div class="name">Time</div>
+          <div class="description">
+            <p>Started at: <%= Time.at(@sync.started_at).to_formatted_s(:long) %></p>
+            <p>Finished at: <%= Time.at(@sync.finished_at).to_formatted_s(:long) %></p>
+            <p>Elapsed: <%= ((@sync.finished_at - @sync.started_at.to_f) / 60).round %> min.</p>
+          </div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="content">
+          <div class="name">Files synchronized <small>(example)</small></div>
+          <div class="description">
+            <p>32 docs</p>
+            <p>11 images</p>
+            <p>17 archives</p>
+          </div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="content">
+          <div class="name">Labels synchronized <small>(example)</small></div>
+          <div class="description">
+            <p>INBOX</p>
+            <p>GitHub</p>
+            <p>webbROI</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <h2>
+    <i class="file icon"></i>
+    Synchronized files
+  </h2>
+
+  <% if @sync.files.empty? %>
+    <% if @sync.inprocess? %>
+      <p>Please, wait..</p>
+    <% else %>
+      <p>This synchronization don't have any files.</p>
+    <% end %>
+  <% end %>
+
+  <table class="ui basic small table<%= ' hide' if @sync.files.empty? %>" id="synchronized-files">
+    <thead>
+    <tr>
+      <th>File</th>
+      <th>Size</th>
+      <th>Link</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% unless @sync.files.empty? %>
+      <% @sync.files.each do |file| %>
+        <tr>
+          <td><%= file.filename %></td>
+          <td><%= number_to_human_size(file.size) %></td>
+          <td><%= link_to 'View', file.link, target: '_blank' %></td>
+        </tr>
+      <% end %>
+    <% end %>
+    </tbody>
+  </table>
 </div>

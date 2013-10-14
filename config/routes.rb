@@ -1,4 +1,6 @@
 AttachmentsIO::Application.routes.draw do
+  get "streaming/events"
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
@@ -7,7 +9,7 @@ AttachmentsIO::Application.routes.draw do
 
   # User profile
   match '/profile' => 'profile#show', via: :get, as: :profile
-  match '/profile/edit' => 'profile#edit', via: [:get, :post], as: :profile_edit
+  match '/profile/settings' => 'profile#settings', via: [:get, :patch], as: :user_settings
 
   # Sign In / Sign Out
   match '/signin/google' => 'signin#google', via: :get, as: :sign_in_google

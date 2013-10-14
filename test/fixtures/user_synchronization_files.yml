@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  user_synchronization_id: 1
+  filename: MyString
+  size: 1
+  link: MyString
+
+two:
+  user_synchronization_id: 1
+  filename: MyString
+  size: 1
+  link: MyString

@@ -1,7 +1,9 @@
 class ApplicationController < ActionController::Base
+  require 'puub'
   require 'google/API'
 
   protect_from_forgery with: :exception
+  before_filter :puub
   helper_method :current_user_session, :current_user, :user_sign_in?
 
   private
@@ -25,5 +27,9 @@ class ApplicationController < ActionController::Base
 
     def not_authenticated_user!
       redirect_to root_path, flash: { error: 'This page only for guests' } if user_sign_in?
+    end
+
+    def puub
+      @@puub ||= Puub.instance
     end
 end
