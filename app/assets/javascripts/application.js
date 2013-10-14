@@ -11,7 +11,7 @@
 // about supported directives.
 //
 //= require jquery-2.0.3.min
-//= require semantic-ui
+//= require semantic.min
 //= require_tree .
 
 //
