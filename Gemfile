@@ -11,6 +11,9 @@ gem 'puma'
 group :development do
   # Use sqlite3 as the database for Active Record
   gem 'sqlite3'
+
+  # Profiler
+  gem 'rack-mini-profiler'
 end
 
 # Production gems

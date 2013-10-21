@@ -1,0 +1,217 @@
+extension,file_type,folder,sub_folder
+.amr,Adaptive Multi-Rate Audio,Audio Files,Audio Files
+.ses,Adobe Audio Files,Audio Files,Audio Files
+.sesx,Adobe Audio Files,Audio Files,Audio Files
+.aiff,Audio Interchange File Format,Audio Files,Audio Files
+.aif,Audio Interchange File Format,Audio Files,Audio Files
+.cda,CD Audio Track Shortcut,Audio Files,Audio Files
+.dss,DCC Active Designer File,Audio Files,Audio Files
+.iff,Interchange File Format,Audio Files,Audio Files
+.m4p,iTues Audio File,Audio Files,Audio Files
+.m3u,Media Playlist File,Audio Files,Audio Files
+.mid,MIDI File,Audio Files,Audio Files
+.mp3,MP3 Audio File,Audio Files,Audio Files
+.mp2,MPEG-1 Audio File,Audio Files,Audio Files
+.mpeg,MPEG-1 System Stream,Audio Files,Audio Files
+.mpa,MPEG-2 Audio File,Audio Files,Audio Files
+.m4a,MPEG-4 Audio File,Audio Files,Audio Files
+.ra,Real Audio File,Audio Files,Audio Files
+.ram,RealAudio,Audio Files,Audio Files
+.wav,WAVE Audio File,Audio Files,Audio Files
+.wma,Windows Media Audio File,Audio Files,Audio Files
+.accdb,Access 2007 Database File,Developer Files,Database Files
+.db,Database File,Developer Files,Database Files
+.dbf,Database File,Developer Files,Database Files
+.mdb,Microsoft Access Database,Developer Files,Database Files
+.pst,Microsoft Personal Storage,Developer Files,Database Files
+.pdb,Program Database,Developer Files,Database Files
+.sql,Structured Query Language Data File,Developer Files,Database Files
+.fla,Adobe Flash Animation,Developer Files,Developer Files
+.sh,Bash Shell Script,Developer Files,Developer Files
+.c,C/C++ Source Code File,Developer Files,Developer Files
+.h,C/C++/Objective-C Header File,Developer Files,Developer Files
+.cpp,C++ Source Code File,Developer Files,Developer Files
+.dtd,Document Type Definition File,Developer Files,Developer Files
+.class,Java Class File,Developer Files,Developer Files
+.java,Java Source Code File,Developer Files,Developer Files
+.lua,Lua Source File,Developer Files,Developer Files
+.m,Objective-C Implementation File,Developer Files,Developer Files
+.pl,Perl Script,Developer Files,Developer Files
+.py,Python Script,Developer Files,Developer Files
+.cs,Visual C# Source Code File,Developer Files,Developer Files
+.vcxproj,Visual C++ Project,Developer Files,Developer Files
+.sln,Visual Studio Solution File,Developer Files,Developer Files
+.xcodeproj,Xcode Project,Developer Files,Developer Files
+.xps,XML Paper Specifications,Developer Files,Developer Files
+.hqx,BinHex 4.0 Encoded File,Developer Files,Encoded Files
+.mim,Multi-Purpose Internet Mail Message File,Developer Files,Encoded Files
+.uue,Uuencoded File,Developer Files,Encoded Files
+.apk,Android Package File,Developer Files,Executable Files
+.cgi,Common Gateway Interface Script,Developer Files,Executable Files
+.bat,DOS Batch File,Developer Files,Executable Files
+.com,DOS Command File,Developer Files,Executable Files
+.jar,Java Archive File,Developer Files,Executable Files
+.app,Mac OS X Application,Developer Files,Executable Files
+.pif,Program Information File,Developer Files,Executable Files
+.vb,VBScript File,Developer Files,Executable Files
+.exe,Windows Executable File,Developer Files,Executable Files
+.gadget,Windows Gadget,Developer Files,Executable Files
+.wsf,Windows Script File,Developer Files,Executable Files
+.fon,Generic Font File,Developer Files,Font Files
+.otf,OpenType Font,Developer Files,Font Files
+.ttf,TrueType Font,Developer Files,Font Files
+.fnt,Windows Font File,Developer Files,Font Files
+.crx,Chrome Extension,Developer Files,Plugin Files
+.plugin,Mac OS X Plug-in,Developer Files,Plugin Files
+.cfg,Configuration File,Developer Files,Settings Files
+.prf,Outlook Profile File,Developer Files,Settings Files
+.ini,Windows Initialization File,Developer Files,Settings Files
+.drv,Device Driver,Developer Files,System Files
+.dll,Dynamic Link Library,Developer Files,System Files
+.ico,Icon File,Developer Files,System Files
+.icns,Mac OS X Icon Resource File,Developer Files,System Files
+.deskthemepack,Windows 8 Desktop Theme Pack File,Developer Files,System Files
+.cab,Windows Cabinet File,Developer Files,System Files
+.cpl,Windows Control Panel Item,Developer Files,System Files
+.cur,Windows Cursor,Developer Files,System Files
+.lnk,Windows File Shortcut,Developer Files,System Files
+.dmp,Windows Memory Dump,Developer Files,System Files
+.sys,Windows System File,Developer Files,System Files
+.asp,Active Server Page,Developer Files,Web Files
+.aspx,Active Server Page Extended File,Developer Files,Web Files
+.css,Cascading Style Sheet,Developer Files,Web Files
+.csr,Certificate Signing Request File,Developer Files,Web Files
+.cfm,ColdFusion Markup File,Developer Files,Web Files
+.xhtml,Extensible Hypertext Markup Language File,Developer Files,Web Files
+.htm,Hypertext Markup Language File,Developer Files,Web Files
+.html,Hypertext Markup Language File,Developer Files,Web Files
+.cer,Internet Security Certificate,Developer Files,Web Files
+.jsp,Java Server Page,Developer Files,Web Files
+.js,JavaScript File,Developer Files,Web Files
+.php,PHP Source Code File,Developer Files,Web Files
+.rss,Rich Site Summary,Developer Files,Web Files
+.dwg,AutoCAD Drawing Database File,Document Files,CAD Files
+.cdl,CADKEY Advanced Design Language,Document Files,CAD Files
+.dxf,Drawing Exchange Format File,Document Files,CAD Files
+.mcd,MathCad File,Document Files,CAD Files
+.7z,7-Zip Compressed File,Document Files,Compressed Files
+.cbr,Comic Book RAR Archive,Document Files,Compressed Files
+.tar.gz,Compressed Tarball File,Document Files,Compressed Files
+.deb,Debian Software Package,Document Files,Compressed Files
+.zipx,Extended Zip File,Document Files,Compressed Files
+.gz,Gnu Zipped Archive,Document Files,Compressed Files
+.pkg,Mac OS X Installer Package,Document Files,Compressed Files
+.chm,Microsoft Compressed HTML,Document Files,Compressed Files
+.rpm,Red Hat Package Manager File,Document Files,Compressed Files
+.sea,Self-Extracting Compressed Mac File,Document Files,Compressed Files
+.dvf,Sony Compressed Voice File,Document Files,Compressed Files
+.sit,StuffIt,Document Files,Compressed Files
+.sitx,StuffIt X Archive,Document Files,Compressed Files
+.rar,WinRAR Compressed Archive,Document Files,Compressed Files
+.tgz,WinZipNT - TAR,Document Files,Compressed Files
+.zip,Zipped File,Document Files,Compressed Files
+.ace,ACE Archive,Document Files,Data Files
+.xtm,CmapTools Exported Topic Map,Document Files,Data Files
+.csv,Comma Separated Values File,Document Files,Data Files
+.tar,Consolidated Unix File Archive,Document Files,Data Files
+.dat,Data File,Document Files,Data Files
+.ged,GEDCOM Genealogy Data File,Document Files,Data Files
+.gbr,Gerber File,Document Files,Data Files
+.key,Keynote Presentation,Document Files,Data Files
+.keychain,Mac OS X Keychain File,Document Files,Data Files
+.ibooks,Multi-Touch iBook,Document Files,Data Files
+.pptx,PowerPoint Open XML Presentation,Document Files,Data Files
+.ppt,PowerPoint Presentation,Document Files,Data Files
+.pps,PowerPoint Slide Show,Document Files,Data Files
+.qxd,QuarkXpress Document,Document Files,Data Files
+.qbb,QuickBooks Backup File,Document Files,Data Files
+.qbw,QuickBooks for Windows,Document Files,Data Files
+.sdf,Standard Data File,Document Files,Data Files
+.tax2012,TurboTax 2012 Tax Return,Document Files,Data Files
+.vcf,vCard File,Document Files,Data Files
+.xml,XML File,Document Files,Data Files
+.indd,Adobe InDesign Document,Document Files,Document Layout Files
+.pct,Picture File,Document Files,Document Layout Files
+.pdf,Portable Document Format File,Document Files,Document Layout Files
+.kmz,Google Earth Placemark File,Document Files,GIS Files
+.gpx,GPS Exchange File,Document Files,GIS Files
+.kml,Keyhole Markup Language File,Document Files,GIS Files
+.xls,Excel Spreadsheet,Document Files,Spreadsheet Files
+.xlsx,Microsoft Excel Open XML Spreadsheet,Document Files,Spreadsheet Files
+.xlr,Works Spreadsheet,Document Files,Spreadsheet Files
+.eml,Email Message,Document Files,Text Files
+.tex,LaTeX Source Document,Document Files,Text Files
+.log,Log File,Document Files,Text Files
+.pub,Microsoft Publisher,Document Files,Text Files
+.doc,Microsoft Word Document,Document Files,Text Files
+.docx,Microsoft Word Open XML Document,Document Files,Text Files
+.wps,Microsoft Works Word Processor Document,Document Files,Text Files
+.odt,OpenDocument Text Document,Document Files,Text Files
+.msg,Outlook Mail Message,Document Files,Text Files
+.pages,Pages Document,Document Files,Text Files
+.txt,Plain Text File,Document Files,Text Files
+.rtf,Rich Text Format File,Document Files,Text Files
+.wpd,WordPerfect Document,Document Files,Text Files
+.3ds,3D Studio Scene,Image Files,3D Image Files
+.max,3ds Max Scene File,Image Files,3D Image Files
+.3dm,Rhino 3D Model,Image Files,3D Image Files
+.obj,Wavefront 3D Object File,Image Files,3D Image Files
+.bin,Binary Disc Image,Image Files,Disk Image Files
+.cue,Cue Sheet File,Image Files,Disk Image Files
+.iso,Disc Image File,Image Files,Disk Image Files
+.dmg,Mac OS X Disk Image,Image Files,Disk Image Files
+.mdf,Media Disc Image File,Image Files,Disk Image Files
+.toast,Toast Disc Image,Image Files,Disk Image Files
+.vcd,Virtual CD,Image Files,Disk Image Files
+.psd,Adobe Photoshop Document,Image Files,Raster Image Files
+.bmp,Bitmap Image File,Image Files,Raster Image Files
+.dds,DirectDraw Surface,Image Files,Raster Image Files
+.gif,Graphical Interchange Format File,Image Files,Raster Image Files
+.jpg,JPEG Image,Image Files,Raster Image Files
+.pspimage,PaintShop Pro Image,Image Files,Raster Image Files
+.png,Portable Network Graphic,Image Files,Raster Image Files
+.ss,Splash Bitmap Graphics,Image Files,Raster Image Files
+.tif,Tagged Image File,Image Files,Raster Image Files
+.tiff,Tagged Image File Format,Image Files,Raster Image Files
+.tga,Targa Graphic,Image Files,Raster Image Files
+.thm,Thumbnail Image File,Image Files,Raster Image Files
+.yuv,YUV Encoded Image File,Image Files,Raster Image Files
+.ai,Adobe Illustrator File,Image Files,Vector Image Files
+.cdr,Corel Draw Vector or Raw Audio CD,Image Files,Vector Image Files
+.eps,Encapsulated PostScript File,Image Files,Vector Image Files
+.jpeg,JPEG Image,Image Files,Vector Image Files
+.ps,PostScript File,Image Files,Vector Image Files
+.svg,Scalable Vector Graphics File,Image Files,Vector Image Files
+.bup,Backup File,Miscellaneous Files,Backup Files
+.bak,Backup File,Miscellaneous Files,Backup Files
+.tmp,Temporary File,Miscellaneous Files,Backup Files
+.rom,N64 Game ROM File,Miscellaneous Files,Game Files
+.nes,Nintendo (NES) ROM File,Miscellaneous Files,Game Files
+.sav,Saved Game,Miscellaneous Files,Game Files
+.gam,Saved Game File,Miscellaneous Files,Game Files
+.dem,Video Game Demo File,Miscellaneous Files,Game Files
+.torrent,BitTorrent File,Miscellaneous Files,Misc Files
+.crdownload,Chrome Partially Downloaded File,Miscellaneous Files,Misc Files
+.ics,iCalendar File,Miscellaneous Files,Misc Files
+.part,Partially Downloaded File,Miscellaneous Files,Misc Files
+.msi,Windows Installer Package,Miscellaneous Files,Misc Files
+.3gp,3GPP Multimedia File,Video Files,Video Files
+.3g2,3GPP2 Multimedia File,Video Files,Video Files
+.asf,Advanced Systems Format File,Video Files,Video Files
+.mov,Apple QuickTime Movie,Video Files,Video Files
+.avi,Audio Video Interleave File,Video Files,Video Files
+.divx,DivX Video,Video Files,Video Files
+.ifo,DVD Info File,Video Files,Video Files
+.vob,DVD Video Object File,Video Files,Video Files
+.flv,Flash Video File,Video Files,Video Files
+.m4v,iTunes Video File,Video Files,Video Files
+.asx,Microsoft ASF Redirector File,Video Files,Video Files
+.mpg,MPEG Video File,Video Files,Video Files
+.m4b,MPEG-4 File,Video Files,Video Files
+.mp4,MPEG-4 Video File,Video Files,Video Files
+.rm,Real Media File,Video Files,Video Files
+.rmvb,RealMedia Variable Bitrate,Video Files,Video Files
+.swf,Shockwave Flash Movie,Video Files,Video Files
+.srt,SubRip Subtitle File,Video Files,Video Files
+.wmv,Windows Media Video File,Video Files,Video Files
+.mswmm,Windows Movie Maker Project File,Video Files,Video Files

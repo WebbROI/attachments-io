@@ -2,7 +2,7 @@ class StreamingController < ApplicationController
   include ActionController::Live
 
   def events
-    unless user_sign_in?
+    unless user_signed_in?
       return
     end
 

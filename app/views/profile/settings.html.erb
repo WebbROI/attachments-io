@@ -1,6 +1,6 @@
 <h2 class="ui header">
   <i class="settings icon"></i>
-  Account Settings
+  Synchronization settings (not working for ex.)
 </h2>
 
 <%= render partial: 'partials/errors', locals: { model: @settings } %>
@@ -8,6 +8,16 @@
 <%= form_for @settings, url: user_settings_path do |f| %>
 
   <div class="ui form segment">
+    <div class="field">
+      <%= f.label :filename_format %>
+      <%= f.text_field :filename_format, class: 'one' %>
+      <div class="ui tiny horizontal list">
+        <div class="item"><strong>Allowed parameters:</strong></div>
+        <div class="item"><strong>%filename%</strong> - filename</div>
+        <div class="item"><strong>%subject%</strong> - email subject</div>
+        <div class="item"><strong>%m% %d% %Y%</strong> - current date</div>
+      </div>
+    </div>
     <div class="inline field">
       <%= f.check_box :subject_folder %>
       <%= f.label :subject_folder, 'Create folders for emails' %>

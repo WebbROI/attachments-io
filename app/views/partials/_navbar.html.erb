@@ -2,8 +2,11 @@
   <div class="container">
     <%= link_to 'Attachments.IO', root_path, class: 'header item' %>
 
-    <% if user_sign_in? %>
+    <% if user_signed_in? %>
         <div class="right menu">
+          <%= link_to sync_start_path, class: 'item' do %>
+            <i class="play icon"></i> Run
+          <% end %>
           <%= link_to profile_path, class: 'item' do %>
             <i class="user icon"></i>
             <%= "#{current_user.first_name} #{current_user.last_name}" %>

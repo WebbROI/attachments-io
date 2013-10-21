@@ -57,11 +57,12 @@
       </div>
       <div class="item">
         <div class="content">
-          <div class="name">Files synchronized <small>(example)</small></div>
+          <div class="name">Files synchronized (<small class="muted"><%= pluralize(@files.count, 'file') %></small>)</div>
           <div class="description">
-            <p>32 docs</p>
-            <p>11 images</p>
-            <p>17 archives</p>
+            <p><%= @sync.files.documents.count %> docs</p>
+            <p><%= @sync.files.images.count %> images</p>
+            <p><%= @sync.files.archives.count %> archives</p>
+            <p><%= @sync.files.others.count %> others</p>
           </div>
         </div>
       </div>
@@ -77,13 +78,17 @@
       </div>
     </div>
   <% end %>
+  
+  <code>
+    <%=  %>
+  </code>
 
   <h2>
-    <i class="file icon"></i>
+    <i class="refresh icon"></i>
     Synchronized files
   </h2>
 
-  <% if @sync.files.empty? %>
+  <% if @files.empty? %>
     <% if @sync.inprocess? %>
       <p>Please, wait..</p>
     <% else %>
@@ -91,21 +96,22 @@
     <% end %>
   <% end %>
 
-  <table class="ui basic small table<%= ' hide' if @sync.files.empty? %>" id="synchronized-files">
+  <table class="ui basic small table<%= ' hide' if @files.empty? %>" id="synchronized-files">
     <thead>
     <tr>
       <th>File</th>
       <th>Size</th>
-      <th>Link</th>
     </tr>
     </thead>
     <tbody>
-    <% unless @sync.files.empty? %>
-      <% @sync.files.each do |file| %>
+    <% unless @files.empty? %>
+      <% @files.each do |file| %>
         <tr>
-          <td><%= file.filename %></td>
+          <td>
+            <%= link_to file.filename, file.link, target: '_blank' %><br>
+            <small class="muted"><%= file.file_type %></small>
+          </td>
           <td><%= number_to_human_size(file.size) %></td>
-          <td><%= link_to 'View', file.link, target: '_blank' %></td>
         </tr>
       <% end %>
     <% end %>

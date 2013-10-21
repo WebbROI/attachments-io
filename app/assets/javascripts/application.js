@@ -11,6 +11,7 @@
 // about supported directives.
 //
 //= require jquery-2.0.3.min
+//= require jquery_ujs
 //= require semantic.min
 //= require_tree .
 
@@ -20,6 +21,10 @@
 
 $(document).ready(function() {
 
+    $('.ui.dropdown')
+        .dropdown()
+    ;
+
     var source = new EventSource('/streaming/events');
 
     source.addEventListener('message', function(event) {
@@ -28,8 +33,6 @@ $(document).ready(function() {
 
     source.addEventListener('progressbar', function(event) {
         var data = JSON.parse(event.data);
-
-        console.log('update bar:', (data.parsed / data.count * 100));
 
         if ( ! $('#synchronization-'+data.id).length)
             return;

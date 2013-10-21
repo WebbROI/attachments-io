@@ -10,6 +10,7 @@ AttachmentsIO::Application.routes.draw do
   # User profile
   match '/profile' => 'profile#show', via: :get, as: :profile
   match '/profile/settings' => 'profile#settings', via: [:get, :patch], as: :user_settings
+  match '/profile/token/update' => 'profile#update_token', via: [:get, :post], as: :user_update_token
 
   # Sign In / Sign Out
   match '/signin/google' => 'signin#google', via: :get, as: :sign_in_google
@@ -22,6 +23,7 @@ AttachmentsIO::Application.routes.draw do
   # Synchronization
   match '/sync/start' => 'sync#start', via: :get, as: :sync_start
   match '/sync/details/:id' => 'sync#details', via: :get, as: :sync_details
+  match '/sync/delete/all' => 'sync#delete_all', via: :get, as: :sync_delete_all
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

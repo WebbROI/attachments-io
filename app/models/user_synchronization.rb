@@ -7,14 +7,16 @@ class UserSynchronization < ActiveRecord::Base
   belongs_to :user
   has_many :user_synchronization_files, dependent: :destroy
 
-  STATUS_ERROR = 0
-  STATUS_INPROCESS = 1
-  STATUS_FINISHED = 2
-  STATUS_TEXT = ['Error', 'In process', 'Finished']
+  default_scope -> { order(started_at: :desc) }
 
   scope :error, -> { where(status: UserSynchronization::STATUS_ERROR) }
   scope :inprocess, -> { where(status: UserSynchronization::STATUS_INPROCESS) }
   scope :finished, -> { where(status: UserSynchronization::STATUS_FINISHED) }
+
+  STATUS_ERROR = 0
+  STATUS_INPROCESS = 1
+  STATUS_FINISHED = 2
+  STATUS_TEXT = ['Error', 'In process', 'Finished']
 
   #
   # Helpers
@@ -49,7 +51,7 @@ class UserSynchronization < ActiveRecord::Base
   #
 
   def add_file(params)
-    user_synchronization_files.create!({ filename: params[:filename], size: params[:size], link: params[:link] })
+    user_synchronization_files.create!({ filename: params[:filename], size: params[:size], link: params[:link], ext: File.extname(params[:filename]) })
   end
 
   #
@@ -77,6 +79,7 @@ class UserSynchronization < ActiveRecord::Base
 
   private
     def initialize_variables
+      @logger = Logger.new('log/synchronization.log')
       @user = user
       @user_api = @user.api
 
@@ -86,8 +89,10 @@ class UserSynchronization < ActiveRecord::Base
       @emails = Hash.new
       @files = Hash.new
       @folders = Hash.new
+      @label_folders = Hash.new
 
-      puts '*** Variables was successful initialized'
+      @logger.debug '=========== [ START SYNCHRONIZATION ] =========== '
+      @logger.debug '*** Variables was successful initialized'
     end
 
     def load_labels_and_emails
@@ -114,41 +119,62 @@ class UserSynchronization < ActiveRecord::Base
 
       update_attribute(:email_count, email_count)
 
-      puts '*** Labels and mails ids was successful loaded'
+      @logger.debug '*** Labels and mails ids was successful loaded'
     end
 
     def process_folders_and_files
-      items = @user_api.load_files.data.items
+      # get main folder
+      items = @user_api.load_files(title: IO_ROOT_FOLDER, is_root: true).data.items
 
-      items.each do |item|
-        if item.mime_type == Google::API::FOLDER_MIME
-          if item.title == 'Attachments.IO' && item.parents[0].is_root
-            @main_folder = { id: item.id, link: item.alternate_link }
-          else
-            @folders[item.title] = {id: item.id, parent_id: item.parents[0].id, link: item.alternate_link}
-          end
-        else
-          @files[item.title] = { size: item.file_size, link: item.alternate_link }
+      if items.empty?
+        result = @user_api.create_folder(title: 'Attachments.IO').data
+        @main_folder = { id: result.id, link: result.alternate_link }
+
+        return
+      else
+        folder = items.first
+        @main_folder = { id: folder.id, link: folder.alternate_link }
+      end
+
+      # get all folders
+      all_folders = @user_api.load_files(is_folder: true).data.items
+
+      # parse label folders
+      label_ids = Hash.new
+      all_folders.each do |folder|
+        if folder.parents[0] && folder.parents[0].id == @main_folder[:id]
+          @label_folders[folder.title] = { id: folder.id, link: folder.alternate_link, sub_folders: Hash.new }
+          label_ids[folder.id] = folder.title
         end
       end
 
-      if @main_folder.nil?
-        result = @user_api.create_folder(title: 'Attachments.IO').data
-        @main_folder = { id: result.id, link: result.alternate_link }
+      # parse file types folders
+      unless @label_folders.empty?
+        all_folders.each do |folder|
+          if folder.parents[0] && label_ids.include?(folder.parents[0].id)
+            @label_folders[label_ids[folder.parents[0].id]][:sub_folders][folder.title] = { id: folder.id, link: folder.alternate_link }
+          end
+        end
       end
 
-      puts '*** Folders and files was successful processed'
+      # get all files
+      all_files = @user_api.load_files(is_folder: false).data.items
+      all_files.each do |file|
+        @files[file.title] = { size: file.file_size, link: file.alternate_link }
+      end
+
+      @logger.debug '*** Folders and files was successful processed'
     end
 
     def process_label(label)
-      if @folders[label].nil? || @folders[label][:parent_id] != @main_folder[:id]
+      if @label_folders[label].nil?
         result = @user_api.create_folder(title: label, parent_id: @main_folder[:id])
-        @folders[label] = { id: result.data.id, parent_id: @main_folder[:id], link: result.data.alternate_link }
+        @label_folders[label] = { id: result.data.id, link: result.data.alternate_link, sub_folders: Hash.new }
       end
 
       @imap.select(label)
 
-      puts "*** Label #{label} was successful processed"
+      @logger.debug "*** Label #{label} was successful processed"
     end
 
     def process_email(mail_id, label)
@@ -170,17 +196,16 @@ class UserSynchronization < ActiveRecord::Base
                                 }
                             })
 
-      puts "*** Email: #{mail.subject} was successful processed"
+      @logger.debug "*** Email: #{mail.subject} was successful processed"
     end
 
     def process_attachment(mail, attachment, label)
       filename = generate_filename(mail, attachment)
 
-      puts "*** Attachment: #{filename}"
+      @logger.debug "*** Attachment: #{filename}"
 
       if is_uploaded(filename, attachment)
-        puts "*** File already uploaded #{filename}"
-        #@synchronization.add_file(filename: filename, size: @files[filename][:size], link: @files[filename][:link], status: SynchronizationFile::SKIPPED)
+        @logger.debug "*** File already uploaded #{filename}"
 
         return
       end
@@ -189,11 +214,7 @@ class UserSynchronization < ActiveRecord::Base
     end
 
     def generate_filename(mail, attachment)
-      if mail.subject.nil?
-        Russian.translit(attachment.filename)
-      else
-        Russian.translit(mail.subject) + ' - ' + Russian.translit(attachment.filename)
-      end
+      Russian.translit(attachment.filename)
     end
 
     def is_uploaded(filename, attachment)
@@ -201,6 +222,8 @@ class UserSynchronization < ActiveRecord::Base
     end
 
     def upload_file(filename, attachment, label)
+      folder = get_file_folder(filename, attachment, label)
+
       temp = Tempfile.new([File.basename(attachment.filename), File.extname(attachment.filename)], "#{Rails.root}/tmp", encoding: 'ASCII-8BIT', binmode: true)
       temp.write attachment.body.decoded
       temp.rewind
@@ -209,7 +232,7 @@ class UserSynchronization < ActiveRecord::Base
       result = @user_api.upload_file({ path: temp.path,
                                        title: filename,
                                        mime_type: attachment.mime_type,
-                                       parent_id: @folders[label][:id] })
+                                       parent_id: folder[:id] })
 
       @files[filename] = { size: attachment.body.decoded.size, link: result.data.alternate_link }
       add_file({ filename: filename, size: @files[filename][:size], link: @files[filename][:link] })
@@ -227,7 +250,25 @@ class UserSynchronization < ActiveRecord::Base
                             })
       temp.unlink
 
-      puts "*** File #{filename} was successful uploaded"
+      @logger.debug "*** File #{filename} was successful uploaded"
+    end
+
+    def get_file_folder(filename, attachment, label)
+      ext = File.extname(filename)
+      extension = Extension.find_by_extension(ext)
+
+      if extension
+        folder_name = extension.folder
+      else
+        folder_name = Extension::OTHER
+      end
+
+      if @label_folders[label][:sub_folders][folder_name].nil?
+        result = @user_api.create_folder(title: folder_name, parent_id: @label_folders[label][:id]).data
+        @label_folders[label][:sub_folders][folder_name] = { id: result.id, link: result.alternate_link }
+      end
+
+      @label_folders[label][:sub_folders][folder_name]
     end
 
     def deinitialize_variables
@@ -235,13 +276,13 @@ class UserSynchronization < ActiveRecord::Base
         @imap.disconnect
       end
 
-      puts '*** Variables was successful deinitialized'
+      @logger.debug '*** Variables was successful deinitialized'
     end
 
     def finish_synchronization
       update_attributes({ status: STATUS_FINISHED, finished_at: Time.now.to_i })
       Puub.instance.publish("user_#{@user.id}", { event: 'synchronization_update', data: { id: id, action: 'reload_page' } })
 
-      puts '*** Finish synchronization'
+      @logger.debug '*** Finish synchronization'
     end
 end

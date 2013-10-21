@@ -9,4 +9,8 @@ class UserTokens < ActiveRecord::Base
         expires_in: expires_in
     }
   end
+
+  def token_expire?
+    issued_at + expires_in.to_i < Time.now.to_i
+  end
 end

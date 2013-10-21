@@ -4,6 +4,10 @@ class ProfileController < ApplicationController
   def show
     @user = current_user
     @syncs = @user.synchronizations
+
+    if @user.token_expire? && !@user.has_refresh_token?
+      flash[:error] = render_to_string partial: 'partials/messages/token_expire'
+    end
   end
 
   def settings
@@ -15,6 +19,17 @@ class ProfileController < ApplicationController
       if @settings.update_attributes(settings_params)
         redirect_to profile_path, flash: { success: 'Settings was successful updated' }
       end
+    end
+  end
+
+  def update_token
+    if current_user.has_refresh_token?
+      redirect_to profile_path, flash: { error: 'You do not need update access token' }
+    end
+
+    if request.post?
+      current_user_session.destroy
+      redirect_to sign_in_google_path
     end
   end
 

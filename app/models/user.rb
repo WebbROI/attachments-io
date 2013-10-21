@@ -57,15 +57,31 @@ class User < ActiveRecord::Base
     ).data
   end
 
+  def token_expire?
+    user_tokens.token_expire?
+  end
+
+  def has_refresh_token?
+    !!user_tokens.refresh_token
+  end
+
   #
   # Synchronization
   #
 
-  def start_synchronization
+  def start_synchronization(debug = false)
     sync = UserSynchronization.create!({ user_id: id, status: UserSynchronization::STATUS_INPROCESS, started_at: Time.now.to_i })
 
-    Thread.new do
+    if token_expire? && !has_refresh_token?
+      return redirect_to user_update_token_path
+    end
+
+    if debug
       sync.start
+    else
+      Thread.new do
+        sync.start
+      end
     end
 
     sync

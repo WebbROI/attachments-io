@@ -2,6 +2,9 @@ require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
 
+# Google Drive root folder
+IO_ROOT_FOLDER = 'Attachments.IO'
+
 # Google constants
 GOOGLE_API_KEY = '613215852608'
 GOOGLE_API_SECRET = 'IR0NrvPqgVHXe80XrkRI8n04'

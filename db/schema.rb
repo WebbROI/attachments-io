@@ -11,12 +11,32 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131014123102) do
+ActiveRecord::Schema.define(version: 20131019170205) do
+
+  create_table "extensions", force: true do |t|
+    t.string "extension"
+    t.string "file_type"
+    t.string "folder"
+    t.string "sub_folder"
+  end
+
+  create_table "user_profiles", force: true do |t|
+    t.integer  "user_id"
+    t.string   "plus"
+    t.string   "twitter"
+    t.string   "facebook"
+    t.string   "gender"
+    t.string   "organization"
+    t.string   "location"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "user_settings", force: true do |t|
     t.integer "user_id"
     t.boolean "subject_folder"
     t.boolean "convert_files"
+    t.string  "filename_format"
   end
 
   create_table "user_synchronization_files", force: true do |t|
@@ -26,6 +46,7 @@ ActiveRecord::Schema.define(version: 20131014123102) do
     t.string   "link"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "ext"
   end
 
   create_table "user_synchronizations", force: true do |t|

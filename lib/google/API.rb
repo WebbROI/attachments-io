@@ -60,11 +60,31 @@ module Google
       @client.execute(options)
     end
 
-    def load_files
+    def load_files(params = {})
+      query = "(trashed = false) and (mimeType != 'application/vnd.google-apps.document') and (mimeType != 'application/vnd.google-apps.spreadsheet') and (mimeType != 'application/vnd.google-apps.form') and (mimeType != 'application/vnd.google-apps.drawing')"
+
+      if params[:title]
+        query += " and (title = '#{params[:title]}')"
+      end
+
+      if params[:parent_id]
+        query += " and ('#{params[:parent_id]}' in parents)"
+      end
+
+      if params[:is_root]
+        query += " and ('root' in parents)"
+      end
+
+      if params[:is_folder].is_a?(true.class)
+        query += " and (mimeType = 'application/vnd.google-apps.folder')"
+      elsif params[:is_folder].is_a?(false.class)
+        query += " and (mimeType != 'application/vnd.google-apps.folder')"
+      end
+
       execute(
           api_method: load_api('drive', 'v2').files.list,
           parameters: {
-              q: "(trashed = false) and (mimeType != 'application/vnd.google-apps.document') and (mimeType != 'application/vnd.google-apps.spreadsheet') and (mimeType != 'application/vnd.google-apps.form')",
+              q: query,
               fields: 'items(fileSize,id,mimeType,title,alternateLink,parents(id,isRoot))'
           }
       )

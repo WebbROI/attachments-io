@@ -5,15 +5,26 @@
   <%= "#{@user.first_name} #{@user.last_name}" %>
 </h1>
 
-<%= link_to sync_start_path, class: 'ui red button' do %>
-  <i class="refresh icon"></i>
+<code>
+  <pre>
+    <%= @user.load_info.to_yaml %>
+  </pre>
+</code>
+
+<%= link_to sync_start_path, class: 'ui labeled icon green button' do %>
+  <i class="play icon"></i>
   Start synchronization
+<% end %>
+
+<%= link_to sync_delete_all_path, class: 'ui labeled icon red button', confirm: 'Do you wanna delete all synchronizations?' do %>
+  <i class="delete icon"></i>
+  Delete all
 <% end %>
 
 <h2 class="ui header">Synchronizations</h2>
 
 <% if @syncs.empty? %>
-    <p>Not yet synchronized. Please, <%= link_to 'start synchronization', sync_start_path %>.</p>
+    <p>Not yet synchronized.</p>
 <% else %>
     <table class="ui table segment">
       <thead>

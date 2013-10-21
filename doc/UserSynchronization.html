@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+<title>class UserSynchronization - RDoc Documentation</title>
+
+<link type="text/css" media="screen" href="./rdoc.css" rel="stylesheet">
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "./";
+</script>
+
+<script type="text/javascript" charset="utf-8" src="./js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/navigation.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/search_index.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/search.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/searcher.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/darkfish.js"></script>
+
+
+<body id="top" class="class">
+<nav id="metadata">
+  <nav id="home-section" class="section">
+  <h3 class="section-header">
+    <a href="./index.html">Home</a>
+    <a href="./table_of_contents.html#classes">Classes</a>
+    <a href="./table_of_contents.html#methods">Methods</a>
+  </h3>
+</nav>
+
+
+  <nav id="search-section" class="section project-section" class="initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <h3 class="section-header">
+      <input type="text" name="search" placeholder="Search" id="search-field"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </h3>
+  </form>
+
+  <ul id="search-results" class="initially-hidden"></ul>
+</nav>
+
+
+  <div id="file-metadata">
+    <nav id="file-list-section" class="section">
+  <h3 class="section-header">Defined In</h3>
+  <ul>
+    <li>app/models/user_synchronization.rb
+  </ul>
+</nav>
+
+    
+  </div>
+
+  <div id="class-metadata">
+    
+    <nav id="parent-class-section" class="section">
+  <h3 class="section-header">Parent</h3>
+  
+  <p class="link">ActiveRecord::Base
+  
+</nav>
+
+    <!-- Included Modules -->
+<nav id="includes-section" class="section">
+  <h3 class="section-header">Included Modules</h3>
+
+  <ul class="link-list">
+  
+  
+    <li><span class="include">ActionView::Helpers</span>
+  
+  
+  </ul>
+</nav>
+
+    <!-- Method Quickref -->
+<nav id="method-list-section" class="section">
+  <h3 class="section-header">Methods</h3>
+
+  <ul class="link-list">
+    
+    <li><a href="#method-i-add_file">#add_file</a>
+    
+    <li><a href="#method-i-error-3F">#error?</a>
+    
+    <li><a href="#method-i-files">#files</a>
+    
+    <li><a href="#method-i-finished-3F">#finished?</a>
+    
+    <li><a href="#method-i-inprocess-3F">#inprocess?</a>
+    
+    <li><a href="#method-i-start">#start</a>
+    
+    <li><a href="#method-i-status_readable">#status_readable</a>
+    
+  </ul>
+</nav>
+
+  </div>
+
+  <div id="project-metadata">
+    <nav id="fileindex-section" class="section project-section">
+  <h3 class="section-header">Pages</h3>
+
+  <ul>
+  
+    <li class="file"><a href="./Gemfile.html">Gemfile</a>
+  
+    <li class="file"><a href="./README_rdoc.html">README</a>
+  
+    <li class="file"><a href="./Rakefile.html">Rakefile</a>
+  
+    <li class="file"><a href="./public/robots_txt.html">robots</a>
+  
+  </ul>
+</nav>
+
+    <nav id="classindex-section" class="section project-section">
+  <h3 class="section-header">Class and Module Index</h3>
+
+  <ul class="link-list">
+  
+    <li><a href="./ActiveSupport.html">ActiveSupport</a>
+  
+    <li><a href="./ActiveSupport/TestCase.html">ActiveSupport::TestCase</a>
+  
+    <li><a href="./AttachmentsIO.html">AttachmentsIO</a>
+  
+    <li><a href="./AttachmentsIO/Application.html">AttachmentsIO::Application</a>
+  
+    <li><a href="./Google.html">Google</a>
+  
+    <li><a href="./Google/API.html">Google::API</a>
+  
+    <li><a href="./AddEmailsCountToUserSynchronizations.html">AddEmailsCountToUserSynchronizations</a>
+  
+    <li><a href="./AddEmailsParsedToUserSynchronizations.html">AddEmailsParsedToUserSynchronizations</a>
+  
+    <li><a href="./AddExtensionToUserSynchronizeFiles.html">AddExtensionToUserSynchronizeFiles</a>
+  
+    <li><a href="./AddFilenameFormatToUserSettings.html">AddFilenameFormatToUserSettings</a>
+  
+    <li><a href="./AddIssuedAtAndExpiresInToUserTokens.html">AddIssuedAtAndExpiresInToUserTokens</a>
+  
+    <li><a href="./ApplicationController.html">ApplicationController</a>
+  
+    <li><a href="./ApplicationHelper.html">ApplicationHelper</a>
+  
+    <li><a href="./CreateExtensions.html">CreateExtensions</a>
+  
+    <li><a href="./CreateUserProfiles.html">CreateUserProfiles</a>
+  
+    <li><a href="./CreateUserSettings.html">CreateUserSettings</a>
+  
+    <li><a href="./CreateUserSynchronizationFiles.html">CreateUserSynchronizationFiles</a>
+  
+    <li><a href="./CreateUserSynchronizations.html">CreateUserSynchronizations</a>
+  
+    <li><a href="./CreateUserTokens.html">CreateUserTokens</a>
+  
+    <li><a href="./CreateUsers.html">CreateUsers</a>
+  
+    <li><a href="./Extension.html">Extension</a>
+  
+    <li><a href="./ExtensionTest.html">ExtensionTest</a>
+  
+    <li><a href="./Object.html">Object</a>
+  
+    <li><a href="./PagesController.html">PagesController</a>
+  
+    <li><a href="./PagesControllerTest.html">PagesControllerTest</a>
+  
+    <li><a href="./PagesHelper.html">PagesHelper</a>
+  
+    <li><a href="./PagesHelperTest.html">PagesHelperTest</a>
+  
+    <li><a href="./ProfileController.html">ProfileController</a>
+  
+    <li><a href="./ProfileControllerTest.html">ProfileControllerTest</a>
+  
+    <li><a href="./ProfileHelper.html">ProfileHelper</a>
+  
+    <li><a href="./ProfileHelperTest.html">ProfileHelperTest</a>
+  
+    <li><a href="./Puub.html">Puub</a>
+  
+    <li><a href="./RenameExtensionToExtIntoUserSynchronizationFiles.html">RenameExtensionToExtIntoUserSynchronizationFiles</a>
+  
+    <li><a href="./SessionsController.html">SessionsController</a>
+  
+    <li><a href="./SigninController.html">SigninController</a>
+  
+    <li><a href="./SigninControllerTest.html">SigninControllerTest</a>
+  
+    <li><a href="./SigninHelper.html">SigninHelper</a>
+  
+    <li><a href="./SigninHelperTest.html">SigninHelperTest</a>
+  
+    <li><a href="./StreamingController.html">StreamingController</a>
+  
+    <li><a href="./StreamingControllerTest.html">StreamingControllerTest</a>
+  
+    <li><a href="./SyncController.html">SyncController</a>
+  
+    <li><a href="./SyncControllerTest.html">SyncControllerTest</a>
+  
+    <li><a href="./SyncHelper.html">SyncHelper</a>
+  
+    <li><a href="./SyncHelperTest.html">SyncHelperTest</a>
+  
+    <li><a href="./User.html">User</a>
+  
+    <li><a href="./UserMailer.html">UserMailer</a>
+  
+    <li><a href="./UserMailerTest.html">UserMailerTest</a>
+  
+    <li><a href="./UserProfile.html">UserProfile</a>
+  
+    <li><a href="./UserProfileTest.html">UserProfileTest</a>
+  
+    <li><a href="./UserSession.html">UserSession</a>
+  
+    <li><a href="./UserSettings.html">UserSettings</a>
+  
+    <li><a href="./UserSettingsTest.html">UserSettingsTest</a>
+  
+    <li><a href="./UserSynchronization.html">UserSynchronization</a>
+  
+    <li><a href="./UserSynchronizationFile.html">UserSynchronizationFile</a>
+  
+    <li><a href="./UserSynchronizationFileTest.html">UserSynchronizationFileTest</a>
+  
+    <li><a href="./UserSynchronizationTest.html">UserSynchronizationTest</a>
+  
+    <li><a href="./UserTest.html">UserTest</a>
+  
+    <li><a href="./UserTokens.html">UserTokens</a>
+  
+    <li><a href="./UserTokensTest.html">UserTokensTest</a>
+  
+  </ul>
+</nav>
+
+  </div>
+</nav>
+
+<div id="documentation">
+  <h1 class="class">class UserSynchronization</h1>
+
+  <div id="description" class="description">
+    
+  </div><!-- description -->
+
+  
+  
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+    <!-- Constants -->
+    <section id="constants-list" class="section">
+      <h3 class="section-header">Constants</h3>
+      <dl>
+      
+        <dt id="STATUS_ERROR">STATUS_ERROR
+        
+        <dd class="description">
+        
+      
+        <dt id="STATUS_FINISHED">STATUS_FINISHED
+        
+        <dd class="description">
+        
+      
+        <dt id="STATUS_INPROCESS">STATUS_INPROCESS
+        
+        <dd class="description">
+        
+      
+        <dt id="STATUS_TEXT">STATUS_TEXT
+        
+        <dd class="description">
+        
+      
+      </dl>
+    </section>
+    
+
+    
+
+    <!-- Methods -->
+    
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section section">
+      <h3 class="section-header">Public Instance Methods</h3>
+
+    
+      <div id="method-i-add_file" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">add_file</span><span
+            class="method-args">(params)</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Synchronization Files</p>
+          
+
+          
+          <div class="method-source-code" id="add_file-source">
+            <pre><span class="ruby-comment"># File app/models/user_synchronization.rb, line 53</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">add_file</span>(<span class="ruby-identifier">params</span>)
+  <span class="ruby-identifier">user_synchronization_files</span>.<span class="ruby-identifier">create!</span>({ <span class="ruby-identifier">filename</span><span class="ruby-operator">:</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:filename</span>], <span class="ruby-identifier">size</span><span class="ruby-operator">:</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:size</span>], <span class="ruby-identifier">link</span><span class="ruby-operator">:</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:link</span>], <span class="ruby-identifier">ext</span><span class="ruby-operator">:</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">extname</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:filename</span>]) })
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- add_file-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- add_file-method -->
+
+    
+      <div id="method-i-error-3F" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">error?</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="error-3F-source">
+            <pre><span class="ruby-comment"># File app/models/user_synchronization.rb, line 37</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">error?</span>
+  <span class="ruby-identifier">status</span> <span class="ruby-operator">==</span> <span class="ruby-constant">STATUS_ERROR</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- error-3F-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- error-3F-method -->
+
+    
+      <div id="method-i-files" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">files</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Aliases</p>
+          
+
+          
+          <div class="method-source-code" id="files-source">
+            <pre><span class="ruby-comment"># File app/models/user_synchronization.rb, line 45</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">files</span>
+  <span class="ruby-identifier">user_synchronization_files</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- files-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- files-method -->
+
+    
+      <div id="method-i-finished-3F" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">finished?</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="finished-3F-source">
+            <pre><span class="ruby-comment"># File app/models/user_synchronization.rb, line 29</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">finished?</span>
+  <span class="ruby-identifier">status</span> <span class="ruby-operator">==</span> <span class="ruby-constant">STATUS_FINISHED</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- finished-3F-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- finished-3F-method -->
+
+    
+      <div id="method-i-inprocess-3F" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">inprocess?</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="inprocess-3F-source">
+            <pre><span class="ruby-comment"># File app/models/user_synchronization.rb, line 33</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">inprocess?</span>
+  <span class="ruby-identifier">status</span> <span class="ruby-operator">==</span> <span class="ruby-constant">STATUS_INPROCESS</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- inprocess-3F-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- inprocess-3F-method -->
+
+    
+      <div id="method-i-start" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">start</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Synchronization</p>
+          
+
+          
+          <div class="method-source-code" id="start-source">
+            <pre><span class="ruby-comment"># File app/models/user_synchronization.rb, line 61</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">start</span>
+  <span class="ruby-identifier">initialize_variables</span>
+
+  <span class="ruby-identifier">load_labels_and_emails</span>
+  <span class="ruby-identifier">process_folders_and_files</span>
+
+  <span class="ruby-ivar">@emails</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">label</span>, <span class="ruby-identifier">emails</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">process_label</span>(<span class="ruby-identifier">label</span>)
+
+    <span class="ruby-identifier">emails</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">email_id</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">process_email</span>(<span class="ruby-identifier">email_id</span>, <span class="ruby-identifier">label</span>)
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">deinitialize_variables</span>
+
+  <span class="ruby-identifier">finish_synchronization</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- start-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- start-method -->
+
+    
+      <div id="method-i-status_readable" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">status_readable</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Helpers</p>
+          
+
+          
+          <div class="method-source-code" id="status_readable-source">
+            <pre><span class="ruby-comment"># File app/models/user_synchronization.rb, line 25</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">status_readable</span>
+  <span class="ruby-constant">STATUS_TEXT</span>[<span class="ruby-identifier">status</span>]
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- status_readable-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- status_readable-method -->
+
+    
+    </section><!-- public-instance-method-details -->
+  
+  </section><!-- 5Buntitled-5D -->
+
+</div><!-- documentation -->
+
+
+<footer id="validator-badges">
+  <p><a href="http://validator.w3.org/check/referer">[Validate]</a>
+  <p>Generated by <a href="https://github.com/rdoc/rdoc">RDoc</a> 3.12.2.
+  <p>Generated with the <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish Rdoc Generator</a> 3.
+</footer>
+
