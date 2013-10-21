@@ -13,8 +13,6 @@ class ProfileController < ApplicationController
   def settings
     @settings = current_user.settings
 
-    @@puub.publish("user_#{current_user.id}", { event: 'message', data: 'Opened user settings' })
-
     if request.patch?
       if @settings.update_attributes(settings_params)
         redirect_to profile_path, flash: { success: 'Settings was successful updated' }

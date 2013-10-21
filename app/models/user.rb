@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
   has_one :user_tokens, dependent: :destroy
+  has_one :user_profile, dependent: :destroy
   has_one :user_settings, dependent: :destroy
   has_many :user_synchronizations, dependent: :destroy
 
@@ -16,7 +17,41 @@ class User < ActiveRecord::Base
   end
 
   def initialize_settings
-    create_user_settings({ subject_folder: false, convert_files: false })
+    create_user_settings({
+                             subject_folder: false,
+                             convert_files: false,
+                             filename_format: UserSynchronization::DEFAULT_FILENAME_FORMAT
+                         })
+  end
+
+  def initialize_profile
+    info = load_info
+    profile = build_user_profile
+
+    profile.gender = info.gender if defined? info.gender
+    profile.plus = info.url if defined? info.url
+
+    if defined? info.organizations
+      organization = Array.new
+
+      info.organizations.each do |item|
+        organization << "#{item.name}, #{item.title}"
+      end
+
+      profile.organization = organization.join('; ')
+    end
+
+    if defined? info.places_lived
+      location = Array.new
+
+      info.places_lived.each do |item|
+        location << item.value
+      end
+
+      profile.location = location.join('; ')
+    end
+
+    profile.save!
   end
 
   #
@@ -33,6 +68,10 @@ class User < ActiveRecord::Base
 
   def settings
     user_settings
+  end
+
+  def profile
+    user_profile
   end
 
   #

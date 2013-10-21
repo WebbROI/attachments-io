@@ -1,6 +1,7 @@
 class Extension < ActiveRecord::Base
+  has_many :user_synchronization_files, foreign_key: 'extension', primary_key: 'ext'
 
-  DOCUMENTS = %w[.doc .docx]
+  DOCUMENTS = %w[.doc .docx .vcf .pdf]
   IMAGES = %w[.jpg .jpeg .png .gif]
   ARCHIVES = %w[.rar .zip]
   PDF = '.pdf'

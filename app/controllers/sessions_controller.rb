@@ -24,8 +24,7 @@ class SessionsController < ApplicationController
     end
 
     if first_login
-      # TODO: add load information
-      # @user.load_info
+      user.initialize_profile
       user.initialize_settings
 
       redirect_to sync_start_path, flash: { success: 'Thank you for using our service! Synchronization was started!' }

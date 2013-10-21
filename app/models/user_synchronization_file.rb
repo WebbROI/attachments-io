@@ -1,4 +1,5 @@
 class UserSynchronizationFile < ActiveRecord::Base
+  belongs_to :user_synchronization
   has_one :extension, foreign_key: 'extension', primary_key: 'ext'
 
   default_scope -> { order(created_at: :desc) }

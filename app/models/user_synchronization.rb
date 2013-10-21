@@ -17,6 +17,7 @@ class UserSynchronization < ActiveRecord::Base
   STATUS_INPROCESS = 1
   STATUS_FINISHED = 2
   STATUS_TEXT = ['Error', 'In process', 'Finished']
+  DEFAULT_FILENAME_FORMAT = '%subject% - %filename%'
 
   #
   # Helpers
