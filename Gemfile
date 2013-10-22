@@ -35,10 +35,10 @@ gem 'gmail_xoauth', '~> 0.4.1'
 gem 'ruby-openid', '~> 2.3.0'
 gem 'open_id_authentication', '~> 1.2.0'
 
-# For mail parsing
+# Mail parsing
 gem 'mail', '~> 2.5.4'
 
-# Charset encoding
+# Russian transliteration
 gem 'russian', '~> 0.6.0'
 
 # Use SCSS for stylesheets

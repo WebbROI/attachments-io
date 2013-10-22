@@ -7,7 +7,12 @@ class SyncController < ApplicationController
     end
 
     sync = current_user.start_synchronization#(true)
-    redirect_to sync_details_path(sync)
+
+    if sync
+      redirect_to sync_details_path(sync)
+    else
+      redirect_to user_update_token_path
+    end
   end
 
   def details

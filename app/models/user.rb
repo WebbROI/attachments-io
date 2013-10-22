@@ -112,7 +112,7 @@ class User < ActiveRecord::Base
     sync = UserSynchronization.create!({ user_id: id, status: UserSynchronization::STATUS_INPROCESS, started_at: Time.now.to_i })
 
     if token_expire? && !has_refresh_token?
-      return redirect_to user_update_token_path
+      return false
     end
 
     if debug

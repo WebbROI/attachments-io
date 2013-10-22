@@ -1,6 +1,6 @@
 <h2 class="ui header">
   <i class="settings icon"></i>
-  Synchronization settings (not working for ex.)
+  Synchronization settings
 </h2>
 
 <%= render partial: 'partials/errors', locals: { model: @settings } %>
@@ -9,26 +9,71 @@
 
   <div class="ui form segment">
     <div class="field">
-      <%= f.label :filename_format %>
+      <%= f.label :filename_format, raw('Filename format <strong>Warning! All before synchronized files be uploaded again!</strong>') %>
       <%= f.text_field :filename_format, class: 'one' %>
       <div class="ui tiny horizontal list">
         <div class="item"><strong>Allowed parameters:</strong></div>
         <div class="item"><strong>%filename%</strong> - filename</div>
         <div class="item"><strong>%subject%</strong> - email subject</div>
-        <div class="item"><strong>%m% %d% %Y%</strong> - current date</div>
       </div>
     </div>
     <div class="inline field">
       <%= f.check_box :subject_folder %>
-      <%= f.label :subject_folder, 'Create folders for emails' %>
+      <%= f.label :subject_folder, 'Create folders for emails (not working)' %>
     </div>
     <div class="inline field">
       <%= f.check_box :convert_files %>
-      <%= f.label :convert_files, 'Convert files to Google Drive format' %>
+      <%= f.label :convert_files, 'Convert files to Google Drive format (not working)' %>
     </div>
   </div>
 
   <%= f.submit 'Update settings', class: 'ui blue submit button' %>
-  <%= f.submit 'Update & Start synchronization', class: 'ui red submit button' %>
-
 <% end %>
+
+<h2 class="ui header">
+  <i class="filter icon"></i>
+  File filters
+</h2>
+
+<div class="ui form segment">
+  <div class="ui small header">
+    Minimal image size for synchronization
+    <div class="ui checkbox">
+      <input type="checkbox" name="check" id="check">
+      <label for="check">Use this rules</label>
+    </div>
+  </div>
+  <div class="field">
+    <label>Allowed formats:</label>
+    <div class="ui checkbox">
+      <input type="checkbox">
+      <label>.jpg</label>
+    </div><br>
+    <div class="ui checkbox">
+      <input type="checkbox">
+      <label>.png</label>
+    </div><br>
+    <div class="ui checkbox">
+      <input type="checkbox">
+      <label>.gif</label>
+    </div>
+  </div>
+  <div class="three fields">
+    <div class="field">
+      <label>Width (px)</label>
+      <input type="text" placeholder="100">
+    </div>
+    <div class="field">
+      <label>Height (px)</label>
+      <input type="text" placeholder="100">
+    </div>
+  </div>
+  <div class="ui small header">Document rules</div>
+  <div class="two fields">
+    <div class="field">
+      More rules...
+    </div>
+  </div>
+</div>
+
+<div class="ui blue submit button">Update filters</div>

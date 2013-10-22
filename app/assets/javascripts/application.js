@@ -25,6 +25,10 @@ $(document).ready(function() {
         .dropdown()
     ;
 
+    $('.ui.checkbox')
+        .checkbox()
+    ;
+
     var source = new EventSource('/streaming/events');
 
     source.addEventListener('message', function(event) {

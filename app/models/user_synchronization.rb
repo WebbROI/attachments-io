@@ -83,6 +83,7 @@ class UserSynchronization < ActiveRecord::Base
       @logger = Logger.new('log/synchronization.log')
       @user = user
       @user_api = @user.api
+      @user_settings = @user.settings
 
       @imap = Net::IMAP.new('imap.gmail.com', 993, usessl = true, certs = nil, verify = false)
       @imap.authenticate('XOAUTH2', @user.email, @user_api.tokens[:access_token])
@@ -91,6 +92,7 @@ class UserSynchronization < ActiveRecord::Base
       @files = Hash.new
       @folders = Hash.new
       @label_folders = Hash.new
+      @extensions = Extension.all_hash
 
       @logger.debug '=========== [ START SYNCHRONIZATION ] =========== '
       @logger.debug '*** Variables was successful initialized'
@@ -215,7 +217,17 @@ class UserSynchronization < ActiveRecord::Base
     end
 
     def generate_filename(mail, attachment)
-      Russian.translit(attachment.filename)
+      if mail.subject
+        subject = mail.subject
+      else
+        subject = 'No subject'
+      end
+
+      filename = @user_settings.filename_format.to_s
+      filename = filename.gsub('%filename%', attachment.filename)
+      filename = filename.gsub('%subject%', subject)
+
+      Russian.translit(filename)
     end
 
     def is_uploaded(filename, attachment)
@@ -256,7 +268,7 @@ class UserSynchronization < ActiveRecord::Base
 
     def get_file_folder(filename, attachment, label)
       ext = File.extname(filename)
-      extension = Extension.find_by_extension(ext)
+      extension = @extensions[ext]
 
       if extension
         folder_name = extension.folder
