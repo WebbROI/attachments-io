@@ -26,7 +26,7 @@ class SyncController < ApplicationController
   end
 
   def delete_all
-    UserSynchronization.delete_all
+    UserSynchronization.destroy_all
     redirect_to profile_path, flash: { success: 'All synchronizations was successful removed' }
   end
 end
