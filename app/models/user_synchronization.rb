@@ -245,7 +245,8 @@ class UserSynchronization < ActiveRecord::Base
       result = @user_api.upload_file({ path: temp.path,
                                        title: filename,
                                        mime_type: attachment.mime_type,
-                                       parent_id: folder[:id] })
+                                       parent_id: folder[:id],
+                                       convert: @user_settings.convert_files })
 
       @files[filename] = { size: attachment.body.decoded.size, link: result.data.alternate_link }
       add_file({ filename: filename, size: @files[filename][:size], link: @files[filename][:link] })

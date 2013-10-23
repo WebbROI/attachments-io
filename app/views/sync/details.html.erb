@@ -1,12 +1,25 @@
 <div id="synchronization-<%= @sync.id %>">
-  <h1><%= "Synchronization ##{@sync.id}" %></h1>
+  <h1>
+    <%= "Synchronization ##{@sync.id}" %>
+    <% if @sync.inprocess? %>
+      <span class="ui blue label">
+        <i class="loading icon"></i>
+        In process
+      </span>
+    <% elsif @sync.finished? %>
+      <span class="ui green label">
+        <i class="check icon"></i>
+        Finished
+      </span>
+    <% else %>
+      <span class="ui red label">
+        <i class="bolt icon"></i>
+        Error
+      </span>
+    <% end %>
+  </h1>
 
   <% if @sync.inprocess? %>
-
-    <div class="ui message info">
-      <div class="header"><i class="loading icon"></i> Synchronization in process. Please wait..</div>
-    </div>
-
     <div class="ui grid">
       <div class="left floated six wide column" id="progress-title">
         <% if @sync.email_count.nil? %>
@@ -30,13 +43,6 @@
           <div class="bar" style="width: 0;"></div>
         <% end %>
     </div>
-
-  <% elsif @sync.finished? %>
-
-    <div class="ui message success">
-      <div class="header"><i class="check icon"></i> Successful finished!</div>
-    </div>
-
   <% end %>
 
   <% if @sync.finished? %>

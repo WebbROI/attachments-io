@@ -1,12 +1,12 @@
 module SyncHelper
 
-  def sync_status_class(status)
+  def sync_status_class_row(status)
     case status
-      when 0
+      when UserSynchronization::STATUS_ERROR
         'negative'
-      when 1
+      when UserSynchronization::STATUS_INPROCESS
         'warning'
-      when 2
+      when UserSynchronization::STATUS_FINISHED
         'positive'
     end
   end

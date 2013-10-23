@@ -91,7 +91,11 @@ module Google
     end
 
     def upload_file(params)
-      puts params.inspect
+      if !!params[:convert]
+        convert = 'true'
+      else
+        convert = 'false'
+      end
 
       file = load_api('drive', 'v2').files.insert.request_schema.new(
           'title' => params[:title],
@@ -107,6 +111,7 @@ module Google
           body_object: file,
           media: media,
           parameters: {
+              'convert' => convert,
               'uploadType' => 'multipart',
               'alt' => 'json',
               'visibility' => 'PRIVATE'

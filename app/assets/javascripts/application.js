@@ -69,9 +69,8 @@ $(document).ready(function() {
 
         table.find('tbody').prepend(
             '<tr>' +
-                '<td>'+data.file.name+'</td>' +
+                '<td><a href="'+data.file.link+'" target="_blank">'+data.file.name+'</a></td>' +
                 '<td>'+data.file.size+'</td>' +
-                '<td><a href="'+data.file.link+'" target="_blank">View</a></td>' +
             '</tr>'
         );
     });

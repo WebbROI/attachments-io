@@ -49,7 +49,7 @@
       </thead>
       <tbody>
         <% @syncs.each do |sync| %>
-        <tr class="<%= sync_status_class(sync.status) %>">
+        <tr class="<%= sync_status_class_row(sync.status) %>">
           <td><%= sync.id %></td>
           <td>
             <% if sync.finished? %>
@@ -68,7 +68,12 @@
             <% end %>
           </td>
           <td><%= sync.email_count.to_i %></td>
-          <td><%= link_to 'Details', sync_details_path(sync) %></td>
+          <td>
+            <%= link_to sync_details_path(sync), class: 'ui green mini button' do %>
+              <i class="reorder icon"></i>
+              Details
+            <% end %>
+          </td>
         </tr>
         <% end %>
       </tbody>
