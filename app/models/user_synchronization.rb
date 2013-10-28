@@ -84,6 +84,7 @@ class UserSynchronization < ActiveRecord::Base
       @user = user
       @user_api = @user.api
       @user_settings = @user.settings
+      @user_filters = @user.filters
 
       @imap = Net::IMAP.new('imap.gmail.com', 993, usessl = true, certs = nil, verify = false)
       @imap.authenticate('XOAUTH2', @user.email, @user_api.tokens[:access_token])
@@ -213,6 +214,12 @@ class UserSynchronization < ActiveRecord::Base
         return
       end
 
+      unless check_filters(attachment)
+        @logger.debug "*** Not pass rules #{filename}"
+
+        return
+      end
+
       upload_file(filename, attachment, label)
     end
 
@@ -232,6 +239,42 @@ class UserSynchronization < ActiveRecord::Base
 
     def is_uploaded(filename, attachment)
       true if !@files[filename].nil? and (attachment.body.decoded.size == @files[filename][:size])
+    end
+
+    def check_filters(attachment)
+      ext = File.extname(attachment.filename)
+
+      if Extension::IMAGES.include?(ext) && @user_filters.images_filters
+
+        # allowed extensions
+        unless @user_filters.images_extensions.include?(ext)
+          return false
+        end
+
+        # check file size
+        if (!@user_filters.images_min_size.nil? && @user_filters.images_min_size.to_i > attachment.body.decoded.size) ||
+            (!@user_filters.images_max_size.nil? && @user_filters.images_max_size.to_i < attachment.body.decoded.size)
+
+          return false
+        end
+
+      elsif Extension::DOCUMENTS.include?(ext) && @user_filters.documents_filters
+
+        # allowed extensions
+        unless @user_filters.documents_extensions.include?(ext)
+          return false
+        end
+
+        # check file size
+        if (!@user_filters.documents_min_size.nil? && @user_filters.documents_min_size > attachment.body.decoded.size) ||
+            (!@user_filters.documents_max_size.nil? && @user_filters.documents_max_size < attachment.body.decoded.size)
+
+          return false
+        end
+
+      end
+
+      true
     end
 
     def upload_file(filename, attachment, label)

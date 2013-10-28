@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  user_id: 1
+  images_extensions: MyString
+  images_min_size: 1
+  images_max_size: 1
+  documents_extensions: MyString
+  documents_min_size: 1
+  documents_max_size: 1
+
+two:
+  user_id: 1
+  images_extensions: MyString
+  images_min_size: 1
+  images_max_size: 1
+  documents_extensions: MyString
+  documents_min_size: 1
+  documents_max_size: 1

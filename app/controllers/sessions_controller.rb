@@ -26,6 +26,7 @@ class SessionsController < ApplicationController
     if first_login
       user.initialize_profile
       user.initialize_settings
+      user.initialize_filters
 
       redirect_to sync_start_path, flash: { success: 'Thank you for using our service! Synchronization was started!' }
     else

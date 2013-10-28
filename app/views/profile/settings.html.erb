@@ -28,48 +28,76 @@
 
 <h2 class="ui header">
   <i class="filter icon"></i>
-  File filters (not working, for example)
+  Filters
 </h2>
 
-<div class="ui form segment">
-  <div class="ui small header">
-    Minimal image size for synchronization
-    <div class="ui checkbox">
-      <input type="checkbox" name="check" id="check">
-      <label for="check">Use this rules</label>
-    </div>
-  </div>
-  <div class="field">
-    <label>Allowed formats:</label>
-    <div class="ui checkbox">
-      <input type="checkbox">
-      <label>.jpg</label>
-    </div><br>
-    <div class="ui checkbox">
-      <input type="checkbox">
-      <label>.png</label>
-    </div><br>
-    <div class="ui checkbox">
-      <input type="checkbox">
-      <label>.gif</label>
-    </div>
-  </div>
-  <div class="three fields">
-    <div class="field">
-      <label>Width (px)</label>
-      <input type="text" placeholder="100">
-    </div>
-    <div class="field">
-      <label>Height (px)</label>
-      <input type="text" placeholder="100">
-    </div>
-  </div>
-  <div class="ui small header">Document rules</div>
-  <div class="two fields">
-    <div class="field">
-      More rules...
-    </div>
-  </div>
-</div>
+<%= form_for @filters, url: user_settings_path do |f| %>
 
-<div class="ui blue submit button">Update filters</div>
+  <div class="ui form segment">
+    <div class="ui left floated small header">
+      Images
+    </div>
+    <small>
+      <%= f.label :images_filters do %>
+        <%= f.check_box :images_filters %>
+        Use this rules
+      <% end %>
+    </small>
+    <div class="ui clearing divider"></div>
+
+    <div class="field">
+      <label>Allowed extensions</label>
+      <% Extension::IMAGES.each do |ext| %>
+        <%= label_tag do %>
+          <%= check_box_tag "user_filter[images_extensions][]", ext, @filters.images_extensions.to_a.include?(ext) %>
+          <%= ext %>
+        <% end %>
+      <% end %>
+    </div>
+
+    <div class="fields two">
+      <div class="field">
+        <%= f.label :images_min_size, 'Minimal size (kb)' %>
+        <%= f.text_field :images_min_size %>
+      </div>
+      <div class="field">
+        <%= f.label :images_max_size, 'Maximal size (kb)' %>
+        <%= f.text_field :images_max_size %>
+      </div>
+    </div>
+
+    <div class="ui left floated small header">
+      Documents
+    </div>
+    <small>
+      <%= f.label :documents_filters do %>
+        <%= f.check_box :documents_filters %>
+        Use this rules
+      <% end %>
+    </small>
+    <div class="ui clearing divider"></div>
+
+    <div class="field">
+      <label>Allowed extensions</label>
+      <% Extension::DOCUMENTS.each do |ext| %>
+        <%= label_tag do %>
+          <%= check_box_tag "user_filter[documents_extensions][]", ext, @filters.documents_extensions.to_a.include?(ext) %>
+          <%= ext %>
+        <% end %>
+      <% end %>
+    </div>
+
+    <div class="fields two">
+      <div class="field">
+        <%= f.label :documents_min_size, 'Minimal size (kb)' %>
+        <%= f.text_field :documents_min_size %>
+      </div>
+      <div class="field">
+        <%= f.label :documents_max_size, 'Maximal size (kb)' %>
+        <%= f.text_field :documents_max_size %>
+      </div>
+    </div>
+  </div>
+
+  <%= f.submit 'Update filters', class: 'ui blue submit button' %>
+<% end %>

@@ -27,6 +27,9 @@ AttachmentsIO::Application.routes.draw do
   match '/sync/details/:id' => 'sync#details', via: :get, as: :sync_details
   match '/sync/delete/all' => 'sync#delete_all', via: :get, as: :sync_delete_all
 
+  # DEVELOPMENT
+  match '/dev/:action' => 'dev#index', via: :get, as: :dev
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

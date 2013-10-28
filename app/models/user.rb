@@ -2,6 +2,7 @@ class User < ActiveRecord::Base
   has_one :user_tokens, dependent: :destroy
   has_one :user_profile, dependent: :destroy
   has_one :user_settings, dependent: :destroy
+  has_one :user_filter, dependent: :destroy
   has_many :user_synchronizations, dependent: :destroy
 
   acts_as_authentic
@@ -54,6 +55,10 @@ class User < ActiveRecord::Base
     profile.save!
   end
 
+  def initialize_filters
+    create_user_filter
+  end
+
   #
   # Aliases
   #
@@ -72,6 +77,10 @@ class User < ActiveRecord::Base
 
   def profile
     user_profile
+  end
+
+  def filters
+    user_filter
   end
 
   #

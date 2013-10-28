@@ -11,13 +11,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131019170205) do
+ActiveRecord::Schema.define(version: 20131028161521) do
 
   create_table "extensions", force: true do |t|
     t.string "extension"
     t.string "file_type"
     t.string "folder"
     t.string "sub_folder"
+  end
+
+  create_table "user_filters", force: true do |t|
+    t.integer "user_id"
+    t.boolean "images_filters"
+    t.string  "images_extensions"
+    t.integer "images_min_size"
+    t.integer "images_max_size"
+    t.boolean "documents_filters"
+    t.string  "documents_extensions"
+    t.integer "documents_min_size"
+    t.integer "documents_max_size"
   end
 
   create_table "user_profiles", force: true do |t|

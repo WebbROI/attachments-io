@@ -3,4 +3,8 @@ class DevController < ApplicationController
     User.destroy_all
     redirect_to root_path, flash: { success: 'Success!' }
   end
+
+  def debug
+
+  end
 end
