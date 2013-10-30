@@ -1,4 +1,5 @@
 AttachmentsIO::Application.routes.draw do
+
   get 'streaming/events'
   get 'dev/flush_all'
 
@@ -26,6 +27,10 @@ AttachmentsIO::Application.routes.draw do
   match '/sync/start' => 'sync#start', via: :get, as: :sync_start
   match '/sync/details/:id' => 'sync#details', via: :get, as: :sync_details
   match '/sync/delete/all' => 'sync#delete_all', via: :get, as: :sync_delete_all
+
+  # Admin-Panel
+  devise_for :admin_users, ActiveAdmin::Devise.config
+  ActiveAdmin.routes(self)
 
   # DEVELOPMENT
   match '/dev/:action' => 'dev#index', via: :get, as: :dev

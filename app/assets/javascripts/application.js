@@ -14,7 +14,6 @@
 //= require jquery_ujs
 //= require vendor/semantic
 //= require retina_tag
-//= require_tree .
 
 //
 // Initialize components

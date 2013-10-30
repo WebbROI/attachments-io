@@ -22,6 +22,9 @@ group :production do
   gem 'rails_12factor', group: :production
 end
 
+# Admin-panel
+gem 'activeadmin', github: 'gregbell/active_admin'
+
 # Authentication
 gem 'authlogic', '~> 3.3.0'
 
