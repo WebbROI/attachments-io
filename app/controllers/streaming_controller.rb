@@ -2,11 +2,11 @@ class StreamingController < ApplicationController
   include ActionController::Live
 
   def events
+    response.headers['Content-Type'] = 'text/event-stream'
+
     unless user_signed_in?
       return
     end
-
-    response.headers['Content-Type'] = 'text/event-stream'
 
     @@puub.subscribe "user_#{current_user.id}" do |message|
       response.stream.write "event: #{message[:event]}\n"
