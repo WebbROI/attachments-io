@@ -13,7 +13,7 @@
 //= require vendor/jquery
 //= require jquery_ujs
 //= require vendor/semantic
-//= require vendor/retina
+//= require retina_tag
 //= require_tree .
 
 //

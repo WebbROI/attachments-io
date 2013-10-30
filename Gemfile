@@ -49,6 +49,9 @@ gem 'therubyracer', platforms: :ruby # or any other runtime
 gem 'less-rails'
 #gem 'semantic-ui-rails'
 
+# Retina images
+gem 'retina_tag'
+
 # Twitter Bootstrap
 gem 'bootstrap-sass', '~> 2.3.2.2'
 
