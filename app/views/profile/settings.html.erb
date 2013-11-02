@@ -1,40 +1,36 @@
-<h2 class="ui header">
-  <i class="settings icon"></i>
-  Synchronization settings
-</h2>
-
 <%= render partial: 'partials/errors', locals: { model: @settings } %>
 
 <%= form_for @settings, url: user_settings_path do |f| %>
 
+  <h2 class="ui header">
+    <i class="settings icon"></i>
+    Application Settings
+  </h2>
+
   <div class="ui form segment">
-    <div class="field">
-      <%= f.label :filename_format, raw('Filename format <strong>Warning! All before synchronized files be uploaded again!</strong>') %>
-      <%= f.text_field :filename_format, class: 'one' %>
-      <div class="ui tiny horizontal list">
-        <div class="item"><strong>Allowed parameters:</strong></div>
-        <div class="item"><strong>%filename%</strong> - filename</div>
-        <div class="item"><strong>%subject%</strong> - email subject</div>
-      </div>
+    <div class="inline field">
+      <%= f.check_box :subject_in_filename %>
+      <%= f.label :subject_in_filename, 'Add Email Subject to synced file names (eg. "Email Subject - File Name")' %>
     </div>
     <div class="inline field">
       <%= f.check_box :convert_files %>
-      <%= f.label :convert_files, 'Convert files to Google Drive format' %>
+      <%= f.label :convert_files, 'Convert files to Google Drive format (eg. Excel to Google Spreadsheets)' %>
+      <p><%= link_to 'More abouts this', 'https://support.google.com/drive/answer/2407404', target: '_blank' %></p>
     </div>
   </div>
 
   <%= f.submit 'Update settings', class: 'ui blue submit button' %>
 <% end %>
 
-<h2 class="ui header">
-  <i class="filter icon"></i>
-  Filters
-</h2>
-
 <%= form_for @filters, url: user_settings_path do |f| %>
 
+  <h2 class="ui header">
+    <i class="filter icon"></i>
+    Filters
+  </h2>
+
   <div class="ui form segment">
-    <div class="ui left floated small header">
+    <div class="ui left floated header">
       Images
     </div>
     <small>
@@ -49,7 +45,7 @@
       <label>Allowed extensions</label>
       <% Extension::IMAGES.each do |ext| %>
         <%= label_tag do %>
-          <%= check_box_tag "user_filter[images_extensions][]", ext, @filters.images_extensions.to_a.include?(ext) %>
+          <%= check_box_tag 'user_filter[images_extensions][]', ext, @filters.images_extensions.to_a.include?(ext) %>
           <%= ext %>
         <% end %>
       <% end %>
@@ -66,7 +62,7 @@
       </div>
     </div>
 
-    <div class="ui left floated small header">
+    <div class="ui left floated header">
       Documents
     </div>
     <small>
@@ -81,7 +77,7 @@
       <label>Allowed extensions</label>
       <% Extension::DOCUMENTS.each do |ext| %>
         <%= label_tag do %>
-          <%= check_box_tag "user_filter[documents_extensions][]", ext, @filters.documents_extensions.to_a.include?(ext) %>
+          <%= check_box_tag 'user_filter[documents_extensions][]', ext, @filters.documents_extensions.to_a.include?(ext) %>
           <%= ext %>
         <% end %>
       <% end %>

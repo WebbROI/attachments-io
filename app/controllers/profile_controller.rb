@@ -39,7 +39,7 @@ class ProfileController < ApplicationController
   private
 
   def settings_params
-    params.require(:user_settings).permit(:subject_folder, :convert_files)
+    params.require(:user_settings).permit(:convert_files, :subject_in_filename)
   end
 
   def filters_params

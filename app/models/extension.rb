@@ -6,7 +6,7 @@ class Extension < ActiveRecord::Base
   ARCHIVES = %w[.rar .zip]
   PDF = '.pdf'
 
-  OTHER = 'Other type'
+  OTHER = 'Miscellaneous Files'
 
 
   def self.all_hash

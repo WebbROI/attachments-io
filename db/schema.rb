@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131030121225) do
+ActiveRecord::Schema.define(version: 20131102191408) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "namespace"
@@ -79,9 +79,8 @@ ActiveRecord::Schema.define(version: 20131030121225) do
 
   create_table "user_settings", force: true do |t|
     t.integer "user_id"
-    t.boolean "subject_folder"
     t.boolean "convert_files"
-    t.string  "filename_format"
+    t.boolean "subject_in_filename", default: false
   end
 
   create_table "user_synchronization_files", force: true do |t|

@@ -17,14 +17,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  def initialize_settings
-    create_user_settings({
-                             subject_folder: false,
-                             convert_files: false,
-                             filename_format: UserSynchronization::DEFAULT_FILENAME_FORMAT
-                         })
-  end
-
   def initialize_profile
     info = load_info
     profile = build_user_profile
@@ -53,6 +45,10 @@ class User < ActiveRecord::Base
     end
 
     profile.save!
+  end
+
+  def initialize_settings
+    create_user_settings
   end
 
   def initialize_filters

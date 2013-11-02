@@ -17,7 +17,8 @@ class UserSynchronization < ActiveRecord::Base
   STATUS_INPROCESS = 1
   STATUS_FINISHED = 2
   STATUS_TEXT = ['Error', 'In process', 'Finished']
-  DEFAULT_FILENAME_FORMAT = '%subject% - %filename%'
+
+  CONVERT_EXTENSIONS = %w(.doc .docx .html .txt .rtf .xls .xlsx .ods .csv .tsv .tab .ppt .pps .pptx)
 
   #
   # Helpers
@@ -79,6 +80,10 @@ class UserSynchronization < ActiveRecord::Base
   end
 
   private
+
+    INBOX_NAME = 'INBOX'
+    INBOX_REPLACE_NAME = '@ttachments.io'
+
     def initialize_variables
       @logger = Logger.new('log/synchronization.log')
       @user = user
@@ -109,7 +114,7 @@ class UserSynchronization < ActiveRecord::Base
         search_query = "X-GM-RAW \"has:attachment after:#{time.year}/#{time.month}/0#{time.day}\""
       end
 
-      @imap.list('', '%').each do |label|
+      @imap.list('', '%').to_a.each do |label|
         next unless label.attr.find_index(:Noselect).nil?
 
         @imap.select(label.name)
@@ -224,17 +229,13 @@ class UserSynchronization < ActiveRecord::Base
     end
 
     def generate_filename(mail, attachment)
-      if mail.subject
-        subject = mail.subject
-      else
-        subject = 'No subject'
+      filename = Russian.translit(attachment.filename)
+
+      if @user_settings.subject_in_filename && mail.subject
+        filename = "#{Russian.translit(mail.subject)} - #{filename}"
       end
 
-      filename = @user_settings.filename_format.to_s
-      filename = filename.gsub('%filename%', attachment.filename)
-      filename = filename.gsub('%subject%', subject)
-
-      Russian.translit(filename)
+      filename
     end
 
     def is_uploaded(filename, attachment)
@@ -277,6 +278,15 @@ class UserSynchronization < ActiveRecord::Base
       true
     end
 
+    def folder_for_label(label_name)
+      case label_name
+        when INBOX_NAME
+          INBOX_REPLACE_NAME
+        else
+          label_name
+      end
+    end
+
     def upload_file(filename, attachment, label)
       folder = get_file_folder(filename, attachment, label)
 
@@ -285,11 +295,13 @@ class UserSynchronization < ActiveRecord::Base
       temp.rewind
       temp.close
 
+      convert_file = !!(@user_settings.convert_files && CONVERT_EXTENSIONS.include?(File.extname(filename)))
+
       result = @user_api.upload_file({ path: temp.path,
                                        title: filename,
                                        mime_type: attachment.mime_type,
                                        parent_id: folder[:id],
-                                       convert: @user_settings.convert_files })
+                                       convert: convert_file })
 
       @files[filename] = { size: attachment.body.decoded.size, link: result.data.alternate_link }
       add_file({ filename: filename, size: @files[filename][:size], link: @files[filename][:link] })
