@@ -157,6 +157,12 @@ class UserSynchronization < ActiveRecord::Base
         end
       end
 
+      @logger.debug '---'
+      @logger.debug '---'
+      @logger.debug @label_folders.to_yaml
+      @logger.debug '---'
+      @logger.debug '---'
+
       # parse file types folders
       unless @label_folders.empty?
         all_folders.each do |folder|
@@ -176,9 +182,11 @@ class UserSynchronization < ActiveRecord::Base
     end
 
     def process_label(label)
-      if @label_folders[label].nil?
-        result = @user_api.create_folder(title: label, parent_id: @main_folder[:id])
-        @label_folders[label] = { id: result.data.id, link: result.data.alternate_link, sub_folders: Hash.new }
+      folder_label = folder_for_label(label)
+
+      if @label_folders[folder_label].nil?
+        result = @user_api.create_folder(title: folder_label, parent_id: @main_folder[:id])
+        @label_folders[folder_label] = { id: result.data.id, link: result.data.alternate_link, sub_folders: Hash.new }
       end
 
       @imap.select(label)
@@ -288,7 +296,7 @@ class UserSynchronization < ActiveRecord::Base
     end
 
     def upload_file(filename, attachment, label)
-      folder = get_file_folder(filename, attachment, label)
+      folder = get_file_folder(filename, label)
 
       temp = Tempfile.new([File.basename(attachment.filename), File.extname(attachment.filename)], "#{Rails.root}/tmp", encoding: 'ASCII-8BIT', binmode: true)
       temp.write attachment.body.decoded
@@ -322,7 +330,7 @@ class UserSynchronization < ActiveRecord::Base
       @logger.debug "*** File #{filename} was successful uploaded"
     end
 
-    def get_file_folder(filename, attachment, label)
+    def get_file_folder(filename, label)
       ext = File.extname(filename)
       extension = @extensions[ext]
 
@@ -332,12 +340,14 @@ class UserSynchronization < ActiveRecord::Base
         folder_name = Extension::OTHER
       end
 
-      if @label_folders[label][:sub_folders][folder_name].nil?
-        result = @user_api.create_folder(title: folder_name, parent_id: @label_folders[label][:id]).data
-        @label_folders[label][:sub_folders][folder_name] = { id: result.id, link: result.alternate_link }
+      folder_label = folder_for_label(label)
+
+      if @label_folders[folder_label][:sub_folders][folder_name].nil?
+        result = @user_api.create_folder(title: folder_name, parent_id: @label_folders[folder_label][:id]).data
+        @label_folders[folder_label][:sub_folders][folder_name] = { id: result.id, link: result.alternate_link }
       end
 
-      @label_folders[label][:sub_folders][folder_name]
+      @label_folders[folder_label][:sub_folders][folder_name]
     end
 
     def deinitialize_variables

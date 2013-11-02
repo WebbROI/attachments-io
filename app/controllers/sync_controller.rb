@@ -6,7 +6,7 @@ class SyncController < ApplicationController
       redirect_to profile_path, flash: { error: 'You already have synchronization in process..' } and return
     end
 
-    sync = current_user.start_synchronization#(true)
+    sync = current_user.start_synchronization(true)
 
     if sync
       redirect_to sync_details_path(sync)
