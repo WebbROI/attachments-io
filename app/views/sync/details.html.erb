@@ -102,7 +102,7 @@
     <% end %>
   <% end %>
 
-  <table class="ui basic small table<%= ' hide' if @files.empty? %>" id="synchronized-files">
+  <table class="ui small table<%= ' hide' if @files.empty? %>" id="synchronized-files">
     <thead>
     <tr>
       <th>File</th>
@@ -112,7 +112,7 @@
     <tbody>
     <% unless @files.empty? %>
       <% @files.each do |file| %>
-        <tr>
+        <tr class="positive">
           <td>
             <%= link_to file.filename, file.link, target: '_blank' %><br>
             <small class="muted"><%= file.file_type %></small>

@@ -31,10 +31,6 @@ $(document).ready(function() {
 
     var source = new EventSource('/streaming/events');
 
-    source.addEventListener('message', function(event) {
-        console.log(event.data);
-    });
-
     source.addEventListener('progressbar', function(event) {
         var data = JSON.parse(event.data);
 
@@ -68,7 +64,7 @@ $(document).ready(function() {
         }
 
         table.find('tbody').prepend(
-            '<tr>' +
+            '<tr class="positive">' +
                 '<td><a href="'+data.file.link+'" target="_blank">'+data.file.name+'</a></td>' +
                 '<td>'+data.file.size+'</td>' +
             '</tr>'
