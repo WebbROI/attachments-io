@@ -157,12 +157,6 @@ class UserSynchronization < ActiveRecord::Base
         end
       end
 
-      @logger.debug '---'
-      @logger.debug '---'
-      @logger.debug @label_folders.to_yaml
-      @logger.debug '---'
-      @logger.debug '---'
-
       # parse file types folders
       unless @label_folders.empty?
         all_folders.each do |folder|
