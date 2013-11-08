@@ -9,6 +9,9 @@ AttachmentsIO::Application.configure do
   # Do not eager load code on boot.
   config.eager_load = false
 
+  # Disable cache
+  config.cache_store = :null_store
+
   # Show full error reports and disable caching.
   config.consider_all_requests_local       = true
   config.action_controller.perform_caching = false

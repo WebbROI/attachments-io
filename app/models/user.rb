@@ -1,4 +1,6 @@
 class User < ActiveRecord::Base
+  require 'synchronization/run'
+
   has_one :user_tokens, dependent: :destroy
   has_one :user_profile, dependent: :destroy
   has_one :user_settings, dependent: :destroy
@@ -114,21 +116,8 @@ class User < ActiveRecord::Base
   #
 
   def start_synchronization(debug = false)
-    sync = UserSynchronization.create!({ user_id: id, status: UserSynchronization::STATUS_INPROCESS, started_at: Time.now.to_i })
-
-    if token_expire? && !has_refresh_token?
-      return false
-    end
-
-    if debug
-      sync.start
-    else
-      Thread.new do
-        sync.start
-      end
-    end
-
-    sync
+    run = Synchronization::Run.new(self)
+    run.synchronization
   end
 
   def now_synchronizes?

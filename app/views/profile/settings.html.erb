@@ -43,7 +43,7 @@
 
     <div class="field">
       <label>Allowed extensions</label>
-      <% Extension::IMAGES.each do |ext| %>
+      <% Extension.image.each do |ext| %>
         <%= label_tag do %>
           <%= check_box_tag 'user_filter[images_extensions][]', ext, @filters.images_extensions.to_a.include?(ext) %>
           <%= ext %>
@@ -75,7 +75,7 @@
 
     <div class="field">
       <label>Allowed extensions</label>
-      <% Extension::DOCUMENTS.each do |ext| %>
+      <% Extension.document.each do |ext| %>
         <%= label_tag do %>
           <%= check_box_tag 'user_filter[documents_extensions][]', ext, @filters.documents_extensions.to_a.include?(ext) %>
           <%= ext %>

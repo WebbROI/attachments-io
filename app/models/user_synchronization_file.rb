@@ -4,10 +4,17 @@ class UserSynchronizationFile < ActiveRecord::Base
 
   default_scope -> { order(created_at: :desc) }
 
-  scope :documents, -> { where(ext: Extension::DOCUMENTS) }
-  scope :images, -> { where(ext: Extension::IMAGES) }
-  scope :archives, -> { where(ext: Extension::ARCHIVES) }
-  scope :others, -> { where('ext NOT IN (?)', Extension::DOCUMENTS + Extension::IMAGES + Extension::ARCHIVES) }
+  scope :audio, -> { where(ext: Extension.audio) }
+  scope :documents, -> { where(ext: Extension.document) }
+  scope :developers, -> { where(ext: Extension.developer) }
+  scope :images, -> { where(ext: Extension.image) }
+  scope :miscellaneous, -> { where(ext: Extension.miscellaneous) }
+  scope :videos, -> { where(ext: Extension.video) }
+  scope :others, -> { where('ext NOT IN (?)', Extension.all_array) }
+
+  # TODO: remove this
+  # scope :archives, -> { where(ext: Extension::ARCHIVES) }
+  # scope :others, -> { where('ext NOT IN (?)', Extension::DOCUMENTS + Extension::IMAGES + Extension::ARCHIVES) }
 
   def load_extension
     return @extension if defined?(@extension)

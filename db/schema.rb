@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131102191408) do
+ActiveRecord::Schema.define(version: 20131108202953) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "namespace"
@@ -91,6 +91,7 @@ ActiveRecord::Schema.define(version: 20131102191408) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "ext"
+    t.string   "label"
   end
 
   create_table "user_synchronizations", force: true do |t|
@@ -101,6 +102,7 @@ ActiveRecord::Schema.define(version: 20131102191408) do
     t.integer "file_count"
     t.integer "email_count"
     t.integer "email_parsed"
+    t.string  "error_message"
   end
 
   create_table "user_tokens", force: true do |t|
