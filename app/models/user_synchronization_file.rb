@@ -12,10 +12,6 @@ class UserSynchronizationFile < ActiveRecord::Base
   scope :videos, -> { where(ext: Extension.video) }
   scope :others, -> { where('ext NOT IN (?)', Extension.all_array) }
 
-  # TODO: remove this
-  # scope :archives, -> { where(ext: Extension::ARCHIVES) }
-  # scope :others, -> { where('ext NOT IN (?)', Extension::DOCUMENTS + Extension::IMAGES + Extension::ARCHIVES) }
-
   def load_extension
     return @extension if defined?(@extension)
     extensions = Extension.all_hash

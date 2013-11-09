@@ -261,12 +261,10 @@ module Synchronization
     # @param filename [String] name of file
     # @return [TrueClass/FalseClass]
     def is_uploaded(filename)
-      # TODO: fix it
-
       if !@files[filename].nil? &&
          !@file_types_folders.nil? &&
-         @file_types_folders[@files[filename][:parent_id]] == @current_label# &&
-         #(@current_attachment.body.decoded.size == @files[filename][:size])
+         @file_types_folders[@files[filename][:parent_id]] == @current_label &&
+         (@current_attachment.body.decoded.size == @files[filename][:size])
 
         return true
       end
