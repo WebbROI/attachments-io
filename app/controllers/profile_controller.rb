@@ -12,11 +12,11 @@ class ProfileController < ApplicationController
 
   def settings
     @settings = current_user.settings
-    @filters = current_user.filters
+    @profile = current_user.profile
 
     if request.patch?
       if (params[:user_settings] && @settings.update_attributes(settings_params)) ||
-         (params[:user_filter] && @filters.update_attributes(filters_params) && @filters.update_extensions(filters_params))
+         (params[:user_profile] && @profile.update_attributes(profile_params))
 
         flash[:success] = 'Settings was successful updated'
       else
@@ -42,18 +42,8 @@ class ProfileController < ApplicationController
     params.require(:user_settings).permit(:convert_files, :subject_in_filename)
   end
 
-  def filters_params
-    params.require(:user_filter).permit(
-        :images_filters,
-        { images_extensions: [] },
-        :images_min_size,
-        :images_max_size,
-
-        :documents_filters,
-        { documents_extensions: [] },
-        :documents_min_size,
-        :documents_max_size
-    )
+  def profile_params
+    params.require(:user_profile).permit(:gender, :organization, :location, :plus, :twitter, :facebook)
   end
 
 end

@@ -5,21 +5,6 @@
   <%= "#{@user.first_name} #{@user.last_name}" %>
 </h1>
 
-<div class="ui header">
-  Profile info
-</div>
-<div class="ui bulleted list">
-  <% if @user.profile.plus %>
-    <div class="item"><%= link_to 'Google Plus', @user.profile.plus %></div>
-  <% end %>
-  <% if @user.profile.organization %>
-    <div class="item">Organization: <strong><%= @user.profile.organization %></strong></div>
-  <% end %>
-  <% if @user.profile.location %>
-    <div class="item">Location: <strong><%= @user.profile.location %></strong></div>
-  <% end %>
-</div>
-
 <%= link_to sync_start_path, class: 'ui labeled icon green button' do %>
   <i class="play icon"></i>
   Start synchronization

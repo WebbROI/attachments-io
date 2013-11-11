@@ -22,78 +22,39 @@
   <%= f.submit 'Update settings', class: 'ui blue submit button' %>
 <% end %>
 
-<%= form_for @filters, url: user_settings_path do |f| %>
+<%= form_for @profile, url: user_settings_path do |f| %>
 
   <h2 class="ui header">
-    <i class="filter icon"></i>
-    Filters
+    <i class="settings icon"></i>
+    Profile information
   </h2>
 
   <div class="ui form segment">
-    <div class="ui left floated header">
-      Images
-    </div>
-    <small>
-      <%= f.label :images_filters do %>
-        <%= f.check_box :images_filters %>
-        Use this rules
-      <% end %>
-    </small>
-    <div class="ui clearing divider"></div>
-
     <div class="field">
-      <label>Allowed extensions</label>
-      <% Extension.image.each do |ext| %>
-        <%= label_tag do %>
-          <%= check_box_tag 'user_filter[images_extensions][]', ext, @filters.images_extensions.to_a.include?(ext) %>
-          <%= ext %>
-        <% end %>
-      <% end %>
+      <%= f.label :gender %>
+      <%= f.select :gender, options_for_select([['Male', :male], ['Female', :female]], @profile.gender.to_sym) %>
     </div>
-
-    <div class="fields two">
-      <div class="field">
-        <%= f.label :images_min_size, 'Minimal size (kb)' %>
-        <%= f.text_field :images_min_size %>
-      </div>
-      <div class="field">
-        <%= f.label :images_max_size, 'Maximal size (kb)' %>
-        <%= f.text_field :images_max_size %>
-      </div>
-    </div>
-
-    <div class="ui left floated header">
-      Documents
-    </div>
-    <small>
-      <%= f.label :documents_filters do %>
-        <%= f.check_box :documents_filters %>
-        Use this rules
-      <% end %>
-    </small>
-    <div class="ui clearing divider"></div>
-
     <div class="field">
-      <label>Allowed extensions</label>
-      <% Extension.document.each do |ext| %>
-        <%= label_tag do %>
-          <%= check_box_tag 'user_filter[documents_extensions][]', ext, @filters.documents_extensions.to_a.include?(ext) %>
-          <%= ext %>
-        <% end %>
-      <% end %>
+      <%= f.label :organization %>
+      <%= f.text_field :organization %>
     </div>
-
-    <div class="fields two">
-      <div class="field">
-        <%= f.label :documents_min_size, 'Minimal size (kb)' %>
-        <%= f.text_field :documents_min_size %>
-      </div>
-      <div class="field">
-        <%= f.label :documents_max_size, 'Maximal size (kb)' %>
-        <%= f.text_field :documents_max_size %>
-      </div>
+    <div class="field">
+      <%= f.label :location %>
+      <%= f.text_field :location %>
+    </div>
+    <div class="field">
+      <%= f.label :plus, 'Google Plus' %>
+      <%= f.text_field :plus %>
+    </div>
+    <div class="field">
+      <%= f.label :twitter %>
+      <%= f.text_field :twitter %>
+    </div>
+    <div class="field">
+      <%= f.label :facebook %>
+      <%= f.text_field :facebook %>
     </div>
   </div>
 
-  <%= f.submit 'Update filters', class: 'ui blue submit button' %>
+  <%= f.submit 'Update profile', class: 'ui blue submit button' %>
 <% end %>

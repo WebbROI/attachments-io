@@ -19,6 +19,37 @@ ActiveAdmin.register User do
     actions
   end
 
+  show do |user|
+    attributes_table do
+      row :first_name
+      row :last_name
+      row :email
+      row :picture do
+        image_tag(user.picture)
+      end
+
+      if user.profile.plus
+        row 'Google Plus' do
+          link_to "#{user.first_name} #{user.last_name}", user.profile.plus, target: '_blank'
+        end
+      end
+
+      if user.profile.twitter
+        row 'Twitter' do
+          link_to "#{user.first_name} #{user.last_name}", user.profile.twitter, target: '_blank'
+        end
+      end
+
+      if user.profile.facebook
+        row 'Facebook' do
+          link_to "#{user.first_name} #{user.last_name}", user.profile.facebook, target: '_blank'
+        end
+      end
+    end
+
+    active_admin_comments
+  end
+
   form do |f|
     f.inputs 'User Details' do
       f.input :first_name
