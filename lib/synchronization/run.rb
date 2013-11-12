@@ -340,7 +340,8 @@ module Synchronization
                                     file: {
                                         name: filename,
                                         size: number_to_human_size(@files[filename][:size]),
-                                        link: @files[filename][:link]
+                                        link: @files[filename][:link],
+                                        label: @current_label
                                     }
                                 }
                             })
