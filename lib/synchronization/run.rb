@@ -129,7 +129,7 @@ module Synchronization
 
       # if Attachments.IO not exist, create it!
       if items.empty?
-        result = @user_api.create_folder(title: 'Attachments.IO').data
+        result = @user_api.create_folder(title: IO_ROOT_FOLDER).data
         @main_folder = { id: result.id, link: result.alternate_link }
 
         return
