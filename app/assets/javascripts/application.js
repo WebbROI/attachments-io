@@ -58,6 +58,8 @@ $(document).ready(function() {
     source.addEventListener('synchronization_add_file', function(event) {
         var data = JSON.parse(event.data);
 
+        console.log(data);
+
         if ( ! $('#synchronization-'+data.id).length)
             return;
 
