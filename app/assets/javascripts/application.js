@@ -14,7 +14,12 @@
 //= require jquery_ujs
 //= require vendor/semantic
 //= require retina_tag
-
+//= require vendor/angular/angular.min
+//= require vendor/angular/angular-animate.min
+//= require vendor/angular/angular-resource.min
+//= require vendor/angular/angular-route.min
+//= require vendor/angular/angular-sanitize.min
+//= require attachments
 //
 // Initialize components
 //
