@@ -1,0 +1,119 @@
+
+
+#= require app/services
+#= require app/directives
+
+#= require app/pages/sync
+#= require app/pages/profile
+
+# --
+# attachments app (angular directives, services, controllers)
+# --
+
+# app or module dependencies
+deps = [
+	'ngResource',
+	'ngRoute',
+	'attachments.services',
+	'attachments.directives',
+]
+
+# angularized pages
+routingDeps = [
+	'attachments.sync',
+	'attachments.profile'
+];
+
+app = angular.module 'attachments', _.union(deps, routingDeps)
+
+app.run ($rootScope, $location)->
+	console.log("Attachments.IO - Started");
+
+	pattern = '';
+	_.each(routingDeps, (dependency, index, list) ->
+		dependency = dependency.replace("attachments.", '');
+
+		if dependency.slice( dependency.length - 1, dependency.length) == 's'
+			dependency = dependency.slice(0, dependency.length - 1)
+
+		pattern = pattern + dependency + ( if index < list.length - 1 then "|" else "" )
+	) # should looks like "tag|user|event|request "
+
+	$( () ->
+		# set unreal mask if this is not page that supports routing
+		pattern = '_' unless (new RegExp("\/(((#{pattern})+))")).test($location.path())
+
+		s = "(^\/((#{pattern})+|$)|(http|https):\/\/[a-z0-9\.]+\/(((#{pattern})+)|$))"
+
+		regex = new RegExp(s)
+
+		$('a').livequery( () ->
+			console.log $(this).prop('href')
+			href = $(this).prop('href').replace("#", '');
+
+			if (!regex.test(href) && $(this).prop('target') != '_blank')
+				# fixing issue with return back to the Angular Routing pages
+				# from backend rendered pages
+				$(this).prop('target', '_self');
+
+		)
+	)
+
+
+	$(document).ready( ->
+		$('.ui.dropdown').dropdown();
+		$('.ui.checkbox').checkbox();
+	);
+
+app.controller('SyncCtrl', ['$scope', 'EventSource', ($scope, EventSource) ->
+  console.log("ololo")
+  source = EventSource
+
+  source.addEventListener('progressbar', (event) ->
+    data = JSON.parse event.data
+
+    return unless $("#synchronization-#{data.id}").length
+
+    switch data.action
+      when 'update'
+        percent = (data.parsed / data.count * 100)
+
+        $('.progress .bar').css('width', percent+'%')
+        $('#progress-percentage').html("#{Math.round(percent)}%")
+        $('#progress-title').html("Emails parsed #{data.parsed} of #{data.count}")
+  )
+
+  source.addEventListener('synchronization_add_file', (event) ->
+    data = JSON.parse(event.data);
+
+    console.log(data);
+
+    return unless $("#synchronization-#{data.id}").length
+
+    table = $('#synchronized-files')
+
+    if table.is(':hidden')
+      table.slideDown()
+
+    table
+      .find('tbody')
+      .prepend(
+        "<tr class='positive'>" +
+          "<td><a href='#{data.file.link}' target='_blank'>#{data.file.name}</a></td>" +
+          "<td>#{data.file.size}</td>" +
+        "</tr>"
+      )
+  )
+
+  source.addEventListener('synchronization_update', (event) ->
+    data = JSON.parse(event.data)
+
+    return unless $('#synchronization-'+data.id).length
+
+    switch data.action
+      when 'reload_page'
+        window.location.reload()
+
+  );
+
+])

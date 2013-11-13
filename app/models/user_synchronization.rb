@@ -75,6 +75,16 @@ class UserSynchronization < ActiveRecord::Base
   #
 
   def add_file(params)
-    user_synchronization_files.create!({ filename: params[:filename], size: params[:size], link: params[:link], ext: File.extname(params[:filename]), label: params[:label] })
+    user_synchronization_files.create!({
+		filename: params[:filename],
+		size: params[:size],
+		link: params[:link],
+		ext: File.extname(params[:filename]),
+		label: params[:label],
+		subject: params[:subject],
+		from: params[:from],
+		to: params[:to],
+		email_date: params[:email_date]
+    })
   end
 end
