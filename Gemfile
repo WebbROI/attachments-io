@@ -48,6 +48,9 @@ gem 'mail', '~> 2.5.4'
 # Russian transliteration
 gem 'russian', '~> 0.6.0'
 
+# MailChimp
+gem 'gibbon', '~> 1.0.4'
+
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.0'
 

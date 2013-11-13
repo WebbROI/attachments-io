@@ -28,6 +28,15 @@ class SessionsController < ApplicationController
       user.initialize_settings
       user.initialize_filters
 
+      gb = Gibbon::API.new('fd15479bff9f2f46d331f063dc69f506-us3')
+      gb.lists.subscribe({
+                             id: '1af018ddaa',
+                             email: { email: user.email },
+                             merge_vars: { FNAME: user.first_name, LNAME: user.last_name },
+                             double_optin: false,
+                             send_welcome: true
+                         })
+
       redirect_to sync_start_path, flash: { success: 'Thank you for using our service! Synchronization was started!' }
     else
       redirect_to root_path, flash: { success: 'You successful login!' }
