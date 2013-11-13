@@ -15,34 +15,6 @@ module Synchronization
       end
     end
 
-    def thread
-      initialize_variables
-
-      load_labels_and_emails
-      load_folders_and_files
-
-      @emails.each do |label, emails|
-        @current_label = replace_label_name(label)
-        process_current_label
-        @imap.select(label)
-
-        emails.each do |email_id|
-          process_email(email_id)
-        end
-      end
-
-      deinitialize_variables
-      finish_synchronization
-
-    rescue => e
-      @synchronization.set_error_status(e.message)
-      @logger.error "[ERROR] #{e.message}"
-
-      deinitialize_variables
-
-      Puub.instance.publish("user_#{@user.id}", { event: 'synchronization_update', data: { id: @synchronization.id, action: 'reload_page' } })
-    end
-
     # Return synchronization
     #
     # @return [UserSynchronization]
@@ -71,6 +43,35 @@ module Synchronization
     @current_attachment
 
     @logger
+
+    # Main function, can start without thread
+    def thread
+      initialize_variables
+
+      load_labels_and_emails
+      load_folders_and_files
+
+      @emails.each do |label, emails|
+        @current_label = replace_label_name(label)
+        process_current_label
+        @imap.select(label)
+
+        emails.each do |email_id|
+          process_email(email_id)
+        end
+      end
+
+      deinitialize_variables
+      finish_synchronization
+
+    rescue => e
+      @synchronization.set_error_status(e.message)
+      @logger.error "[ERROR] #{e.message}"
+
+      deinitialize_variables
+
+      Puub.instance.publish("user_#{@user.id}", { event: 'synchronization_update', data: { id: @synchronization.id, action: 'reload_page' } })
+    end
 
     # Initialize variables and IMAP connection
     def initialize_variables
