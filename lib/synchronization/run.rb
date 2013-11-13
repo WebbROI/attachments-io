@@ -10,29 +10,30 @@ module Synchronization
       @user = user
       @synchronization = UserSynchronization.init(@user.id)
 
-      thread
+      Thread.new do
+        thread
+      end
     end
 
     def thread
-      Thread.new do
-        initialize_variables
+      initialize_variables
 
-        load_labels_and_emails
-        load_folders_and_files
+      load_labels_and_emails
+      load_folders_and_files
 
-        @emails.each do |label, emails|
-          @current_label = replace_label_name(label)
-          process_current_label
-          @imap.select(label)
+      @emails.each do |label, emails|
+        @current_label = replace_label_name(label)
+        process_current_label
+        @imap.select(label)
 
-          emails.each do |email_id|
-            process_email(email_id)
-          end
+        emails.each do |email_id|
+          process_email(email_id)
         end
-
-        deinitialize_variables
-        finish_synchronization
       end
+
+      deinitialize_variables
+      finish_synchronization
+
     rescue => e
       @synchronization.set_error_status(e.message)
       @logger.error "[ERROR] #{e.message}"
@@ -330,8 +331,21 @@ module Synchronization
                                        parent_id: folder[:id],
                                        convert: convert_file })
 
+      temp.unlink
+
       @files[filename] = { size: @current_attachment.body.decoded.size, link: result.data.alternate_link, parent_id: folder[:id] }
-      @synchronization.add_file({ filename: filename, size: @files[filename][:size], link: @files[filename][:link], label: @current_label })
+
+      @synchronization.add_file({
+                                    filename: filename,
+                                    size: @files[filename][:size],
+                                    link: @files[filename][:link],
+                                    label: @current_label,
+                                    to: @current_mail.to,
+                                    from: @current_mail.from,
+                                    email_date: @current_mail.date.to_i,
+                                    subject: @current_mail.subject
+                                })
+
       Puub.instance.publish("user_#{@user.id}",
                             {
                                 event: 'synchronization_add_file',
@@ -341,11 +355,14 @@ module Synchronization
                                         name: filename,
                                         size: number_to_human_size(@files[filename][:size]),
                                         link: @files[filename][:link],
-                                        label: @current_label
+                                        label: @current_label,
+                                        to: @current_mail.to,
+                                        from: @current_mail.from,
+                                        email_date: @current_mail.date.to_i,
+                                        subject: @current_mail.subject
                                     }
                                 }
                             })
-      temp.unlink
 
       @logger.debug "= File #{filename} was successful uploaded"
     end
