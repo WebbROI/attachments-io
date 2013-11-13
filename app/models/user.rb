@@ -115,13 +115,13 @@ class User < ActiveRecord::Base
   # Synchronization
   #
 
-  def start_synchronization(debug = false)
-    run = Synchronization::Run.new(self)
+  def start_synchronization(params)
+    run = Synchronization::Run.new(self, params)
     run.synchronization
   end
 
   def now_synchronizes?
-    false
+    !synchronizations.inprocess.count.zero?
   end
 
   #
