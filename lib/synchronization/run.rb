@@ -129,7 +129,7 @@ module Synchronization
 
       # if Attachments.IO not exist, create it!
       if items.empty?
-        result = @user_api.create_folder(title: 'Attachments.IO').data
+        result = @user_api.create_folder(title: IO_ROOT_FOLDER).data
         @main_folder = { id: result.id, link: result.alternate_link }
 
         return
@@ -340,7 +340,8 @@ module Synchronization
                                     file: {
                                         name: filename,
                                         size: number_to_human_size(@files[filename][:size]),
-                                        link: @files[filename][:link]
+                                        link: @files[filename][:link],
+                                        label: @current_label
                                     }
                                 }
                             })
