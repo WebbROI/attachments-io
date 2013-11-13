@@ -6,12 +6,17 @@ module Synchronization
     # Start synchronization for user
     #
     # @param user [User]
-    def initialize(user)
+    def initialize(user, params = {})
       @user = user
+      @params = params
       @synchronization = UserSynchronization.init(@user.id)
 
-      Thread.new do
+      if @params[:debug] == true || @params[:rake] == true
         thread
+      else
+        Thread.new do
+          thread
+        end
       end
     end
 
