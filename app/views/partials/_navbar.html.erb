@@ -1,59 +1,49 @@
 <div class="main-menu">
-  <div class="insert-wrapper">
-    <div class="ui grid">
-      <div class="row">
-        <div class="five wide column">
-          <div id="logo">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <div id="logo">
             <%= link_to '@ttachments.io', root_path, title: '@ttachments.io' %>
           </div>
-        </div>
-
+      </div>
+      <div class="col-md-8">
         <% if user_signed_in? %>
-          <div class="eleven wide column">
-            <div class="ui right floated text menu">
-              <div class="ui tiny red buttons">
-                <%= link_to profile_path, class: 'ui red tiny icon button' do %>
-                  <i class="user icon"></i>
-                  <%= "#{current_user.first_name} #{current_user.last_name}" %>
-                <% end %>
-                <div class="ui dropdown icon button">
-                  <i class="dropdown icon"></i>
-                  <div class="menu">
-                    <%= link_to user_settings_path, class: 'item' do %>
-                      <i class="settings icon"></i>
-                      Settings
-                    <% end %>
-                    <%= link_to sign_out_path, class: 'item' do %>
-                      <i class="sign out icon"></i>
-                      Sign out
-                    <% end %>
-                  </div>
-                </div>
-              </div>
-            </div>
+           <div class="nav nav-pills pull-right">
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                <%= "#{current_user.first_name} #{current_user.last_name}" %>
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+                <li>
+                  <%= link_to 'Settings', user_settings_path %>
+                  <%= link_to 'Sign out', sign_out_path %>
+                </li>
+              </ul>
+            </li>
           </div>
         <% else %>
-          <div class="eleven wide column">
-            <div class="ui right floated text menu">
-              <a href="#" class="item">Pricing</a>
-              <a href="#" class="item">Blog</a>
-              <a href="#" class="item">DaaS</a>
-              <a href="#" class="item">For enterprise</a>
+          <ul class="nav nav-pills pull-right">
+            <li><a href="#">Pricing</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">DaaS</a></li>
+            <li><a href="#">For enterprise</a></li>
 
-              <div class="ui dropdown tiny red button">
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                 Sign In / Sign Out
-                <div class="menu">
-                  <%= link_to 'Google Account', sign_in_google_path, class: 'item' %>
-                  <%= link_to 'Google Apps', sign_in_apps_path, class: 'item' %>
-                </div>
-              </div>
-
-              <a href="#" class="item">
-                <i class="google plus sign icon"></i>
-                Google Apps
+                <span class="caret"></span>
               </a>
-            </div>
-          </div>
+              <ul class="dropdown-menu">
+                <li>
+                  <%= link_to 'Google Account', sign_in_google_path %>
+                  <%= link_to 'Google Apps', sign_in_apps_path %>
+                </li>
+              </ul>
+            </li>
+
+            <li><a href="#">Google Apps</a></li>
+          </ul>
         <% end %>
       </div>
     </div>

@@ -8,6 +8,7 @@
 // You're free to add application-wide styles to this file and they'll appear at the top of the
 // compiled file, but it's generally better to create a new file per style scope.
 //
+//= require twitter/bootstrap
 //= require_self
 //
 
@@ -36,13 +37,8 @@ body {
   font-family: "Open Sans", Arial, Helvetica, sans-serif;
 }
 
-.insert-wrapper {
-  width: 1050px;
-  margin: 0 auto;
-
-  &.padded {
-    padding: 20px 0 60px;
-  }
+.container.padded {
+  padding: 20px 0 60px;
 }
 
 
@@ -52,8 +48,7 @@ body {
 
 .main-menu {
   padding: 22px;
-  height: 47px;
-  background: image-url('main-menu-bg.png') repeat-x 0 100%;
+  background: image-url('main-menu-bg.png') repeat-x 100% 100%;
 
   #logo {
     width: 278px;
@@ -106,15 +101,19 @@ footer {
   padding: 60px 0 20px;
   background: #666;
 
-  .ui.menu {
+  a {
+    color: #fff;
 
-    div.active.item {
-      line-height: 2em;
+    &:hover {
+      color: #ccc;
+      text-decoration: none;
     }
+  }
 
-    a.item {
-      line-height: .4em;
-    }
+  .footer-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
   }
 
   .sub-footer {

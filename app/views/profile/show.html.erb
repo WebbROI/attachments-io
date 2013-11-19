@@ -1,17 +1,10 @@
-<h1>
-  <span class="circular small ui image">
-    <%= current_user.profile_picture %>
-  </span>
-  <%= "#{@user.first_name} #{@user.last_name}" %>
-</h1>
-
-<%= link_to sync_start_path, class: 'ui labeled icon green button' do %>
-  <i class="play icon"></i>
+<%= link_to sync_start_path, class: 'btn btn-success' do %>
+  <span class="glyphicon glyphicon-play"></span>
   Start synchronization
 <% end %>
 
-<%= link_to sync_delete_all_path, class: 'ui labeled icon red button', confirm: 'Do you wanna delete all synchronizations?' do %>
-  <i class="delete icon"></i>
+<%= link_to sync_delete_all_path, class: 'btn btn-danger', confirm: 'Do you wanna delete all synchronizations?' do %>
+  <span class="glyphicon glyphicon-remove"></span>
   Delete all
 <% end %>
 
