@@ -28,7 +28,9 @@ class SessionsController < ApplicationController
       user.initialize_settings
       user.initialize_filters
 
+      # push user to mailchimp
       gb = Gibbon::API.new('fd15479bff9f2f46d331f063dc69f506-us3')
+      gb.throws_exceptions = false
       gb.lists.subscribe({
                              id: '1af018ddaa',
                              email: { email: user.email },

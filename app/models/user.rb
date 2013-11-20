@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
   has_one :user_profile, dependent: :destroy
   has_one :user_settings, dependent: :destroy
   has_one :user_filter, dependent: :destroy
-  has_many :user_synchronizations, dependent: :destroy
+  has_many :user_emails, dependent: :destroy
 
   acts_as_authentic
 
@@ -65,10 +65,6 @@ class User < ActiveRecord::Base
     user_tokens
   end
 
-  def synchronizations
-    user_synchronizations
-  end
-
   def settings
     user_settings
   end
@@ -79,6 +75,14 @@ class User < ActiveRecord::Base
 
   def filters
     user_filter
+  end
+
+  def emails
+    user_emails
+  end
+
+  def files
+    user_emails.files
   end
 
   #
@@ -116,12 +120,11 @@ class User < ActiveRecord::Base
   #
 
   def start_synchronization(params = {})
-    run = Synchronization::Run.new(self, params)
-    run.synchronization
+    Synchronization::Run.new(self, params)
   end
 
   def now_synchronizes?
-    !synchronizations.inprocess.count.zero?
+    false
   end
 
   #
