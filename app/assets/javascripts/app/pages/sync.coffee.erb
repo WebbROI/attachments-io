@@ -1,0 +1,82 @@
+'use strict'
+
+app = angular.module('attachments.sync', ['attachments.services'])
+
+app.config([ '$routeProvider', '$locationProvider', '$httpProvider',
+  ($routeProvider, $locationProvider, $httpProvider) ->
+    $locationProvider.html5Mode(true);
+    $routeProvider
+      .when('/sync/details/:id',
+        templateUrl: '<%= asset_path 'pages/sync_details.html' %>',
+        controller: 'SyncCtrl'
+      )
+      .otherwise();
+])
+
+
+app.value "Config",
+	SYNC_STATUS_FINISHED: 2
+	SYNC_STATUS_INPROCESS: 1
+	SYNC_STATUS_ERROR: 0
+
+app.controller('SyncCtrl', [
+  '$scope', 'EventSource', '$routeParams', 'API', 'Config',
+  ($scope, EventSource, $routeParams, API, Config) ->
+	  console.log("ololo", $routeParams)
+	  source = EventSource
+	  $scope.config = Config
+
+	  API.sync.get {id: $routeParams.id}, (response) ->
+		  $scope.files = response.files
+		  $scope.sync = response.sync
+
+
+
+    source.addEventListener('progressbar', (event) ->
+      data = JSON.parse event.data
+
+      return unless $("#synchronization-#{data.id}").length
+
+      switch data.action
+        when 'update'
+          percent = (data.parsed / data.count * 100)
+
+          $('.progress .bar').css('width', percent+'%')
+          $('#progress-percentage').html("#{Math.round(percent)}%")
+          $('#progress-title').html("Emails parsed #{data.parsed} of #{data.count}")
+    )
+
+    source.addEventListener('synchronization_add_file', (event) ->
+      data = JSON.parse(event.data);
+
+      console.log(data);
+
+      return unless $("#synchronization-#{data.id}").length
+
+      table = $('#synchronized-files')
+
+      if table.is(':hidden')
+        table.slideDown()
+
+      table
+      .find('tbody')
+      .prepend(
+          "<tr class='positive'>" +
+          "<td><a href='#{data.file.link}' target='_blank'>#{data.file.name}</a></td>" +
+          "<td>#{data.file.size}</td>" +
+          "</tr>"
+        )
+    )
+
+    source.addEventListener('synchronization_update', (event) ->
+      data = JSON.parse(event.data)
+
+      return unless $('#synchronization-'+data.id).length
+
+      switch data.action
+        when 'reload_page'
+          window.location.reload()
+
+    );
+
+])
