@@ -61,7 +61,8 @@ app.run ($rootScope, $location)->
 
 
 	$(document).ready( ->
-		$('.ui.dropdown').dropdown();
+    # FIXME: [Error] TypeError: 'undefined' is not a function (evaluating '$('.ui.checkbox').checkbox()')
+    $('.dropdown').dropdown();
 		$('.ui.checkbox').checkbox();
 	);
 

@@ -115,7 +115,7 @@ class User < ActiveRecord::Base
   # Synchronization
   #
 
-  def start_synchronization(params)
+  def start_synchronization(params = {})
     run = Synchronization::Run.new(self, params)
     run.synchronization
   end
