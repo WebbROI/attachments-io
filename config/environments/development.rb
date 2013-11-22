@@ -29,4 +29,7 @@ AttachmentsIO::Application.configure do
   # This option may cause significant delays in view rendering with a large
   # number of complex assets.
   config.assets.debug = false
+
+  # Level of messages in log
+  config.log_level = :error
 end

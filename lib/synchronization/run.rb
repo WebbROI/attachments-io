@@ -43,6 +43,7 @@ module Synchronization
 
     @current_label
     @current_mail
+    @current_mail_object
     @current_attachment
 
     @started_at
@@ -85,6 +86,8 @@ module Synchronization
 
     # Initialize variables and IMAP connection
     def initialize_variables
+      @started_at = Time.now.to_i
+
       @logger = Logger.new('log/synchronization.log')
       @logger.debug '==================== [SYNCHRONIZATION] ===================='
 
@@ -101,7 +104,6 @@ module Synchronization
       @imap.authenticate('XOAUTH2', @user.email, @user_api.tokens[:access_token])
 
       @extensions = Extension.all_hash
-      @started_at = Time.now.to_i
 
       @logger.debug 'Variables initialized'
     end
@@ -209,6 +211,26 @@ module Synchronization
     # @param email_id [Integer] id of email for current label
     def process_email(email_id)
       @current_mail = Mail.read_from_string(@imap.fetch(email_id, 'RFC822')[0].attr['RFC822'])
+
+      if @current_mail.from.is_a?(Array)
+        from = @current_mail.from.join(',')
+      else
+        from = @current_mail.from.to_s
+      end
+
+      if @current_mail.to.is_a?(Array)
+        to = @current_mail.to.join(',')
+      else
+        to = @current_mail.to.to_s
+      end
+
+      @current_mail_object = @user.emails.create!({
+                                                       label: @current_label,
+                                                       subject: @current_mail.subject,
+                                                       from: from,
+                                                       to: to,
+                                                       date: @current_mail.date.to_i
+                                                   })
 
       @current_mail.attachments.each do |attachment|
         process_attachment(attachment)
@@ -329,6 +351,13 @@ module Synchronization
                                        convert: convert_file })
 
       temp.unlink
+
+      @current_mail_object.files.create!({
+                                             filename: filename,
+                                             size: @current_attachment.body.decoded.size,
+                                             link: result.data.alternate_link,
+                                             ext: File.extname(filename)
+                                         })
 
       @files[filename] = { size: @current_attachment.body.decoded.size, link: result.data.alternate_link, parent_id: folder[:id] }
 

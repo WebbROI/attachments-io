@@ -1,12 +1,16 @@
 <% if @user.now_synchronizes? %>
   <div class="alert alert-success">
-    Synchronization in process. Please, wait..
+    <p><strong>Synchronization in process. Please, wait..</strong></p>
   </div>
 <% else %>
   <p>
     <%= link_to sync_start_path, class: 'btn btn-success' do %>
       <span class="glyphicon glyphicon-play"></span>
       Start synchronization
+    <% end %>
+    <%= link_to resync_start_path, class: 'btn btn-danger', confirm: 'Reallly? O_o' do %>
+      <span class="glyphicon glyphicon-play"></span>
+      Re-synchronize all emails
     <% end %>
   </p>
 <% end %>
@@ -16,3 +20,13 @@
 <% end %>
 
 <p>Time for next synchronization: ~ <%= 10 - Time.now.min % 10 %> min.</p>
+
+<% unless current_user.emails.empty? %>
+  <p><strong>Emails synchronized: <%= current_user.emails.count %></strong></p>
+  <% current_user.emails.each do |email| %>
+    <p>
+    <%= email.subject %><br>
+      <small><%= pluralize(email.files.count, 'file') %></small>
+  </p>
+  <% end %>
+<% end %>

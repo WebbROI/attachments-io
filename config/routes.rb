@@ -25,8 +25,7 @@ AttachmentsIO::Application.routes.draw do
 
   # Synchronization
   match '/sync/start' => 'sync#start', via: :get, as: :sync_start
-  match '/sync/details/:id' => 'sync#details', via: :get, as: :sync_details
-  match '/sync/delete/all' => 'sync#delete_all', via: :get, as: :sync_delete_all
+  match '/sync/resync' => 'sync#resync', via: :get, as: :resync_start
 
   # Admin-Panel
   devise_for :admin_users, ActiveAdmin::Devise.config

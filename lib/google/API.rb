@@ -119,6 +119,13 @@ module Google
       )
     end
 
+    def delete_file(file_id)
+      execute(
+          api_method: load_api('drive', 'v2').files.delete,
+          parameters: { 'fileId' => file_id }
+      )
+    end
+
     def create_folder(params)
       parameters = { title: params[:title], mimeType: FOLDER_MIME }
 

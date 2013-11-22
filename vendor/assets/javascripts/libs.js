@@ -4,3 +4,7 @@
 //= require twitter/bootstrap/alert
 //= require twitter/bootstrap/dropdown
 
+// FIXME: Max, please fix this ;)
+// fix dropdown
+$('.dropdown').dropdown();
+

@@ -9,4 +9,19 @@ class SyncController < ApplicationController
     current_user.start_synchronization#(debug: true)
     redirect_to profile_path
   end
+
+  def resync
+    current_user.emails.destroy_all
+    current_user.update_attribute(:last_sync, nil)
+
+    # load Attachments.IO folder
+    items = current_user.api.load_files(title: IO_ROOT_FOLDER, is_root: true).data.items
+
+    # if Attachments.IO not exist, create it!
+    unless items.empty?
+      current_user.api.delete_file(items.first.id)
+    end
+
+    redirect_to sync_start_path
+  end
 end
