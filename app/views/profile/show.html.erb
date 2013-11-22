@@ -21,12 +21,24 @@
 
 <p>Time for next synchronization: ~ <%= 10 - Time.now.min % 10 %> min.</p>
 
-<% unless current_user.emails.empty? %>
-  <p><strong>Emails synchronized: <%= current_user.emails.count %></strong></p>
-  <% current_user.emails.each do |email| %>
-    <p>
-    <%= email.subject %><br>
-      <small><%= pluralize(email.files.count, 'file') %></small>
-  </p>
-  <% end %>
+<% unless @emails.empty? %>
+  <h2>Account: <%= current_user.email %></h2>
+  <table class="table table-striped">
+    <% @emails.each do |email| %>
+      <tr>
+        <td>
+          <p><strong><%= email.subject %> <span class="label label-info"><%= email.label %></span></strong></p>
+          <p><small>From: <%= email.from %> | To: <%= email.to %> | Date: <%= Time.at(email.date).to_formatted_s(:long) %></small></p>
+          <p>Files:</p>
+          <ul>
+            <% email.files.each do |file| %>
+              <li><%= link_to file.filename, file.link, target: '_blank' %> <small>(size: <%= number_to_human_size(file.size) %>)</small></li>
+            <% end %>
+          </ul>
+        </td>
+      </tr>
+    <% end %>
+
+  </table>
+
 <% end %>
