@@ -1,8 +1,5 @@
 class RedesignStructure < ActiveRecord::Migration
   def change
-    # remove all users & info about they
-    User.destroy_all
-
     # add last_sync to user
     add_column :users, :last_sync, :integer, default: nil, null: true
 
