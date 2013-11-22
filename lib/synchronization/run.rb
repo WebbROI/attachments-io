@@ -1,6 +1,7 @@
 module Synchronization
   # @author Andrew Emelianenko
 
+  # List of convertible extensions for google drive
   CONVERT_EXTENSIONS = %w(.doc .docx .html .txt .rtf .xls .xlsx .ods .csv .tsv .tab .ppt .pps .pptx)
 
   class Run
