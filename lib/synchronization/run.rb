@@ -11,6 +11,9 @@ module Synchronization
     # @param user [User]
     # @param params hash of parameters
     def initialize(user, params = {})
+      return if (Synchronization::Process.check(user.id))
+      Synchronization::Process.add(user.id)
+
       @user = user
       @params = params
 
@@ -109,7 +112,7 @@ module Synchronization
       if @user.last_sync.nil?
         search_query = 'X-GM-RAW has:attachment'
       else
-        time = Time.at(@user.last_sync.started_at)
+        time = Time.at(@user.last_sync)
         search_query = "X-GM-RAW \"has:attachment after:#{time.year}/#{time.month}/#{time.day}\""
       end
 
@@ -365,7 +368,10 @@ module Synchronization
         @imap.disconnect
       end
 
+      @logger.debug "Time elapsed: #{Time.now.to_i - @started_at} sec."
       @logger.debug 'Variables was successful deinitialized'
+
+      Synchronization::Process.remove(@user.id)
     end
   end
 end

@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
   require 'synchronization/run'
+  require 'synchronization/process'
 
   has_one :user_tokens, dependent: :destroy
   has_one :user_profile, dependent: :destroy
@@ -124,7 +125,7 @@ class User < ActiveRecord::Base
   end
 
   def now_synchronizes?
-    false
+    Synchronization::Process.check(id)
   end
 
   #

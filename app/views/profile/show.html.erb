@@ -1,9 +1,15 @@
-<p>
-  <%= link_to sync_start_path, class: 'btn btn-success' do %>
-    <span class="glyphicon glyphicon-play"></span>
-    Start synchronization
-  <% end %>
-</p>
+<% if @user.now_synchronizes? %>
+  <div class="alert alert-success">
+    Synchronization in process. Please, wait..
+  </div>
+<% else %>
+  <p>
+    <%= link_to sync_start_path, class: 'btn btn-success' do %>
+      <span class="glyphicon glyphicon-play"></span>
+      Start synchronization
+    <% end %>
+  </p>
+<% end %>
 
 <% unless @user.last_sync.nil? %>
   <p>Last synchronized at: <%= Time.at(@user.last_sync).to_formatted_s(:long) %></p>
