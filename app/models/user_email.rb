@@ -1,6 +1,6 @@
 class UserEmail < ActiveRecord::Base
   belongs_to :user
-  has_many :user_email_files
+  has_many :user_email_files, dependent: :destroy
 
   #
   # Aliases
