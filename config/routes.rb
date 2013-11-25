@@ -1,6 +1,5 @@
 AttachmentsIO::Application.routes.draw do
 
-  get "assets/user"
   get 'streaming/events'
   get 'dev/flush_all'
 
@@ -14,7 +13,7 @@ AttachmentsIO::Application.routes.draw do
   match '/welcome' => 'pages#home', via: :get, as: :welcome
 
   # User profile
-  match '/profile' => 'profile#show', via: :get, as: :profile
+  match '/' => 'profile#show', via: :get, as: :profile
   match '/profile/edit' => 'profile#edit', via: [:get, :patch], as: :user_edit
   match '/profile/settings' => 'profile#settings', via: [:get, :patch], as: :user_settings
   match '/profile/token/update' => 'profile#update_token', via: [:get, :post], as: :user_update_token
@@ -30,6 +29,9 @@ AttachmentsIO::Application.routes.draw do
   # Synchronization
   match '/sync/start' => 'sync#start', via: :get, as: :sync_start
   match '/sync/resync' => 'sync#resync', via: :get, as: :resync_start
+
+  # API
+  match '/(:action).json', controller: 'api', defaults: { format: :json }, via: :get, as: :api
 
   # Admin-Panel
   devise_for :admin_users, ActiveAdmin::Devise.config

@@ -4,6 +4,10 @@ module Synchronization
   # List of convertible extensions for google drive
   CONVERT_EXTENSIONS = %w(.doc .docx .html .txt .rtf .xls .xlsx .ods .csv .tsv .tab .ppt .pps .pptx)
 
+  # Statuses of synchronizations
+  INPROCESS = 'inprocess'
+  WAITING = 'waiting'
+
   class Run
     include ActionView::Helpers
 
@@ -13,7 +17,13 @@ module Synchronization
     # @param params hash of parameters
     def initialize(user, params = {})
       return if (Synchronization::Process.check(user.id))
-      Synchronization::Process.add(user.id)
+      Synchronization::Process.add(user.id,
+                                   {
+                                       status: :inprocess,
+                                       started_at: nil,
+                                       email_count: nil,
+                                       email_parsed: nil
+                                   })
 
       @user = user
       @params = params
@@ -87,6 +97,7 @@ module Synchronization
     # Initialize variables and IMAP connection
     def initialize_variables
       @started_at = Time.now.to_i
+      Synchronization::Process.update(@user.id, :started_at, @started_at)
 
       @logger = Logger.new('log/synchronization.log')
       @logger.debug '==================== [SYNCHRONIZATION] ===================='
@@ -130,6 +141,8 @@ module Synchronization
         @emails[label.name] = emails
         email_count += emails.count
       end
+
+      Synchronization::Process.update(@user.id, :email_count, email_count)
 
       @logger.debug 'Labels and mails ids was successful loaded'
     end
@@ -236,6 +249,10 @@ module Synchronization
         process_attachment(attachment)
       end
 
+      Synchronization::Process.update(@user.id,
+                                      :email_parsed,
+                                      Synchronization::Process.get(@user.id)[:email_parsed].to_i + 1)
+
       @logger.debug "Email #{@current_mail.subject} was successful processed"
     end
 
@@ -253,9 +270,9 @@ module Synchronization
         return
       end
 
-      unless check_filters
-        @logger.debug '- File not pass a filters'
-      end
+      #unless check_filters
+      #  @logger.debug '- File not pass a filters'
+      #end
 
       upload_file(filename)
     end
@@ -280,11 +297,12 @@ module Synchronization
     # @param filename [String] name of file
     # @return [TrueClass/FalseClass]
     def is_uploaded(filename)
-      # FIXME: not check hash when is convertable file
       if !@files[filename].nil? &&
          !@file_types_folders.nil? &&
          @file_types_folders[@files[filename][:parent_id]] == @current_label# &&
-         #(@current_attachment.body.decoded.size == @files[filename][:size])
+         #(Synchronization::CONVERT_EXTENSIONS.include?(File.extname(filename)) ||
+         #(!Synchronization::CONVERT_EXTENSIONS.include?(File.extname(filename)) &&
+         #@current_attachment.body.decoded.size == @files[filename][:size]))
 
         return true
       end
