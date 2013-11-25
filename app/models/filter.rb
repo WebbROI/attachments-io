@@ -1,4 +1,4 @@
-class UserFilter < ActiveRecord::Base
+class Filter < ActiveRecord::Base
   belongs_to :user
 
   serialize :images_extensions

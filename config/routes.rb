@@ -1,5 +1,6 @@
 AttachmentsIO::Application.routes.draw do
 
+  get "assets/user"
   get 'streaming/events'
   get 'dev/flush_all'
 
@@ -7,7 +8,10 @@ AttachmentsIO::Application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  root 'pages#home'
+  root 'profile#show'
+
+  # Pages
+  match '/welcome' => 'pages#home', via: :get, as: :welcome
 
   # User profile
   match '/profile' => 'profile#show', via: :get, as: :profile
