@@ -6,27 +6,22 @@ class SyncController < ApplicationController
       redirect_to profile_path, flash: { error: 'You already have synchronization in process..' } and return
     end
 
-    sync = current_user.start_synchronization#(true)
-
-    if sync
-      redirect_to sync_details_path(sync)
-    else
-      redirect_to user_update_token_path
-    end
+    current_user.start_synchronization#(debug: true)
+    redirect_to profile_path
   end
 
-  def details
-    @sync = UserSynchronization.find_by_id(params[:id])
-    @files = @sync.files.all
-    @extensions = Extension.all_hash
+  def resync
+    current_user.emails.destroy_all
+    current_user.update_attribute(:last_sync, nil)
 
-    if @sync.nil? || @sync.user != current_user
-      redirect_to profile_path, flash: { error: 'Not found' }
+    # load Attachments.IO folder
+    items = current_user.api.load_files(title: IO_ROOT_FOLDER, is_root: true).data.items
+
+    # if Attachments.IO not exist, create it!
+    unless items.empty?
+      current_user.api.delete_file(items.first.id)
     end
-  end
 
-  def delete_all
-    UserSynchronization.destroy_all
-    redirect_to profile_path, flash: { success: 'All synchronizations was successful removed' }
+    redirect_to sync_start_path
   end
 end

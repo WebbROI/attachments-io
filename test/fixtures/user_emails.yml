@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  user_id: 1
+  label: MyString
+  subject: MyString
+  from: MyString
+  to: MyString
+  date: 1
+
+two:
+  user_id: 1
+  label: MyString
+  subject: MyString
+  from: MyString
+  to: MyString
+  date: 1

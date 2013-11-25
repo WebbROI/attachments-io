@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131113093720) do
+ActiveRecord::Schema.define(version: 20131120133220) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "namespace"
@@ -53,6 +53,24 @@ ActiveRecord::Schema.define(version: 20131113093720) do
     t.string "sub_folder"
   end
 
+  create_table "user_email_files", force: true do |t|
+    t.integer  "user_email_id"
+    t.string   "filename"
+    t.integer  "size"
+    t.string   "link"
+    t.datetime "created_at"
+    t.string   "ext"
+  end
+
+  create_table "user_emails", force: true do |t|
+    t.integer "user_id"
+    t.string  "label"
+    t.string  "subject"
+    t.string  "from"
+    t.string  "to"
+    t.integer "date"
+  end
+
   create_table "user_filters", force: true do |t|
     t.integer "user_id"
     t.boolean "images_filters"
@@ -83,31 +101,6 @@ ActiveRecord::Schema.define(version: 20131113093720) do
     t.boolean "subject_in_filename", default: false
   end
 
-  create_table "user_synchronization_files", force: true do |t|
-    t.integer  "user_synchronization_id"
-    t.string   "filename"
-    t.integer  "size"
-    t.string   "link"
-    t.datetime "created_at"
-    t.string   "ext"
-    t.string   "label"
-    t.string   "subject"
-    t.string   "from"
-    t.string   "to"
-    t.integer  "email_date"
-  end
-
-  create_table "user_synchronizations", force: true do |t|
-    t.integer "user_id"
-    t.integer "status"
-    t.integer "started_at"
-    t.integer "finished_at"
-    t.integer "file_count"
-    t.integer "email_count"
-    t.integer "email_parsed"
-    t.string  "error_message"
-  end
-
   create_table "user_tokens", force: true do |t|
     t.string  "user_id"
     t.string  "access_token"
@@ -130,6 +123,7 @@ ActiveRecord::Schema.define(version: 20131113093720) do
     t.string   "last_login_ip"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "last_sync"
   end
 
 end

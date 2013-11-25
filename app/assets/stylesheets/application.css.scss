@@ -131,3 +131,24 @@ footer {
     }
   }
 }
+
+//
+// Debug
+//
+
+.debug-area {
+  .toggle-debug-code {
+    cursor: pointer;
+    margin: 0 5px;
+
+    color: #ccc;
+    font-size: 12px;
+    border-bottom: 1px dotted #ccc;
+  }
+
+  .debug-code {
+    display: none;
+    font-size: 11px;
+    margin: 5px 0;
+  }
+}

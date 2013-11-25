@@ -1,14 +1,14 @@
 module ApplicationHelper
-  def semantic_class_for(flash_type)
+  def bootstrap_class_for(flash_type)
     case flash_type
       when :success
-        'success'
+        'alert-success'
       when :error
-        'error'
+        'alert-danger'
       when :alert
-        'yellow'
+        'alert-warning'
       when :notice
-        'blue'
+        'alert-info'
       else
         flash_type.to_s
     end

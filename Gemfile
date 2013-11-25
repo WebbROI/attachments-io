@@ -9,9 +9,6 @@ group :development do
   # Use sqlite3 as the database for Active Record
   gem 'sqlite3'
 
-  # Profiler
-  gem 'rack-mini-profiler'
-
   # Better errors
   gem 'better_errors'
   gem 'binding_of_caller'
@@ -25,6 +22,9 @@ group :production do
   # For Heroku
   gem 'rails_12factor', group: :production
 end
+
+# Profiler
+gem 'rack-mini-profiler'
 
 # Admin-panel
 gem 'activeadmin', github: 'gregbell/active_admin'

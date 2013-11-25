@@ -1,15 +1,22 @@
 module Synchronization
   # @author Andrew Emelianenko
+
+  # List of convertible extensions for google drive
+  CONVERT_EXTENSIONS = %w(.doc .docx .html .txt .rtf .xls .xlsx .ods .csv .tsv .tab .ppt .pps .pptx)
+
   class Run
     include ActionView::Helpers
 
     # Start synchronization for user
     #
     # @param user [User]
+    # @param params hash of parameters
     def initialize(user, params = {})
+      return if (Synchronization::Process.check(user.id))
+      Synchronization::Process.add(user.id)
+
       @user = user
       @params = params
-      @synchronization = UserSynchronization.init(@user.id)
 
       if @params[:debug] == true || @params[:rake] == true
         thread
@@ -20,21 +27,12 @@ module Synchronization
       end
     end
 
-    # Return synchronization
-    #
-    # @return [UserSynchronization]
-    def synchronization
-      @synchronization
-    end
-
     private
 
     @user
     @user_api
     @user_filters
     @user_settings
-
-    @synchronization
 
     @emails
     @files
@@ -45,7 +43,10 @@ module Synchronization
 
     @current_label
     @current_mail
+    @current_mail_object
     @current_attachment
+
+    @started_at
 
     @logger
 
@@ -54,8 +55,17 @@ module Synchronization
       initialize_variables
 
       load_labels_and_emails
+
+      # stop sync if we don't have emails with attachments
+      if @emails.empty?
+        finish_synchronization
+        deinitialize_variables
+        return
+      end
+
       load_folders_and_files
 
+      # sync emails
       @emails.each do |label, emails|
         @current_label = replace_label_name(label)
         process_current_label
@@ -66,20 +76,18 @@ module Synchronization
         end
       end
 
-      deinitialize_variables
       finish_synchronization
-
+      deinitialize_variables
     rescue => e
-      @synchronization.set_error_status(e.message)
       @logger.error "[ERROR] #{e.message}"
 
       deinitialize_variables
-
-      Puub.instance.publish("user_#{@user.id}", { event: 'synchronization_update', data: { id: @synchronization.id, action: 'reload_page' } })
     end
 
     # Initialize variables and IMAP connection
     def initialize_variables
+      @started_at = Time.now.to_i
+
       @logger = Logger.new('log/synchronization.log')
       @logger.debug '==================== [SYNCHRONIZATION] ===================='
 
@@ -103,13 +111,12 @@ module Synchronization
     # Load labels and emails
     def load_labels_and_emails
       email_count = 0
-      last_sync = @user.synchronizations.finished.last
 
-      if last_sync.nil?
+      if @user.last_sync.nil?
         search_query = 'X-GM-RAW has:attachment'
       else
-        time = Time.at(last_sync.started_at)
-        search_query = "X-GM-RAW \"has:attachment after:#{time.year}/#{time.month}/0#{time.day}\""
+        time = Time.at(@user.last_sync)
+        search_query = "X-GM-RAW \"has:attachment after:#{time.year}/#{time.month}/#{time.day}\""
       end
 
       @imap.list('', '%').to_a.each do |label|
@@ -123,8 +130,6 @@ module Synchronization
         @emails[label.name] = emails
         email_count += emails.count
       end
-
-      @synchronization.update_attribute(:email_count, email_count)
 
       @logger.debug 'Labels and mails ids was successful loaded'
     end
@@ -207,22 +212,29 @@ module Synchronization
     def process_email(email_id)
       @current_mail = Mail.read_from_string(@imap.fetch(email_id, 'RFC822')[0].attr['RFC822'])
 
+      if @current_mail.from.is_a?(Array)
+        from = @current_mail.from.join(',')
+      else
+        from = @current_mail.from.to_s
+      end
+
+      if @current_mail.to.is_a?(Array)
+        to = @current_mail.to.join(',')
+      else
+        to = @current_mail.to.to_s
+      end
+
+      @current_mail_object = @user.emails.create!({
+                                                       label: @current_label,
+                                                       subject: @current_mail.subject,
+                                                       from: from,
+                                                       to: to,
+                                                       date: @current_mail.date.to_i
+                                                   })
+
       @current_mail.attachments.each do |attachment|
         process_attachment(attachment)
       end
-
-      @synchronization.update_attribute(:email_parsed, @synchronization.email_parsed.to_i + 1)
-
-      Puub.instance.publish("user_#{@user.id}",
-                            {
-                                event: 'progressbar',
-                                data: {
-                                    id: @synchronization.id,
-                                    action: 'update',
-                                    parsed: @synchronization.email_parsed.to_i,
-                                    count: @synchronization.email_count.to_i
-                                }
-                            })
 
       @logger.debug "Email #{@current_mail.subject} was successful processed"
     end
@@ -268,10 +280,11 @@ module Synchronization
     # @param filename [String] name of file
     # @return [TrueClass/FalseClass]
     def is_uploaded(filename)
+      # FIXME: not check hash when is convertable file
       if !@files[filename].nil? &&
          !@file_types_folders.nil? &&
-         @file_types_folders[@files[filename][:parent_id]] == @current_label &&
-         (@current_attachment.body.decoded.size == @files[filename][:size])
+         @file_types_folders[@files[filename][:parent_id]] == @current_label# &&
+         #(@current_attachment.body.decoded.size == @files[filename][:size])
 
         return true
       end
@@ -329,7 +342,7 @@ module Synchronization
       temp.rewind
       temp.close
 
-      convert_file = !!(@user_settings.convert_files && UserSynchronization::CONVERT_EXTENSIONS.include?(File.extname(filename)))
+      convert_file = !!(@user_settings.convert_files && Synchronization::CONVERT_EXTENSIONS.include?(File.extname(filename)))
 
       result = @user_api.upload_file({ path: temp.path,
                                        title: filename,
@@ -339,36 +352,14 @@ module Synchronization
 
       temp.unlink
 
+      @current_mail_object.files.create!({
+                                             filename: filename,
+                                             size: @current_attachment.body.decoded.size,
+                                             link: result.data.alternate_link,
+                                             ext: File.extname(filename)
+                                         })
+
       @files[filename] = { size: @current_attachment.body.decoded.size, link: result.data.alternate_link, parent_id: folder[:id] }
-
-      @synchronization.add_file({
-                                    filename: filename,
-                                    size: @files[filename][:size],
-                                    link: @files[filename][:link],
-                                    label: @current_label,
-                                    to: @current_mail.to,
-                                    from: @current_mail.from,
-                                    email_date: @current_mail.date.to_i,
-                                    subject: @current_mail.subject
-                                })
-
-      Puub.instance.publish("user_#{@user.id}",
-                            {
-                                event: 'synchronization_add_file',
-                                data: {
-                                    id: @synchronization.id,
-                                    file: {
-                                        name: filename,
-                                        size: number_to_human_size(@files[filename][:size]),
-                                        link: @files[filename][:link],
-                                        label: @current_label,
-                                        to: @current_mail.to,
-                                        from: @current_mail.from,
-                                        email_date: @current_mail.date.to_i,
-                                        subject: @current_mail.subject
-                                    }
-                                }
-                            })
 
       @logger.debug "= File #{filename} was successful uploaded"
     end
@@ -396,21 +387,21 @@ module Synchronization
       @label_folders[@current_label][:sub_folders][folder_name]
     end
 
+    # Update last sync
+    def finish_synchronization
+      @user.update_attribute(:last_sync, @started_at)
+    end
+
     # Deinitialize variables
     def deinitialize_variables
       unless @imap.disconnected?
         @imap.disconnect
       end
 
+      @logger.debug "Time elapsed: #{Time.now.to_i - @started_at} sec."
       @logger.debug 'Variables was successful deinitialized'
-    end
 
-    # Set status finished for synchronization and push notify for user
-    def finish_synchronization
-      @synchronization.set_finished_status
-      Puub.instance.publish("user_#{@user.id}", { event: 'synchronization_update', data: { id: @synchronization.id, action: 'reload_page' } })
-
-      @logger.debug 'Finish synchronization'
+      Synchronization::Process.remove(@user.id)
     end
   end
 end

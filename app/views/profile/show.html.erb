@@ -1,58 +1,52 @@
-<%= link_to sync_start_path, class: 'btn btn-success' do %>
-  <span class="glyphicon glyphicon-play"></span>
-  Start synchronization
-<% end %>
-
-<%= link_to sync_delete_all_path, class: 'btn btn-danger', confirm: 'Do you wanna delete all synchronizations?' do %>
-  <span class="glyphicon glyphicon-remove"></span>
-  Delete all
-<% end %>
-
-<h2 class="ui header">Synchronizations</h2>
-
-<% if @syncs.empty? %>
-    <p>Not yet synchronized.</p>
+<% if @user.now_synchronizes? %>
+  <div class="alert alert-success">
+    <p><strong>Synchronization in process. Please, wait..</strong></p>
+  </div>
 <% else %>
-    <table class="ui table segment">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Status</th>
-          <th>Started</th>
-          <th>Finished</th>
-          <th>Emails</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @syncs.each do |sync| %>
-        <tr class="<%= sync_status_class_row(sync.status) %>">
-          <td><%= sync.id %></td>
-          <td>
-            <% if sync.finished? %>
-                <i class="icon checkmark"></i>
-            <% else %>
-                <i class="icon attention"></i>
+  <p>
+    <%= link_to sync_start_path, class: 'btn btn-success' do %>
+      <span class="glyphicon glyphicon-play"></span>
+      Start synchronization
+    <% end %>
+    <%= link_to resync_start_path, class: 'btn btn-danger', confirm: 'Reallly? O_o' do %>
+      <span class="glyphicon glyphicon-play"></span>
+      Re-synchronize all emails
+    <% end %>
+  </p>
+<% end %>
+
+<% unless @user.last_sync.nil? %>
+  <p>Last synchronized at: <%= Time.at(@user.last_sync).to_formatted_s(:long) %></p>
+<% end %>
+
+<p>Time for next synchronization: ~ <%= 10 - Time.now.min % 10 %> min.</p>
+
+<div class="debug-area">
+  <span class="toggle-debug-code">Show / Hide debug</span>
+  <pre class="debug-code">
+    <%= @user.to_yaml %>
+    <%= @user.profile.to_yaml %>
+    <%= @user.settings.to_yaml %>
+    <%= @user.tokens.to_yaml %>
+  </pre>
+</div>
+
+<% unless @emails.empty? %>
+  <h2>Account: <%= current_user.email %></h2>
+  <table class="table table-striped">
+    <% @emails.each do |email| %>
+      <tr>
+        <td>
+          <p><strong><%= email.subject %> <span class="label label-info"><%= email.label %></span></strong></p>
+          <p><small>From: <%= email.from %> | To: <%= email.to %> | Date: <%= Time.at(email.date).to_formatted_s(:long) %></small></p>
+          <p>Files:</p>
+          <ul>
+            <% email.files.each do |file| %>
+              <li><%= link_to file.filename, file.link, target: '_blank' %> <small>(size: <%= number_to_human_size(file.size) %>)</small></li>
             <% end %>
-            <%= sync.status_readable %>
-          </td>
-          <td><%= Time.at(sync.started_at).to_formatted_s(:long) %></td>
-          <td>
-            <% if sync.finished? %>
-                <%= Time.at(sync.finished_at).to_formatted_s(:long) %>
-            <% else %>
-                -
-            <% end %>
-          </td>
-          <td><%= sync.email_count.to_i %></td>
-          <td>
-            <%= link_to sync_details_path(sync), class: 'ui green mini button' do %>
-              <i class="reorder icon"></i>
-              Details
-            <% end %>
-          </td>
-        </tr>
-        <% end %>
-      </tbody>
-    </table>
+          </ul>
+        </td>
+      </tr>
+    <% end %>
+  </table>
 <% end %>

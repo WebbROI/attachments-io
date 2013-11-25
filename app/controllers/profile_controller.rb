@@ -3,7 +3,7 @@ class ProfileController < ApplicationController
 
   def show
     @user = current_user
-    @syncs = @user.synchronizations
+    @emails = @user.emails#.includes(:user_email_files).all
 
     if @user.token_expire? && !@user.has_refresh_token?
       flash[:error] = render_to_string partial: 'partials/messages/token_expire'

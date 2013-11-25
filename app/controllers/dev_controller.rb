@@ -1,5 +1,17 @@
 class DevController < ApplicationController
+  require 'synchronization/process'
+
   before_filter :authenticate_user!, only: :compare_files
+
+  def debug
+    Synchronization::Process.add(rand(100))
+
+    render text: 'success :)'
+  end
+
+  def debug2
+    render text: Synchronization::Process.list
+  end
 
   def flush_all
     User.destroy_all
