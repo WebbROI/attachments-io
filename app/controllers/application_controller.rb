@@ -22,11 +22,11 @@ class ApplicationController < ActionController::Base
     end
 
     def authenticate_user!
-      redirect_to root_path, flash: { error: 'You need sign in to view this page' } unless user_signed_in?
+      redirect_to welcome_path, flash: { error: 'You need sign in to view this page' } unless user_signed_in?
     end
 
     def not_authenticated_user!
-      redirect_to root_path, flash: { error: 'This page only for guests' } if user_signed_in?
+      redirect_to welcome_path, flash: { error: 'This page only for guests' } if user_signed_in?
     end
 
     def puub
