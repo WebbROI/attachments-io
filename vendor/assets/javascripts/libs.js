@@ -8,3 +8,9 @@
 // fix dropdown
 $('.dropdown').dropdown();
 
+$(document).ready(function() {
+    $('.toggle-debug-code').click(function() {
+        $(this).next('.debug-code').slideToggle();
+    });
+});
+

@@ -21,6 +21,16 @@
 
 <p>Time for next synchronization: ~ <%= 10 - Time.now.min % 10 %> min.</p>
 
+<div class="debug-area">
+  <span class="toggle-debug-code">Show / Hide debug</span>
+  <pre class="debug-code">
+    <%= @user.to_yaml %>
+    <%= @user.profile.to_yaml %>
+    <%= @user.settings.to_yaml %>
+    <%= @user.tokens.to_yaml %>
+  </pre>
+</div>
+
 <% unless @emails.empty? %>
   <h2>Account: <%= current_user.email %></h2>
   <table class="table table-striped">
@@ -38,7 +48,5 @@
         </td>
       </tr>
     <% end %>
-
   </table>
-
 <% end %>
