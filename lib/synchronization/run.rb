@@ -41,7 +41,6 @@ module Synchronization
 
     @user
     @user_api
-    @user_filters
     @user_settings
 
     @emails
@@ -90,7 +89,6 @@ module Synchronization
       deinitialize_variables
     rescue => e
       @logger.error "[ERROR] #{e.message}"
-
       deinitialize_variables
     end
 
@@ -100,10 +98,9 @@ module Synchronization
       Synchronization::Process.update(@user.id, :started_at, @started_at)
 
       @logger = Logger.new('log/synchronization.log')
-      @logger.debug '==================== [SYNCHRONIZATION] ===================='
+      @logger.debug "#{@user.email} " +  '==================== [SYNCHRONIZATION] ===================='
 
       @user_api = @user.api
-      @user_filters = @user.filters
       @user_settings = @user.settings
 
       @emails = {}
@@ -116,7 +113,7 @@ module Synchronization
 
       @extensions = Extension.all_hash
 
-      @logger.debug 'Variables initialized'
+      @logger.debug "#{@user.email} " +  'Variables initialized'
     end
 
     # Load labels and emails
@@ -144,7 +141,7 @@ module Synchronization
 
       Synchronization::Process.update(@user.id, :email_count, email_count)
 
-      @logger.debug 'Labels and mails ids was successful loaded'
+      @logger.debug "#{@user.email} " +  'Labels and mails ids was successful loaded'
     end
 
     # Load files and folders from Google Drive
@@ -193,11 +190,13 @@ module Synchronization
       #  end
       #end
 
-      @user.files.uploaded.includes(:user_email).each do |file|
-        @files[file.filename] = { size: file.size, link: file.link, label: file.user_email.label }
+      unless @user.files.empty?
+        @user.files.each do |file|
+          @files[file.filename] = { size: file.size, link: file.link, label: file.user_email.label }
+        end
       end
 
-      @logger.debug 'Folders and files was successful processed'
+      @logger.debug "#{@user.email} " +  'Folders and files was successful processed'
     end
 
     # Replace label name
@@ -220,7 +219,7 @@ module Synchronization
         @label_folders[@current_label] = { id: result.data.id, link: result.data.alternate_link, sub_folders: {} }
       end
 
-      @logger.debug "Label #{@current_label} was selected"
+      @logger.debug "#{@user.email} " +  "Label #{@current_label} was selected"
     end
 
     # Load email from Google Mail and process attachments
@@ -257,29 +256,29 @@ module Synchronization
                                       :email_parsed,
                                       Synchronization::Process.get(@user.id)[:email_parsed].to_i + 1)
 
-      @logger.debug "Email #{@current_mail.subject} was successful processed"
+      @logger.debug "#{@user.email} " +  "Email #{@current_mail.subject} was successful processed"
     end
 
-    # Generate filename, check is uploaded file, check filters and upload file
+    # Generate filename, check is uploaded file and upload file
     #
     # @param attachment [Mail::Part] attachment from Mail
     def process_attachment(attachment)
       @current_attachment = attachment
       filename = generate_filename(@current_attachment)
 
-      @logger.debug "= Attachment \"#{filename}\" initialized"
+      @logger.debug "#{@user.email} " +  "= Attachment \"#{filename}\" initialized"
 
 
 
       if is_uploaded(filename)
         file_status = EmailFile::ALREADY_UPLOADED
 
-        @logger.debug '- File already uploaded'
+        @logger.debug "#{@user.email} " +  '- File already uploaded'
       else
         upload_file(filename)
         file_status = EmailFile::UPLOADED
 
-        @logger.debug "+ File #{filename} was successful uploaded"
+        @logger.debug "#{@user.email} " +  "+ File #{filename} was successful uploaded"
       end
 
       @current_mail_object.files.create({ filename: filename,
@@ -329,45 +328,6 @@ module Synchronization
       #end
       #
       #false
-    end
-
-    # Check filters for attachment
-    #
-    # @return [TrueClass/FalseClass] pass or not pass filters
-    def check_filters
-      ext = File.extname(@current_attachment.filename)
-
-      if Extension.image.include?(ext) && @user_filters.images_filters
-
-        # allowed extensions
-        unless @user_filters.images_extensions.include?(ext)
-          return false
-        end
-
-        # check file size
-        if (!@user_filters.images_min_size.nil? && @user_filters.images_min_size.to_i > @current_attachment.body.decoded.size) ||
-           (!@user_filters.images_max_size.nil? && @user_filters.images_max_size.to_i < @current_attachment.body.decoded.size)
-
-          return false
-        end
-
-      elsif Extension.document.include?(ext) && @user_filters.documents_filters
-
-        # allowed extensions
-        unless @user_filters.documents_extensions.include?(ext)
-          return false
-        end
-
-        # check file size
-        if (!@user_filters.documents_min_size.nil? && @user_filters.documents_min_size > @current_attachment.body.decoded.size) ||
-           (!@user_filters.documents_max_size.nil? && @user_filters.documents_max_size < @current_attachment.body.decoded.size)
-
-          return false
-        end
-
-      end
-
-      true
     end
 
     # Upload file to Google Drive
@@ -424,12 +384,12 @@ module Synchronization
 
     # Deinitialize variables
     def deinitialize_variables
-      unless @imap.disconnected?
+      if @imap && !@imap.disconnected?
         @imap.disconnect
       end
 
-      @logger.debug "Time elapsed: #{Time.now.to_i - @started_at} sec."
-      @logger.debug 'Variables was successful deinitialized'
+      @logger.debug "#{@user.email} " +  "Time elapsed: #{Time.now.to_i - @started_at} sec."
+      @logger.debug "#{@user.email} " +  'Variables was successful deinitialized'
 
       Synchronization::Process.remove(@user.id)
     end

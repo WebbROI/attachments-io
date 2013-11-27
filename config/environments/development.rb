@@ -32,4 +32,6 @@ AttachmentsIO::Application.configure do
 
   # Level of messages in log
   config.log_level = :error
+
+  config.middleware.delete Rack::Lock
 end

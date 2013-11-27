@@ -83,7 +83,7 @@ class User < ActiveRecord::Base
   end
 
   def files
-    emails.files
+    []
   end
 
   #
@@ -133,7 +133,7 @@ class User < ActiveRecord::Base
   #
 
   def update_tokens(attributes)
-    tokens = user_tokens()
+    tokens = user_tokens
 
     if tokens
       tokens.update_attributes(attributes)
