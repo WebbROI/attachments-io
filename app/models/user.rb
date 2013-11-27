@@ -55,7 +55,7 @@ class User < ActiveRecord::Base
   end
 
   def initialize_filters
-    create_user_filter
+    create_filter
   end
 
   #
