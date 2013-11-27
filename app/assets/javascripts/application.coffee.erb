@@ -3,9 +3,6 @@
 #= require app/services
 #= require app/directives
 
-#= require app/pages/sync
-#= require app/pages/profile
-
 # --
 # attachments app (angular directives, services, controllers)
 # --
@@ -15,46 +12,43 @@ deps = [
 	'ngResource',
 	'ngRoute',
 	'attachments.services',
-	'attachments.directives',
+	'attachments.directives'
 ]
 
-# angularized pages
-routingDeps = [
-	'attachments.sync',
-	'attachments.profile'
-];
+app = angular.module 'attachments', deps
 
-app = angular.module 'attachments', _.union(deps, routingDeps)
+app.run ([
+	'$rootScope', '$location',
+	($rootScope, $location)->
+		console.log("Attachments.IO - Started")
 
-app.run ($rootScope, $location)->
-	console.log("Attachments.IO - Started");
-
-	pattern = '';
-	_.each(routingDeps, (dependency, index, list) ->
-		dependency = dependency.replace("attachments.", '');
-
-		if dependency.slice( dependency.length - 1, dependency.length) == 's'
-			dependency = dependency.slice(0, dependency.length - 1)
-
-		pattern = pattern + dependency + ( if index < list.length - 1 then "|" else "" )
-	) # should looks like "tag|user|event|request "
-
-	$( () ->
-		# set unreal mask if this is not page that supports routing
-		pattern = '_' unless (new RegExp("\/(((#{pattern})+))")).test($location.path())
-
-		s = "(^\/((#{pattern})+|$)|(http|https):\/\/[a-z0-9\.]+\/(((#{pattern})+)|$))"
-
-		regex = new RegExp(s)
-
-		$('a').livequery( () ->
-
-			href = $(this).prop('href').replace("#", '');
-
-			if (!regex.test(href) && $(this).prop('target') != '_blank')
-				# fixing issue with return back to the Angular Routing pages
-				# from backend rendered pages
-				$(this).prop('target', '_self');
-
-		)
-	)
+#		pattern = '';
+#		_.each(routingDeps, (dependency, index, list) ->
+#			dependency = dependency.replace("attachments.", '');
+#
+#			if dependency.slice( dependency.length - 1, dependency.length) == 's'
+#				dependency = dependency.slice(0, dependency.length - 1)
+#
+#			pattern = pattern + dependency + ( if index < list.length - 1 then "|" else "" )
+#		) # should looks like "tag|user|event|request "
+#
+#		$( () ->
+#			# set unreal mask if this is not page that supports routing
+#			pattern = '_' unless (new RegExp("\/(((#{pattern})+))")).test($location.path())
+#
+#			s = "(^\/((#{pattern})+|$)|(http|https):\/\/[a-z0-9\.]+\/(((#{pattern})+)|$))"
+#
+#			regex = new RegExp(s)
+#
+#			$('a').livequery( () ->
+#
+#				href = $(this).prop('href').replace("#", '');
+#
+#				if (!regex.test(href) && $(this).prop('target') != '_blank')
+#					# fixing issue with return back to the Angular Routing pages
+#					# from backend rendered pages
+#					$(this).prop('target', '_self');
+#
+#			)
+#		)
+])

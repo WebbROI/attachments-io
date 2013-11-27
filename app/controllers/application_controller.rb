@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery with: :exception
   before_filter :puub
+  before_filter :initialize_user
   helper_method :current_user_session, :current_user, :user_signed_in?
 
   private
@@ -15,6 +16,10 @@ class ApplicationController < ActionController::Base
     def current_user
       return @current_user if defined? @current_user
       @current_user = current_user_session && current_user_session.user
+    end
+
+    def initialize_user
+		@user ||= current_user_session && current_user_session.user
     end
 
     def user_signed_in?
