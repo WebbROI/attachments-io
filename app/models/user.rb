@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
   has_one :user_profile, dependent: :destroy
   has_one :user_settings, dependent: :destroy
   has_one :filter, dependent: :destroy
-  has_many :user_emails, dependent: :destroy
+  has_many :emails, dependent: :destroy
 
   acts_as_authentic
 
@@ -78,12 +78,8 @@ class User < ActiveRecord::Base
     filter
   end
 
-  def emails
-    user_emails
-  end
-
   def files
-    user_emails.files
+    emails.files
   end
 
   #

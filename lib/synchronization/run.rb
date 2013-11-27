@@ -186,11 +186,15 @@ module Synchronization
       end
 
       # load all files & parse it
-      all_files = @user_api.load_files(is_folder: false).data.items
-      all_files.each do |file|
-        if file.parents[0] && @file_types_folders[file.parents[0].id]
-          @files[file.title] = { size: file.file_size, link: file.alternate_link, parent_id: file.parents[0].id }
-        end
+      #all_files = @user_api.load_files(is_folder: false).data.items
+      #all_files.each do |file|
+      #  if file.parents[0] && @file_types_folders[file.parents[0].id]
+      #    @files[file.title] = { size: file.file_size, link: file.alternate_link, parent_id: file.parents[0].id }
+      #  end
+      #end
+
+      @user.files.uploaded.includes(:user_email).each do |file|
+        @files[file.filename] = { size: file.size, link: file.link, label: file.user_email.label }
       end
 
       @logger.debug 'Folders and files was successful processed'
@@ -263,18 +267,26 @@ module Synchronization
       @current_attachment = attachment
       filename = generate_filename(@current_attachment)
 
-      @logger.debug "+ Attachment \"#{filename}\" initialized"
+      @logger.debug "= Attachment \"#{filename}\" initialized"
+
+
 
       if is_uploaded(filename)
+        file_status = EmailFile::ALREADY_UPLOADED
+
         @logger.debug '- File already uploaded'
-        return
+      else
+        upload_file(filename)
+        file_status = EmailFile::UPLOADED
+
+        @logger.debug "+ File #{filename} was successful uploaded"
       end
 
-      #unless check_filters
-      #  @logger.debug '- File not pass a filters'
-      #end
-
-      upload_file(filename)
+      @current_mail_object.files.create({ filename: filename,
+                                          size: @files[filename][:size],
+                                          link: @files[filename][:link],
+                                          ext: File.extname(filename),
+                                          status: file_status })
     end
 
     # Generate filename
@@ -297,17 +309,26 @@ module Synchronization
     # @param filename [String] name of file
     # @return [TrueClass/FalseClass]
     def is_uploaded(filename)
-      if !@files[filename].nil? &&
-         !@file_types_folders.nil? &&
-         @file_types_folders[@files[filename][:parent_id]] == @current_label# &&
-         #(Synchronization::CONVERT_EXTENSIONS.include?(File.extname(filename)) ||
-         #(!Synchronization::CONVERT_EXTENSIONS.include?(File.extname(filename)) &&
-         #@current_attachment.body.decoded.size == @files[filename][:size]))
+      if @files[filename] &&
+         @files[filename][:label] == @current_label &&
+         @files[filename][:size] == @current_attachment.body.decoded.size
 
         return true
       end
 
       false
+
+      #if !@files[filename].nil? &&
+      #   !@file_types_folders.nil? &&
+      #   @file_types_folders[@files[filename][:parent_id]] == @current_label# &&
+      #   #(Synchronization::CONVERT_EXTENSIONS.include?(File.extname(filename)) ||
+      #   #(!Synchronization::CONVERT_EXTENSIONS.include?(File.extname(filename)) &&
+      #   #@current_attachment.body.decoded.size == @files[filename][:size]))
+      #
+      #  return true
+      #end
+      #
+      #false
     end
 
     # Check filters for attachment
@@ -325,7 +346,7 @@ module Synchronization
 
         # check file size
         if (!@user_filters.images_min_size.nil? && @user_filters.images_min_size.to_i > @current_attachment.body.decoded.size) ||
-            (!@user_filters.images_max_size.nil? && @user_filters.images_max_size.to_i < @current_attachment.body.decoded.size)
+           (!@user_filters.images_max_size.nil? && @user_filters.images_max_size.to_i < @current_attachment.body.decoded.size)
 
           return false
         end
@@ -339,7 +360,7 @@ module Synchronization
 
         # check file size
         if (!@user_filters.documents_min_size.nil? && @user_filters.documents_min_size > @current_attachment.body.decoded.size) ||
-            (!@user_filters.documents_max_size.nil? && @user_filters.documents_max_size < @current_attachment.body.decoded.size)
+           (!@user_filters.documents_max_size.nil? && @user_filters.documents_max_size < @current_attachment.body.decoded.size)
 
           return false
         end
@@ -370,16 +391,7 @@ module Synchronization
 
       temp.unlink
 
-      @current_mail_object.files.create!({
-                                             filename: filename,
-                                             size: @current_attachment.body.decoded.size,
-                                             link: result.data.alternate_link,
-                                             ext: File.extname(filename)
-                                         })
-
-      @files[filename] = { size: @current_attachment.body.decoded.size, link: result.data.alternate_link, parent_id: folder[:id] }
-
-      @logger.debug "= File #{filename} was successful uploaded"
+      @files[filename] = { size: @current_attachment.body.decoded.size, link: result.data.alternate_link, label: @current_label, parent_id: folder[:id] }
     end
 
     # Return folder for file

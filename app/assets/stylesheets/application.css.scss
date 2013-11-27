@@ -92,6 +92,56 @@ body {
   }
 }
 
+.email-items {
+  font-size: 13px;
+  margin: 20px 0 0;
+  border-top: 1px solid #ddd;
+
+  .email-item {
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+    background: #fafafa;
+
+    .email-header {
+      .row {
+        padding: 10px 0;
+      }
+
+      .email-subject,
+      .email-date {
+        padding: 0 10px;
+      }
+    }
+
+    .email-data {
+      display: none;
+      width: 960px;
+      margin: 0 auto;
+      padding: 20px 0;
+
+      .email-files {
+        font-size: 12px;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-bottom: none;
+
+        .email-file {
+          border-bottom: 1px solid #ddd;
+
+          .row {
+            padding: 5px 0;
+          }
+
+          .email-file-name,
+          .email-file-size {
+            padding: 0 6px;
+          }
+        }
+      }
+    }
+  }
+}
+
 //
 // Footer
 //

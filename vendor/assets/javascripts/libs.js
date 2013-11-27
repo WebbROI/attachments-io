@@ -12,5 +12,20 @@ $(document).ready(function() {
     $('.toggle-debug-code').click(function() {
         $(this).next('.debug-code').slideToggle();
     });
+
+    // JUST FOR FUN ;)
+    //
+
+    $('.email-header').click(function() {
+        $(this).next('.email-data').stop(true, true).slideToggle(200);
+    });
+
+    $('#emails-files-up').click(function() {
+        $('.email-data').slideUp(200);
+    });
+
+    $('#emails-files-down').click(function() {
+        $('.email-data').slideDown(200);
+    });
 });
 

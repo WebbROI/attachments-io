@@ -1,4 +1,4 @@
-ActiveAdmin.register UserEmailFile do
+ActiveAdmin.register EmailFile do
 
 
 end

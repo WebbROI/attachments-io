@@ -32,22 +32,79 @@
   </pre>
 </div>
 
-<% unless @emails.empty? %>
-  <h2>Account: <%= current_user.email %></h2>
-  <table class="table table-striped">
-    <% @emails.each do |email| %>
-      <tr>
-        <td>
-          <p><strong><%= email.subject %> <span class="label label-info"><%= email.label %></span></strong></p>
-          <p><small>From: <%= email.from %> | To: <%= email.to %> | Date: <%= Time.at(email.date).to_formatted_s(:long) %></small></p>
-          <p>Files:</p>
-          <ul>
-            <% email.files.each do |file| %>
-              <li><%= link_to file.filename, file.link, target: '_blank' %> <small>(size: <%= number_to_human_size(file.size) %>)</small></li>
-            <% end %>
-          </ul>
-        </td>
-      </tr>
+<% if @emails.empty? %>
+  <% if @user.now_synchronizes? %>
+    <div class="text-center">
+      <h3>Synchronization in process. Please wait few seconds to look at magic ;)</h3>
+    </div>
+  <% else %>
+    <div class="text-center">
+      <h3>You don't have synchronized emails. But you can fix it ;)</h3>
+      <%= link_to sync_start_path, class: 'btn btn-success btn-large' do %>
+      <span class="glyphicon glyphicon-play"></span>
+      Start synchronizations
+    </div>
     <% end %>
-  </table>
+  <% end %>
+<% else %>
+  <div class="btn-group">
+    <div class="btn btn-default" id="emails-files-down">Show files</div>
+    <div class="btn btn-default" id="emails-files-up">Hide files</div>
+  </div>
+  <div class="email-items">
+    <% @emails.each do |email| %>
+      <div class="email-item">
+        <div class="email-header">
+          <div class="row">
+            <div class="col-md-9">
+              <div class="email-subject">
+                <%= email.subject %>
+                <span class="label label-info"><%= email.label %></span>
+              </div>
+            </div>
+            <div class="col-md-1">
+              <div class="email-count-files">
+                <%= pluralize(email.files.size, 'file') %>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="email-date text-right">
+                <%= Time.at(email.date).to_formatted_s(:short) %>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="email-data">
+          <div class="email-files">
+            <% email.files.each do |file| %>
+            <div class="email-file">
+              <div class="row">
+                <div class="col-md-7">
+                  <div class="email-file-name">
+                    <% if file.status == EmailFile::UPLOADED %>
+                      <span class="label label-success">Uploaded</span>
+                    <% elsif file.status == EmailFile::ALREADY_UPLOADED %>
+                      <span class="label label-warning">Already uploaded</span>
+                    <% end %>
+                    <%= link_to file.filename, file.link, target: '_blank' %>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="email-file-type">
+                    <%= file.file_type %>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="email-file-size text-right">
+                    <%= number_to_human_size(file.size) %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
 <% end %>

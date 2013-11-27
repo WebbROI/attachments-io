@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131125114957) do
+ActiveRecord::Schema.define(version: 20131127124014) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "namespace"
@@ -46,6 +46,25 @@ ActiveRecord::Schema.define(version: 20131125114957) do
   add_index "admin_users", ["email"], name: "index_admin_users_on_email", unique: true
   add_index "admin_users", ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
 
+  create_table "email_files", force: true do |t|
+    t.integer  "email_id"
+    t.string   "filename"
+    t.integer  "size"
+    t.string   "link"
+    t.datetime "created_at"
+    t.string   "ext"
+    t.integer  "status"
+  end
+
+  create_table "emails", force: true do |t|
+    t.integer "user_id"
+    t.string  "label"
+    t.string  "subject"
+    t.string  "from"
+    t.string  "to"
+    t.integer "date"
+  end
+
   create_table "extensions", force: true do |t|
     t.string "extension"
     t.string "file_type"
@@ -63,24 +82,6 @@ ActiveRecord::Schema.define(version: 20131125114957) do
     t.string  "documents_extensions"
     t.integer "documents_min_size"
     t.integer "documents_max_size"
-  end
-
-  create_table "user_email_files", force: true do |t|
-    t.integer  "user_email_id"
-    t.string   "filename"
-    t.integer  "size"
-    t.string   "link"
-    t.datetime "created_at"
-    t.string   "ext"
-  end
-
-  create_table "user_emails", force: true do |t|
-    t.integer "user_id"
-    t.string  "label"
-    t.string  "subject"
-    t.string  "from"
-    t.string  "to"
-    t.integer "date"
   end
 
   create_table "user_profiles", force: true do |t|

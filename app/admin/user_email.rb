@@ -1,4 +1,4 @@
-ActiveAdmin.register UserEmail do
+ActiveAdmin.register Email do
 
 
 end

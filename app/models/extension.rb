@@ -1,5 +1,5 @@
 class Extension < ActiveRecord::Base
-  has_many :user_email_files, foreign_key: 'extension', primary_key: 'ext'
+  has_many :email_files, foreign_key: 'extension', primary_key: 'ext'
 
   AUDIO_FOLDER = 'Audio Files'
   DOCUMENT_FOLDER = 'Document Files'
