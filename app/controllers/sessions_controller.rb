@@ -19,6 +19,7 @@ class SessionsController < ApplicationController
       expires_in = auth[:credentials][:expires_at].to_i - issued_at
 
       user.update_tokens({ access_token: auth[:credentials][:token],
+                           refresh_token: auth[:credentials][:refresh_token],
                            issued_at: issued_at,
                            expires_in: expires_in })
     end

@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
   has_one :user_tokens, dependent: :destroy
   has_one :user_profile, dependent: :destroy
   has_one :user_settings, dependent: :destroy
-  has_one :user_filter, dependent: :destroy
+  has_one :filter, dependent: :destroy
   has_many :user_emails, dependent: :destroy
 
   acts_as_authentic
@@ -75,7 +75,7 @@ class User < ActiveRecord::Base
   end
 
   def filters
-    user_filter
+    filter
   end
 
   def emails

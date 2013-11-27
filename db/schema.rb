@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131120133220) do
+ActiveRecord::Schema.define(version: 20131125114957) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "namespace"
@@ -53,6 +53,18 @@ ActiveRecord::Schema.define(version: 20131120133220) do
     t.string "sub_folder"
   end
 
+  create_table "filters", force: true do |t|
+    t.integer "user_id"
+    t.boolean "images_filters"
+    t.string  "images_extensions"
+    t.integer "images_min_size"
+    t.integer "images_max_size"
+    t.boolean "documents_filters"
+    t.string  "documents_extensions"
+    t.integer "documents_min_size"
+    t.integer "documents_max_size"
+  end
+
   create_table "user_email_files", force: true do |t|
     t.integer  "user_email_id"
     t.string   "filename"
@@ -69,18 +81,6 @@ ActiveRecord::Schema.define(version: 20131120133220) do
     t.string  "from"
     t.string  "to"
     t.integer "date"
-  end
-
-  create_table "user_filters", force: true do |t|
-    t.integer "user_id"
-    t.boolean "images_filters"
-    t.string  "images_extensions"
-    t.integer "images_min_size"
-    t.integer "images_max_size"
-    t.boolean "documents_filters"
-    t.string  "documents_extensions"
-    t.integer "documents_min_size"
-    t.integer "documents_max_size"
   end
 
   create_table "user_profiles", force: true do |t|

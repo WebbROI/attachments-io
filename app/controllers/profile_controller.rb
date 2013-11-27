@@ -3,7 +3,7 @@ class ProfileController < ApplicationController
 
   def show
     @user = current_user
-    @emails = @user.emails#.includes(:user_email_files).all
+    @emails = @user.emails.includes(:user_email_files).all
 
     if @user.token_expire? && !@user.has_refresh_token?
       flash[:error] = render_to_string partial: 'partials/messages/token_expire'
@@ -18,7 +18,7 @@ class ProfileController < ApplicationController
       if (params[:user_settings] && @settings.update_attributes(settings_params)) ||
          (params[:user_profile] && @profile.update_attributes(profile_params))
 
-        flash[:success] = 'Settings was successful updated'
+        redirect_to profile_path, flash: { success: 'Settings was successful updated' }
       else
         flash[:error] = 'Sorry, something was wrong'
       end

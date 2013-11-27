@@ -3,6 +3,7 @@ Rails.application.config.middleware.use OmniAuth::Builder do
            {
                name: :google,
                scope: 'userinfo.email, userinfo.profile, plus.me, https://www.googleapis.com/auth/drive, https://mail.google.com/',
-               access_type: 'offline'
+               access_type: 'offline',
+               prompt: 'consent'
            }
 end

@@ -1,0 +1,16 @@
+[
+  <% @emails.each_with_index do |email, index| %>
+  {
+    "id": <%= email.id %>,
+    "label": "<%= email.label %>",
+    "subject": "<%= email.subject %>",
+    "from": "<%= email.from %>",
+    "to": "<%= email.to %>",
+    "date": "<%= email.date %>",
+    "files": <%= raw email.files.to_json %>
+  }
+    <% if index != @emails.size - 1 %>
+        ,
+    <% end %>
+  <% end %>
+]
