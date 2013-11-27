@@ -9,6 +9,12 @@ AttachmentsIO::Application.routes.draw do
   # You can have the root of your site routed with "root"
   root 'profile#show'
 
+  # Admin-Panel
+  ActiveAdmin.routes(self)
+  devise_for :admin_users, ActiveAdmin::Devise.config
+
+  match '/admin/emails' => 'admin/emails#index', via: :get
+
   # Pages
   match '/welcome' => 'pages#home', via: :get, as: :welcome
 
@@ -32,10 +38,6 @@ AttachmentsIO::Application.routes.draw do
 
   # API
   match '/(:action).json', controller: 'api', defaults: { format: :json }, via: :get, as: :api
-
-  # Admin-Panel
-  devise_for :admin_users, ActiveAdmin::Devise.config
-  ActiveAdmin.routes(self)
 
   # DEVELOPMENT
   match '/dev/:action' => 'dev#index', via: :get, as: :dev

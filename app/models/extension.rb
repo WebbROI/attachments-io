@@ -12,6 +12,10 @@ class Extension < ActiveRecord::Base
 
   @extensions = {}
 
+  def to_s
+    extension
+  end
+
   def self.all_hash
     return @extensions_hash if defined? @extensions_hash
 

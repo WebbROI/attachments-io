@@ -12,8 +12,8 @@ ActiveAdmin.register User do
     column :email
     column :first_name
     column :last_name
-    column 'Synchronizations' do |user|
-      #raw "<pre>#{user.synchronizations.started_at}</pre>"
+    column 'Emails' do |user|
+      link_to pluralize(user.emails.size, 'email'), admin_user_emails_path(user)
     end
     column 'Registered at', :created_at
     actions
@@ -67,7 +67,7 @@ ActiveAdmin.register User do
     end
 
     def scoped_collection
-      resource_class.includes(:user_synchronizations)
+      resource_class.includes(:emails)
     end
   end
 end

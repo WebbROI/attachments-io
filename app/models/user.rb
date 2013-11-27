@@ -10,6 +10,10 @@ class User < ActiveRecord::Base
 
   acts_as_authentic
 
+  def to_s
+    email
+  end
+
   def self.create_with_omniauth(auth)
     create! do |user|
       user.uid = auth[:uid]

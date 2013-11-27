@@ -17,6 +17,10 @@ class EmailFile < ActiveRecord::Base
   UPLOADED = 1
   ALREADY_UPLOADED = 2
 
+  def to_s
+    filename
+  end
+
   def load_extension
     return @extension if defined?(@extension)
     extensions = Extension.all_hash
