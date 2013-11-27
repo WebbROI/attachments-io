@@ -92,9 +92,14 @@ body {
   }
 }
 
+.email-items-header {
+  font-size: 14px;
+  font-weight: 900;
+  padding: 20px 10px 10px;
+}
+
 .email-items {
   font-size: 13px;
-  margin: 20px 0 0;
   border-top: 1px solid #ddd;
 
   .email-item {

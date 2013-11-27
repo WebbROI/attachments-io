@@ -12,8 +12,7 @@ AttachmentsIO::Application.routes.draw do
   # Admin-Panel
   ActiveAdmin.routes(self)
   devise_for :admin_users, ActiveAdmin::Devise.config
-
-  match '/admin/emails' => 'admin/emails#index', via: :get
+  match '/admin/emails/:id' => 'admin/emails#show', via: :get
 
   # Pages
   match '/welcome' => 'pages#home', via: :get, as: :welcome

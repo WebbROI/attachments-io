@@ -21,17 +21,6 @@
 
 <p>Time for next synchronization: ~ <%= 10 - Time.now.min % 10 %> min.</p>
 
-<div class="debug-area">
-  <span class="toggle-debug-code">Show / Hide debug</span>
-  <pre class="debug-code">
-    <%= @user.to_yaml %>
-    <%= @user.profile.to_yaml %>
-    <%= @user.settings.to_yaml %>
-    <%= @user.filters.to_yaml %>
-    <%= @user.tokens.to_yaml %>
-  </pre>
-</div>
-
 <% if @emails.empty? %>
   <% if @user.now_synchronizes? %>
     <div class="text-center">
@@ -47,10 +36,15 @@
     <% end %>
   <% end %>
 <% else %>
-  <div class="btn-group">
+  <div class="btn-group btn-group-sm">
     <div class="btn btn-default" id="emails-files-down">Show files</div>
     <div class="btn btn-default" id="emails-files-up">Hide files</div>
   </div>
+  <div class="email-items-header row">
+    <div class="col-md-9">Email subject</div>
+    <div class="col-md-1">Attachments</div>
+    <div class="col-md-2 text-right">Date</div>
+    </div>
   <div class="email-items">
     <% @emails.each do |email| %>
       <div class="email-item">
