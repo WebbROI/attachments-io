@@ -34,8 +34,6 @@ class ApiController < ApplicationController
   end
 
   def emails
-    puts params
-
     @emails = current_user.emails
 
     @emails = @emails.limit(params[:limit].to_i) unless params[:limit].nil?
