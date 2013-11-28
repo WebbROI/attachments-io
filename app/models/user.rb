@@ -82,8 +82,15 @@ class User < ActiveRecord::Base
     filter
   end
 
-  def files
-    []
+  def files_for_sync
+    files = {}
+    emails.includes(:email_files).each do |email|
+      email.files.each do |file|
+        files[file.filename] = { size: file.size, link: file.link, label: email.label }
+      end
+    end
+
+    files
   end
 
   #

@@ -190,11 +190,7 @@ module Synchronization
       #  end
       #end
 
-      unless @user.files.empty?
-        @user.files.each do |file|
-          @files[file.filename] = { size: file.size, link: file.link, label: file.user_email.label }
-        end
-      end
+      @files = @user.files_for_sync
 
       @logger.debug "#{@user.email} " +  'Folders and files was successful processed'
     end
