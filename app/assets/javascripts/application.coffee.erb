@@ -1,7 +1,6 @@
 
-
-#= require app/services
-#= require app/directives
+#= require services
+#= require directives
 
 # --
 # attachments app (angular directives, services, controllers)
@@ -18,37 +17,52 @@ deps = [
 app = angular.module 'attachments', deps
 
 app.run ([
-	'$rootScope', '$location',
-	($rootScope, $location)->
+	'$rootScope', '$location', '$window',
+	(self, $location, $window)->
 		console.log("Attachments.IO - Started")
 
-#		pattern = '';
-#		_.each(routingDeps, (dependency, index, list) ->
-#			dependency = dependency.replace("attachments.", '');
+])
+
+
+app.value "Config",
+	SYNC_STATUS_FINISHED: 2
+	SYNC_STATUS_INPROCESS: 1
+	SYNC_STATUS_ERROR: 0
+
+app.controller('MainPageCtrl', [
+	'$scope', 'EventSource', '$routeParams', 'API', 'Config',
+	($scope, EventSource, $routeParams, API, Config) ->
+
+		source = EventSource
+		$scope.config = Config
+
+		API.me.get (me) ->
+			$scope.me = me
+
+		API.emails.get (emails) ->
+			$scope.emails = emails
+			console.log $scope
+
+
+
+#		API.sync.get {id: $routeParams.id}, (response) ->
+#			$scope.files = response.files
+#			$scope.sync = response.sync
 #
-#			if dependency.slice( dependency.length - 1, dependency.length) == 's'
-#				dependency = dependency.slice(0, dependency.length - 1)
-#
-#			pattern = pattern + dependency + ( if index < list.length - 1 then "|" else "" )
-#		) # should looks like "tag|user|event|request "
-#
-#		$( () ->
-#			# set unreal mask if this is not page that supports routing
-#			pattern = '_' unless (new RegExp("\/(((#{pattern})+))")).test($location.path())
-#
-#			s = "(^\/((#{pattern})+|$)|(http|https):\/\/[a-z0-9\.]+\/(((#{pattern})+)|$))"
-#
-#			regex = new RegExp(s)
-#
-#			$('a').livequery( () ->
-#
-#				href = $(this).prop('href').replace("#", '');
-#
-#				if (!regex.test(href) && $(this).prop('target') != '_blank')
-#					# fixing issue with return back to the Angular Routing pages
-#					# from backend rendered pages
-#					$(this).prop('target', '_self');
-#
+#			source.addEventListener('progressbar', (event) ->
+#				data = JSON.parse event.data
+#				console.log('progressbar', data)
 #			)
-#		)
+#
+#			source.addEventListener('synchronization_add_file', (event) ->
+#				data = JSON.parse(event.data);
+#				console.log('synchronization_add_file', data)
+#			)
+#
+#			source.addEventListener('synchronization_update', (event) ->
+#				data = JSON.parse(event.data)
+#				console.log('synchronization_update', data)
+#
+#			);
+
 ])

@@ -1,3 +1,6 @@
+<div ng-controller="MainPageCtrl">
+  {{ $log.log(emails) }}
+
 <% if @user.now_synchronizes? %>
   <div class="alert alert-success">
     <p><strong>Synchronization in process. Please, wait..</strong></p>
@@ -40,65 +43,51 @@
     <div class="btn btn-default" id="emails-files-down">Show files</div>
     <div class="btn btn-default" id="emails-files-up">Hide files</div>
   </div>
-  <div class="email-items-header row">
-    <div class="col-md-9">Email subject</div>
-    <div class="col-md-1">Attachments</div>
-    <div class="col-md-2 text-right">Date</div>
-    </div>
-  <div class="email-items">
-    <% @emails.each do |email| %>
-      <div class="email-item">
-        <div class="email-header">
-          <div class="row">
-            <div class="col-md-9">
-              <div class="email-subject">
-                <%= email.subject %>
-                <span class="label label-info"><%= email.label %></span>
-              </div>
-            </div>
-            <div class="col-md-1">
-              <div class="email-count-files">
-                <%= pluralize(email.files.size, 'file') %>
-              </div>
-            </div>
-            <div class="col-md-2">
-              <div class="email-date text-right">
-                <%= Time.at(email.date).to_formatted_s(:short) %>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="email-data">
-          <div class="email-files">
-            <% email.files.each do |file| %>
-            <div class="email-file">
-              <div class="row">
-                <div class="col-md-7">
-                  <div class="email-file-name">
-                    <% if file.status == EmailFile::UPLOADED %>
-                      <span class="label label-success">Uploaded</span>
-                    <% elsif file.status == EmailFile::ALREADY_UPLOADED %>
-                      <span class="label label-warning">Already uploaded</span>
-                    <% end %>
-                    <%= link_to file.filename, file.link, target: '_blank' %>
-                  </div>
-                </div>
-                <div class="col-md-3">
-                  <div class="email-file-type">
-                    <%= file.file_type %>
-                  </div>
-                </div>
-                <div class="col-md-2">
-                  <div class="email-file-size text-right">
-                    <%= number_to_human_size(file.size) %>
-                  </div>
-                </div>
-              </div>
-            </div>
-          <% end %>
-          </div>
-        </div>
-      </div>
-    <% end %>
-  </div>
+
+    <table class="table table-striped">
+      <thead>
+	      <tr>
+	        <th><i class="glyphicon glyphicon-plus"></i></th>
+	        <th>From</th>
+	        <th>Subject</th>
+	        <th>Label</th>
+	        <th>Files Count</th>
+	      </tr>
+      </thead>
+      <tbody ng-repeat='email in emails'>
+		<tr>
+			<td><i class="glyphicon glyphicon-plus"></i></td>
+			<td>{{ email.from }}</td>
+			<td>{{ email.subject }}</td>
+			<td>{{ email.label }}</td>
+			<td>
+			  <ng-pluralize count="email.files.length"
+			                when="{  '0': 'No files.',
+				                     'one': '1 file.',
+				                     'other': '{} files.'}">
+			  </ng-pluralize>
+			</td>
+		</tr>
+		<tr>
+          <td colspan="5">
+            <table class="table">
+              <thead> <th>Name</th> <th>Type</th> <th>Size</th> </thead>
+              <tbody ng-repeat="file in email.files">
+                <tr>
+                  <td>
+                    <span ng-if="file.status == <%= EmailFile::UPLOADED %>" class="label label-success">New</span>
+                    <span ng-if="file.status == <%= EmailFile::ALREADY_UPLOADED %>" class="label label-warning">Uploaded</span>
+                    <a href="{{ file.link }}" target="_blank">{{ file.filename }}</a>
+                  </td>
+                  <td> {{ file.ext }} </td>
+                  <td> {{ file.size }} </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+		</tr>
+      </tbody>
+    </table>
+
 <% end %>
+</div>

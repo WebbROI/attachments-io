@@ -13,6 +13,16 @@ class ApiController < ApplicationController
     end
   end
 
+  def me
+	@user = current_user
+	user = @user.as_json
+	user[:sync_status] = if @user.now_synchronizes? then @user.now_synchronizes else false end
+
+	respond_to do |format|
+		format.json { render json: user }
+	end
+  end
+
   def emails
     puts params
 
