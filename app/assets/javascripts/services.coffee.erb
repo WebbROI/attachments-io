@@ -9,5 +9,13 @@ app.service( 'EventSource', [ ->
 app.factory( 'API', [
   '$resource',
   ($resource) ->
-    sync: $resource('/sync/details/:id.json')
+    sync: $resource('/sync.json')
+    emails: $resource(
+		    '/emails.json',
+            {},
+		    'get':
+			    method:'GET'
+			    isArray: true
+		    )
+    me: $resource('/me.json')
 ])
