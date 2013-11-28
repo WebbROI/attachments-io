@@ -14,13 +14,23 @@ class ApiController < ApplicationController
   end
 
   def me
-	@user = current_user
-	user = @user.as_json
-	user[:sync_status] = if @user.now_synchronizes? then @user.now_synchronizes else false end
+    @user = current_user
+    user = @user.as_json
+    user[:sync_status] = @user.now_synchronizes? ? true : false
 
-	respond_to do |format|
-		format.json { render json: user }
-	end
+    user.delete('uid')
+    user.delete('persistence_token')
+    user.delete('login_count')
+    user.delete('current_login_at')
+    user.delete('current_login_ip')
+    user.delete('last_login_at')
+    user.delete('last_login_ip')
+    user.delete('created_at')
+    user.delete('updated_at')
+
+    respond_to do |format|
+      format.json { render json: user }
+    end
   end
 
   def emails
