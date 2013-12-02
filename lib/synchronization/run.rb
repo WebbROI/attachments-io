@@ -360,7 +360,9 @@ module Synchronization
     end
 
     def finish
-      @imap.disconnect
+      if @imap && !@imap.disconnected?
+        @imap.disconnect
+      end
 
       if @params[:logging]
         @logger.debug "Synchronization finished. Time: #{Time.now - @started_at} sec."
