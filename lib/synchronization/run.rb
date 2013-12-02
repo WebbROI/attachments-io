@@ -360,6 +360,7 @@ module Synchronization
     end
 
     def finish
+      Synchronization::Process.remove(@user.id)
       if @imap && !@imap.disconnected?
         @imap.disconnect
       end
