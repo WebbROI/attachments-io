@@ -12,7 +12,7 @@ task start_synchronizations: :environment do
         puts "Start synchronization for: #{user.email}"
 
         sleep Random.new.rand
-        user.start_synchronization(rake: true)
+        user.start_synchronization(thread: false, logging: true)
 
         puts "= End sycnhronization for: #{user.email}. Time: #{Time.now - started_user_at} sec."
       end
