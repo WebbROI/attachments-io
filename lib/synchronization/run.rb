@@ -1,137 +1,106 @@
 module Synchronization
-  # @author Andrew Emelianenko
+  require 'benchmark'
+  require 'transliteration'
 
   # List of convertible extensions for google drive
   CONVERT_EXTENSIONS = %w(.doc .docx .html .txt .rtf .xls .xlsx .ods .csv .tsv .tab .ppt .pps .pptx)
 
-  # Statuses of synchronizations
-  INPROCESS = 'inprocess'
-  WAITING = 'waiting'
-
   class Run
-    include ActionView::Helpers
 
-    # Start synchronization for user
-    #
-    # @param user [User]
-    # @param params hash of parameters
     def initialize(user, params = {})
-      return if (Synchronization::Process.check(user.id))
-      Synchronization::Process.add(user.id,
-                                   {
-                                       status: :inprocess,
-                                       started_at: nil,
-                                       email_count: nil,
-                                       email_parsed: nil
-                                   })
+      return if Synchronization::Process.check(user.id)
+      Synchronization::Process.add(user.id, { status: Synchronization::INPROCESS })
+
+      @started_at = Time.now
 
       @user = user
-      @params = params
+      @params = DEFAULT_PARAMS.merge(params)
 
-      if @params[:debug] == true || @params[:rake] == true
-        thread
-      else
+      if @params[:debug]
+        @params[:thread] = false
+        @params[:logging] = true
+      end
+
+      if @params[:logging]
+        #@logger = Logger.new('log/synchronization.log')
+        @logger = Logger.new("log/synchronizations/#{@user.email}.log")
+        @logger.debug "START: #{Time.now.to_formatted_s(:long)}"
+      end
+
+      if @params[:thread]
         Thread.new do
-          thread
+          start
         end
+      else
+        start
       end
     end
 
     private
 
-    @user
-    @user_api
-    @user_settings
+    DEFAULT_PARAMS = {
+        thread: true,
+        debug: false,
+        logging: false
+    }
 
-    @emails
-    @files
-    @label_folders
-    @file_types_folders
+    def start
+      imap_get_emails
 
-    @extensions
-
-    @current_label
-    @current_mail
-    @current_mail_object
-    @current_attachment
-
-    @started_at
-
-    @logger
-
-    # Main function, can start without thread
-    def thread
-      initialize_variables
-
-      load_labels_and_emails
-
-      # stop sync if we don't have emails with attachments
       if @emails.empty?
-        finish_synchronization
-        deinitialize_variables
-        return
+        if @params[:logging]
+          @logger.debug 'Empty emails to synchronize.'
+        end
+
+        update_last_sync
+        return finish
       end
 
-      load_folders_and_files
+      @user_settings = @user.settings
 
-      # sync emails
+      drive_get_folders
+
       @emails.each do |label, emails|
-        @current_label = replace_label_name(label)
-        process_current_label
-        @imap.select(label)
+        process_label(label)
 
-        emails.each do |email_id|
-          process_email(email_id)
+        @current_label_emails.each do |email|
+          process_email(email)
         end
       end
 
-      finish_synchronization
-      deinitialize_variables
+      update_last_sync
+      finish
+
     rescue => e
-      @logger.error "[ERROR] #{e.message}"
-      deinitialize_variables
+      if @params[:logging]
+        @logger.error "ERROR: #{e.message}"
+      end
+
+      finish
     end
 
-    # Initialize variables and IMAP connection
-    def initialize_variables
-      @started_at = Time.now.to_i
-      Synchronization::Process.update(@user.id, :started_at, @started_at)
-
-      @logger = Logger.new('log/synchronization.log')
-      @logger.debug "#{@user.email} " +  '==================== [SYNCHRONIZATION] ===================='
-
-      @user_api = @user.api
-      @user_settings = @user.settings
+    def imap_get_emails
+      started_at = Time.now
 
       @emails = {}
-      @files = {}
-      @label_folders = {}
-      @file_types_folders = {}
+      email_count = 0
+      @user_api = @user.api
 
       @imap = Net::IMAP.new('imap.gmail.com', 993, usessl = true, certs = nil, verify = false)
       @imap.authenticate('XOAUTH2', @user.email, @user_api.tokens[:access_token])
-
-      @extensions = Extension.all_hash
-
-      @logger.debug "#{@user.email} " +  'Variables initialized'
-    end
-
-    # Load labels and emails
-    def load_labels_and_emails
-      email_count = 0
 
       if @user.last_sync.nil?
         search_query = 'X-GM-RAW has:attachment'
       else
         time = Time.at(@user.last_sync)
-        search_query = "X-GM-RAW \"has:attachment after:#{time.year}/#{time.month}/#{time.day}\""
+        search_query =  "X-GM-RAW \"has:attachment after:#{time.year}/#{time.month}/#{time.day}\""
       end
 
       @imap.list('', '%').to_a.each do |label|
-        next unless label.attr.find_index(:Noselect).nil?
+        next if label.attr.include?(:Noselect)
 
-        @imap.select(label.name)
-        emails = @imap.search(search_query)
+        @imap.examine(label.name)
+        emails = @imap.search(search_query, 'UTF-8')
 
         next if emails.empty?
 
@@ -141,64 +110,65 @@ module Synchronization
 
       Synchronization::Process.update(@user.id, :email_count, email_count)
 
-      @logger.debug "#{@user.email} " +  'Labels and mails ids was successful loaded'
+      if @params[:logging]
+        @logger.debug "IMAP: Connected and emails ids loaded. Time: #{Time.now - started_at} sec."
+      end
     end
 
-    # Load files and folders from Google Drive
-    def load_folders_and_files
-      # load Attachments.IO folder
-      items = @user_api.load_files(title: IO_ROOT_FOLDER, is_root: true).data.items
+    def drive_get_folders
+      started_at = Time.now
 
-      # if Attachments.IO not exist, create it!
-      if items.empty?
-        result = @user_api.create_folder(title: IO_ROOT_FOLDER).data
-        @main_folder = { id: result.id, link: result.alternate_link }
+      @files = {}
+      @folders = {}
+      @main_folder = nil
 
-        return
-      else
-        folder = items.first
-        @main_folder = { id: folder.id, link: folder.alternate_link }
-      end
+      folders = @user_api.load_files(is_folder: true).data.items
 
-      # load all folders
-      all_folders = @user_api.load_files(is_folder: true).data.items
-
-      # parse label folders
-      label_ids = {}
-      all_folders.each do |folder|
-        if folder.parents[0] && folder.parents[0].id == @main_folder[:id]
-          @label_folders[folder.title] = { id: folder.id, link: folder.alternate_link, sub_folders: {} }
-          label_ids[folder.id] = folder.title
+      folders.each do |folder|
+        if folder.title == IO_ROOT_FOLDER && !!folder.parents[0].is_root
+          @main_folder = { id: folder.id, link: folder.alternate_link }
+          break
         end
       end
 
-      # parse file types folders
-      unless @label_folders.empty?
-        all_folders.each do |folder|
-          if folder.parents[0] && label_ids.include?(folder.parents[0].id)
-            @label_folders[label_ids[folder.parents[0].id]][:sub_folders][folder.title] = { id: folder.id, link: folder.alternate_link }
-            @file_types_folders[folder.id] = label_ids[folder.parents[0].id]
+      if @main_folder.nil?
+        result = @user_api.create_folder(title: IO_ROOT_FOLDER).data
+        @main_folder = { id: result.id, link: result.alternate_link }
+
+        if @params[:logging]
+          @logger.debug "Main folder created: #{IO_ROOT_FOLDER}"
+        end
+
+        return
+      end
+
+      helper_folders = {}
+      folders.each do |folder|
+        if folder.parents[0].id == @main_folder[:id]
+          @folders[folder.title] = { id: folder.id, link: folder.alternate_link, sub_folders: {} }
+          helper_folders[folder.id] = folder.title
+        end
+      end
+
+      unless @folders.empty?
+        folders.each do |folder|
+          if helper_folders[folder.parents[0].id]
+            @folders[helper_folders[folder.parents[0].id]][:sub_folders][folder.title] = { id: folder.id, link: folder.alternate_link }
           end
         end
       end
 
-      # load all files & parse it
-      #all_files = @user_api.load_files(is_folder: false).data.items
-      #all_files.each do |file|
-      #  if file.parents[0] && @file_types_folders[file.parents[0].id]
-      #    @files[file.title] = { size: file.file_size, link: file.alternate_link, parent_id: file.parents[0].id }
-      #  end
-      #end
-
       @files = @user.files_for_sync
 
-      @logger.debug "#{@user.email} " +  'Folders and files was successful processed'
+      if @params[:logging]
+        @logger.debug "DRIVE: Folders and files was loaded. Time: #{Time.now - started_at} sec."
+      end
     end
 
     # Replace label name
     #
-    # @param label [String] label name in Google Mail
-    # @param folder [String] folder name in Google Drive
+    # @param label_name [String] label name in Google Mail
+    # @@return [String] folder name in Google Drive
     def replace_label_name(label_name)
       case label_name
         when 'INBOX'
@@ -208,153 +178,157 @@ module Synchronization
       end
     end
 
-    # Create folder for label, if not exist
-    def process_current_label
-      if @label_folders[@current_label].nil?
+    def process_label(label)
+      started_at = Time.now
+
+      @imap.examine(label)
+      @current_label = replace_label_name(label)
+
+      if @folders[@current_label].nil?
         result = @user_api.create_folder(title: @current_label, parent_id: @main_folder[:id])
-        @label_folders[@current_label] = { id: result.data.id, link: result.data.alternate_link, sub_folders: {} }
+        @folders[@current_label] = { id: result.data.id, link: result.data.alternate_link, sub_folders: {} }
+
+        if @params[:logging]
+          @logger.debug "DRIVE: Folder for label created: #{@current_label}"
+        end
       end
 
-      @logger.debug "#{@user.email} " +  "Label #{@current_label} was selected"
+      threads = []
+      @current_label_emails = []
+
+      @emails[label].each do |email_id|
+        threads << Thread.new {
+          # fix imap bug
+          begin
+            mail = @imap.fetch(email_id, 'RFC822')
+          end while mail.nil?
+
+          @current_label_emails << Mail.read_from_string(mail[0].attr['RFC822'])
+        }
+      end
+
+      threads.each(&:join)
+
+      if @params[:logging]
+        @logger.debug "IMAP: Emails for label \"#{@current_label}\" downloaded. Time: #{Time.now - started_at} sec."
+      end
     end
 
-    # Load email from Google Mail and process attachments
-    #
-    # @param email_id [Integer] id of email for current label
-    def process_email(email_id)
-      @current_mail = Mail.read_from_string(@imap.fetch(email_id, 'RFC822')[0].attr['RFC822'])
+    def process_email(email)
+      started_at = Time.now
 
-      if @current_mail.from.is_a?(Array)
-        from = @current_mail.from.join(',')
+      @current_email = email
+
+      if @current_email.from.is_a?(Array)
+        from = @current_email.from.join(',')
       else
-        from = @current_mail.from.to_s
+        from = @current_email.from.to_s
       end
 
-      if @current_mail.to.is_a?(Array)
-        to = @current_mail.to.join(',')
+      if @current_email.to.is_a?(Array)
+        to = @current_email.to.join(',')
       else
-        to = @current_mail.to.to_s
+        to = @current_email.to.to_s
       end
 
-      @current_mail_object = @user.emails.create!({
-                                                       label: @current_label,
-                                                       subject: @current_mail.subject,
-                                                       from: from,
-                                                       to: to,
-                                                       date: @current_mail.date.to_i
-                                                   })
+      @current_mail_object = @user.emails.create({
+                                                      label: @current_label,
+                                                      subject: @current_email.subject,
+                                                      from: from,
+                                                      to: to,
+                                                      date: @current_email.date.to_i
+                                                  })
 
-      @current_mail.attachments.each do |attachment|
+      @current_email.attachments.each do |attachment|
         process_attachment(attachment)
       end
 
-      Synchronization::Process.update(@user.id,
-                                      :email_parsed,
-                                      Synchronization::Process.get(@user.id)[:email_parsed].to_i + 1)
-
-      @logger.debug "#{@user.email} " +  "Email #{@current_mail.subject} was successful processed"
+      if @params[:logging]
+        @logger.debug "EMAIL: Processed: #{@current_email.subject}. Time: #{Time.now - started_at} sec."
+      end
     end
 
-    # Generate filename, check is uploaded file and upload file
-    #
-    # @param attachment [Mail::Part] attachment from Mail
     def process_attachment(attachment)
       @current_attachment = attachment
-      filename = generate_filename(@current_attachment)
+      @current_filename = generate_filename_for_current
 
-      @logger.debug "#{@user.email} " +  "= Attachment \"#{filename}\" initialized"
+      if already_uploaded
+        @current_mail_object.files.create({
+                                              filename: @current_filename,
+                                              size: @files[@current_filename][:size],
+                                              link: @files[@current_filename][:link],
+                                              ext: File.extname(@current_filename),
+                                              status: EmailFile::ALREADY_UPLOADED
+                                          })
 
+        if @params[:logging]
+          @logger.debug "ATTACHMENT: Already uploaded: #{@current_filename}"
+        end
 
-
-      if is_uploaded(filename)
-        file_status = EmailFile::ALREADY_UPLOADED
-
-        @logger.debug "#{@user.email} " +  '- File already uploaded'
-      else
-        upload_file(filename)
-        file_status = EmailFile::UPLOADED
-
-        @logger.debug "#{@user.email} " +  "+ File #{filename} was successful uploaded"
+        return
       end
 
-      @current_mail_object.files.create({ filename: filename,
-                                          size: @files[filename][:size],
-                                          link: @files[filename][:link],
-                                          ext: File.extname(filename),
-                                          status: file_status })
+      upload_current_attachment
     end
 
-    # Generate filename
-    #
-    # @param attachment [Mail::Part] attachment from Mail
-    # @return [String] filename of attachment for Google Drive
-    def generate_filename(attachment)
-      # TODO: fix filename generation
-      filename = Russian.translit(attachment.filename)
-
-      if @user_settings.subject_in_filename && @current_mail.subject
-        filename = "#{Russian.translit(@current_mail.subject)} - #{filename}"
-      end
-
-      filename
-    end
-
-    # Check if file was uploaded already
-    #
-    # @param filename [String] name of file
-    # @return [TrueClass/FalseClass]
-    def is_uploaded(filename)
-      if @files[filename] &&
-         @files[filename][:label] == @current_label &&
-         @files[filename][:size] == @current_attachment.body.decoded.size
+    def already_uploaded
+      if @files[@current_filename] &&
+         @files[@current_filename][:label] == @current_label &&
+         @files[@current_filename][:size] == @current_attachment.body.decoded.size
 
         return true
       end
 
       false
-
-      #if !@files[filename].nil? &&
-      #   !@file_types_folders.nil? &&
-      #   @file_types_folders[@files[filename][:parent_id]] == @current_label# &&
-      #   #(Synchronization::CONVERT_EXTENSIONS.include?(File.extname(filename)) ||
-      #   #(!Synchronization::CONVERT_EXTENSIONS.include?(File.extname(filename)) &&
-      #   #@current_attachment.body.decoded.size == @files[filename][:size]))
-      #
-      #  return true
-      #end
-      #
-      #false
     end
 
-    # Upload file to Google Drive
-    #
-    # @param filename [String] name of file in Google Drive
-    def upload_file(filename)
-      folder = get_folder_for_file(filename)
+    def upload_current_attachment
+      folder = get_folder_type_for_file(@current_filename, @current_label)
+      @files[@current_filename] = { label: @current_label, size: @current_attachment.body.decoded.size }
 
-      temp = Tempfile.new([File.basename(@current_attachment.filename), File.extname(@current_attachment.filename)], "#{Rails.root}/tmp", encoding: 'ASCII-8BIT', binmode: true)
-      temp.write @current_attachment.body.decoded
+      filename = @current_filename
+      attachment = @current_attachment
+      email = @current_mail_object
+
+      if @params[:logging]
+        @logger.debug "ATTACHMENT: Uploading: #{filename}"
+      end
+
+      temp = Tempfile.new([File.basename(filename), File.extname(filename)], "#{Rails.root}/tmp", encoding: 'ASCII-8BIT', binmode: true)
+      temp.write(attachment.body.decoded)
       temp.rewind
       temp.close
 
-      convert_file = !!(@user_settings.convert_files && Synchronization::CONVERT_EXTENSIONS.include?(File.extname(filename)))
+      convert_file = !!(@user_settings.convert_files && CONVERT_EXTENSIONS.include?(File.extname(filename)))
 
       result = @user_api.upload_file({ path: temp.path,
                                        title: filename,
-                                       mime_type: @current_attachment.mime_type,
+                                       mime_type: attachment.mime_type,
                                        parent_id: folder[:id],
                                        convert: convert_file })
 
-      temp.unlink
+      @files[filename][:link] = result.data.alternate_link
 
-      @files[filename] = { size: @current_attachment.body.decoded.size, link: result.data.alternate_link, label: @current_label, parent_id: folder[:id] }
+      if result.data.alternate_link.nil? || result.data.alternate_link.empty?
+        result.data.to_yaml
+      end
+
+      email.files.create({
+                             filename: filename,
+                             size: @files[filename][:size],
+                             link: @files[filename][:link],
+                             ext: File.extname(filename),
+                             status: EmailFile::UPLOADED
+                         })
+
+      temp.unlink
     end
 
-    # Return folder for file
-    #
-    # @param filename [String] name of file
-    # @return folder structure
-    def get_folder_for_file(filename)
+    def get_folder_type_for_file(filename, label)
+      unless defined? @extensions
+        @extensions = Extension.all_hash
+      end
+
       ext = File.extname(filename)
       extension = @extensions[ext]
 
@@ -364,30 +338,33 @@ module Synchronization
         folder_name = Extension::OTHER
       end
 
-      if @label_folders[@current_label][:sub_folders][folder_name].nil?
-        result = @user_api.create_folder(title: folder_name, parent_id: @label_folders[@current_label][:id]).data
-        @label_folders[@current_label][:sub_folders][folder_name] = { id: result.id, link: result.alternate_link }
-        @file_types_folders[result.id] = @current_label
+      if @folders[label][:sub_folders][folder_name].nil?
+        result = @user_api.create_folder(title: folder_name, parent_id: @folders[label][:id]).data
+        @folders[label][:sub_folders][folder_name] = { id: result.id, link: result.alternate_link }
+
+        if @params[:logging]
+          @logger.debug "DRIVE: Sub-folder \"#{folder_name}\" for label \"#{label}\" created."
+        end
       end
 
-      @label_folders[@current_label][:sub_folders][folder_name]
+      @folders[@current_label][:sub_folders][folder_name]
     end
 
-    # Update last sync
-    def finish_synchronization
-      @user.update_attribute(:last_sync, @started_at)
+    def generate_filename_for_current
+      filename = @current_attachment.filename
+      Transliteration.transliterate(filename)
     end
 
-    # Deinitialize variables
-    def deinitialize_variables
-      if @imap && !@imap.disconnected?
-        @imap.disconnect
+    def update_last_sync
+      @user.update_attribute(:last_sync, @started_at.to_i)
+    end
+
+    def finish
+      @imap.disconnect
+
+      if @params[:logging]
+        @logger.debug "Synchronization finished. Time: #{Time.now - @started_at} sec."
       end
-
-      @logger.debug "#{@user.email} " +  "Time elapsed: #{Time.now.to_i - @started_at} sec."
-      @logger.debug "#{@user.email} " +  'Variables was successful deinitialized'
-
-      Synchronization::Process.remove(@user.id)
     end
   end
 end

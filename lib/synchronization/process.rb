@@ -1,4 +1,9 @@
 module Synchronization
+
+  # Statuses of synchronizations
+  INPROCESS = 'inprocess'
+  WAITING = 'waiting'
+
   class Process
 
     # Add user to now synchronizes list

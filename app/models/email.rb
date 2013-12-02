@@ -4,19 +4,13 @@ class Email < ActiveRecord::Base
 
   default_scope -> { order(date: :desc) }
 
+  alias :files :email_files
+
   def to_s
     if subject
       subject
     else
       'No subject'
     end
-  end
-
-  #
-  # Aliases
-  #
-
-  def files
-    email_files
   end
 end
