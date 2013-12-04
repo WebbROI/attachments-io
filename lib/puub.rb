@@ -6,12 +6,17 @@ class Puub
   def initialize
     super
 
-    @publish ||= Hash.new
+    @publish ||= {}
   end
 
   def publish(channel, data)
-    @publish[channel] ||= Array.new
+    @publish[channel] ||= []
     @publish[channel] << data
+  end
+
+  def publish_for_user(user, data)
+    return unless user_signed_in?
+    publish("user_#{user.id}", data)
   end
 
   def subscribe(channel, &block)
@@ -26,6 +31,11 @@ class Puub
     @publish[channel].clear
   end
 
+  def subscribe_to_user(user, &block)
+    return unless user_signed_in?
+    subscribe("user_#{user.id}", &block);
+  end
+
   def clear_channel(channel)
     @publish[channel].clear unless @publish[channel].empty?
   end
@@ -33,5 +43,7 @@ class Puub
   def clear_all
     @publish.clear
   end
+
+  private @publish
 
 end
