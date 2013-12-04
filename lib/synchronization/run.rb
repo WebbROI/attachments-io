@@ -93,7 +93,7 @@ module Synchronization
         search_query = 'X-GM-RAW has:attachment'
       else
         time = Time.at(@user.last_sync)
-        search_query =  "X-GM-RAW \"has:attachment after:#{time.year}/#{time.month}/#{time.day}\""
+        search_query =  "X-GM-RAW \"has:attachment after:#{time.to_i}\""
       end
 
       @imap.list('', '%').to_a.each do |label|
