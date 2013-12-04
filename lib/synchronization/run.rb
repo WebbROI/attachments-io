@@ -1,4 +1,5 @@
 module Synchronization
+  require 'puub'
   require 'benchmark'
   require 'transliteration'
 
@@ -39,6 +40,7 @@ module Synchronization
     private
 
     DEFAULT_PARAMS = {
+        puub: true,
         thread: true,
         debug: false,
         logging: false
@@ -110,6 +112,10 @@ module Synchronization
 
       Synchronization::Process.update(@user.id, :email_count, email_count)
 
+      if @params[:puub]
+        Puub.instance.publish_for_user(@user, { event: :update_email_count, data: { email_count: email_count } })
+      end
+
       if @params[:logging]
         @logger.debug "IMAP: Connected and emails ids loaded. Time: #{Time.now - started_at} sec."
       end
@@ -160,6 +166,10 @@ module Synchronization
 
       @files = @user.files_for_sync
 
+      if @params[:puub]
+        Puub.instance.publish_for_user(@user, { event: :drive_folders_loaded })
+      end
+
       if @params[:logging]
         @logger.debug "DRIVE: Folders and files was loaded. Time: #{Time.now - started_at} sec."
       end
@@ -209,6 +219,10 @@ module Synchronization
 
       threads.each(&:join)
 
+      if @params[:puub]
+        Puub.instance.publish_for_user(@user, { event: :process_label, data: { label: @current_label } })
+      end
+
       if @params[:logging]
         @logger.debug "IMAP: Emails for label \"#{@current_label}\" downloaded. Time: #{Time.now - started_at} sec."
       end
@@ -239,6 +253,10 @@ module Synchronization
                                                       date: @current_email.date.to_i
                                                   })
 
+      if @params[:puub]
+        Puub.instance.publish_for_user(@user, { event: :process_email, data: @current_mail_object.to_json })
+      end
+
       @current_email.attachments.each do |attachment|
         process_attachment(attachment)
       end
@@ -253,13 +271,17 @@ module Synchronization
       @current_filename = generate_filename_for_current
 
       if already_uploaded
-        @current_mail_object.files.create({
+        file = @current_mail_object.files.create({
                                               filename: @current_filename,
                                               size: @files[@current_filename][:size],
                                               link: @files[@current_filename][:link],
                                               ext: File.extname(@current_filename),
                                               status: EmailFile::ALREADY_UPLOADED
                                           })
+
+        if @params[:puub]
+          Puub.instance.publish_for_user(@user, { event: :attachment_upload, data: file.to_json })
+        end
 
         if @params[:logging]
           @logger.debug "ATTACHMENT: Already uploaded: #{@current_filename}"
@@ -290,10 +312,6 @@ module Synchronization
       attachment = @current_attachment
       email = @current_mail_object
 
-      if @params[:logging]
-        @logger.debug "ATTACHMENT: Uploading: #{filename}"
-      end
-
       temp = Tempfile.new([File.basename(filename), File.extname(filename)], "#{Rails.root}/tmp", encoding: 'ASCII-8BIT', binmode: true)
       temp.write(attachment.body.decoded)
       temp.rewind
@@ -307,13 +325,16 @@ module Synchronization
                                        parent_id: folder[:id],
                                        convert: convert_file })
 
+      temp.unlink
+
       @files[filename][:link] = result.data.alternate_link
 
+      # for debug
       if result.data.alternate_link.nil? || result.data.alternate_link.empty?
-        result.data.to_yaml
+        puts result.data.to_yaml
       end
 
-      email.files.create({
+      file = email.files.create({
                              filename: filename,
                              size: @files[filename][:size],
                              link: @files[filename][:link],
@@ -321,7 +342,13 @@ module Synchronization
                              status: EmailFile::UPLOADED
                          })
 
-      temp.unlink
+      if @params[:puub]
+        Puub.instance.publish_for_user(@user, { event: :attachment_upload, data: file.to_json })
+      end
+
+      if @params[:logging]
+        @logger.debug "ATTACHMENT: Uploaded: #{filename}"
+      end
     end
 
     def get_folder_type_for_file(filename, label)
@@ -363,6 +390,10 @@ module Synchronization
       Synchronization::Process.remove(@user.id)
       if @imap && !@imap.disconnected?
         @imap.disconnect
+      end
+
+      if @params[:puub]
+        Puub.instance.publish_for_user(@user, { event: :finish })
       end
 
       if @params[:logging]

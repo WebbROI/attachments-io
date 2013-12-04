@@ -15,7 +15,6 @@ class Puub
   end
 
   def publish_for_user(user, data)
-    return unless user_signed_in?
     publish("user_#{user.id}", data)
   end
 
@@ -32,7 +31,6 @@ class Puub
   end
 
   def subscribe_to_user(user, &block)
-    return unless user_signed_in?
     subscribe("user_#{user.id}", &block);
   end
 
@@ -44,6 +42,8 @@ class Puub
     @publish.clear
   end
 
-  private @publish
+  private
+
+  @publish
 
 end
