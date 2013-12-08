@@ -3,7 +3,6 @@ class ApplicationController < ActionController::Base
   require 'google/API'
 
   protect_from_forgery with: :exception
-  before_filter :puub
   before_filter :initialize_user
   helper_method :current_user_session, :current_user, :user_signed_in?
 
@@ -32,9 +31,5 @@ class ApplicationController < ActionController::Base
 
     def not_authenticated_user!
       redirect_to welcome_path, flash: { error: 'This page only for guests' } if user_signed_in?
-    end
-
-    def puub
-      @@puub ||= Puub.instance
     end
 end

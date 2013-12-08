@@ -5,7 +5,7 @@ class StreamingController < ApplicationController
     response.headers['Content-Type'] = 'text/event-stream'
 
     if user_signed_in?
-      @@puub.subscribe_to_user current_user do |message|
+      Puub.instance.subscribe_to_user current_user do |message|
         response.stream.write "event: #{message[:event]}\n"
         response.stream.write "data: #{message[:data].to_json}\n\n"
       end

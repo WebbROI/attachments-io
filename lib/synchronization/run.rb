@@ -68,6 +68,8 @@ module Synchronization
         @current_label_emails.each do |email|
           process_email(email)
         end
+
+        upload_label_attachments
       end
 
       update_last_sync
@@ -191,6 +193,7 @@ module Synchronization
     def process_label(label)
       started_at = Time.now
 
+      @attachments = []
       @imap.examine(label)
       @current_label = replace_label_name(label)
 
@@ -290,7 +293,7 @@ module Synchronization
         return
       end
 
-      upload_current_attachment
+      add_current_attachment
     end
 
     def already_uploaded
@@ -304,13 +307,11 @@ module Synchronization
       false
     end
 
-    def upload_current_attachment
+    def add_current_attachment
       folder = get_folder_type_for_file(@current_filename, @current_label)
-      @files[@current_filename] = { label: @current_label, size: @current_attachment.body.decoded.size }
 
       filename = @current_filename
       attachment = @current_attachment
-      email = @current_mail_object
 
       temp = Tempfile.new([File.basename(filename), File.extname(filename)], "#{Rails.root}/tmp", encoding: 'ASCII-8BIT', binmode: true)
       temp.write(attachment.body.decoded)
@@ -319,35 +320,50 @@ module Synchronization
 
       convert_file = !!(@user_settings.convert_files && CONVERT_EXTENSIONS.include?(File.extname(filename)))
 
-      result = @user_api.upload_file({ path: temp.path,
-                                       title: filename,
-                                       mime_type: attachment.mime_type,
-                                       parent_id: folder[:id],
-                                       convert: convert_file })
+      @attachments << { path: temp.path,
+                        title: filename,
+                        mime_type: attachment.mime_type,
+                        parent_id: folder[:id],
+                        convert: convert_file,
+                        temp_file: temp,
+                        email: @current_mail_object}
 
-      temp.unlink
+      @files[filename] = { label: @current_label, size: @current_attachment.body.decoded.size }
+    end
 
-      @files[filename][:link] = result.data.alternate_link
+    def upload_label_attachments
+      threads = []
+      started_at = Time.now
 
-      # for debug
-      if result.data.alternate_link.nil? || result.data.alternate_link.empty?
-        puts result.data.to_yaml
+      @attachments.each do |attachment|
+        threads << Thread.new do
+
+          result = @user_api.upload_file(attachment)
+          file = attachment[:email].files.create({
+                                        filename: attachment[:title],
+                                        size: @files[attachment[:title]][:size],
+                                        link: @files[attachment[:title]][:link],
+                                        ext: File.extname(attachment[:title]),
+                                        status: EmailFile::UPLOADED
+                                    })
+
+          @files[attachment[:title]][:link] = result.data.alternate_link
+          attachment[:temp_file].unlink
+
+          if @params[:puub]
+            Puub.instance.publish_for_user(@user, { event: :attachment_upload, data: file.to_json })
+          end
+
+          if @params[:logging]
+            @logger.debug "ATTACHMENT: Uploaded: #{attachment[:title]}"
+          end
+        end
       end
 
-      file = email.files.create({
-                             filename: filename,
-                             size: @files[filename][:size],
-                             link: @files[filename][:link],
-                             ext: File.extname(filename),
-                             status: EmailFile::UPLOADED
-                         })
-
-      if @params[:puub]
-        Puub.instance.publish_for_user(@user, { event: :attachment_upload, data: file.to_json })
-      end
+      threads.each(&:join)
 
       if @params[:logging]
-        @logger.debug "ATTACHMENT: Uploaded: #{filename}"
+        @logger.debug "DRIVE: All attachments for label #{@current_label} is uploaded. Time: #{Time.now - started_at}"
       end
     end
 
