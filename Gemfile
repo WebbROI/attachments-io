@@ -12,12 +12,15 @@ group :development do
   # Better errors
   gem 'better_errors'
   gem 'binding_of_caller'
+
+  gem 'capistrano'
 end
 
 # Production gems
 group :production do
   # Use PostrgreSQL for production
-  gem 'pg', group: :production
+  # gem 'pg', group: :production
+  gem 'sqlite3'
 
   # For Heroku assets manager
   gem 'rails_12factor', group: :production
