@@ -19,8 +19,7 @@ end
 # Production gems
 group :production do
   # Use PostrgreSQL for production
-  # gem 'pg', group: :production
-  gem 'sqlite3'
+  gem 'pg'
 
   # For Heroku assets manager
   gem 'rails_12factor', group: :production
