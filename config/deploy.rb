@@ -12,11 +12,10 @@ set :scm, :git
 # set :linked_files, %w{config/database.yml}
 # set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
 
-set :default_env, { rvm_bin_path: '/usr/local/rvm/bin' }
+# set :default_env, { rvm_bin_path: '/usr/local/rvm/bin' }
 set :keep_releases, 1
 
 set :rails_env, 'production'
-
 
 namespace :deploy do
 

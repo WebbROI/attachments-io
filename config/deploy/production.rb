@@ -1,5 +1,11 @@
 set :stage, :production
 
+# RVM settings
+set :rvm_type, :system
+
+# Assets compile
+set :normalize_asset_timestamps, %w{public/images public/javascripts public/stylesheets}
+
 # Simple Role Syntax
 # ==================
 # Supports bulk-adding hosts to roles, the primary
@@ -13,7 +19,7 @@ role :all,  %w{deploy@162.243.44.145}
 # definition into the server list. The second argument
 # something that quacks like a hash can be used to set
 # extended properties on the server.
-server '162.243.44.145', user: 'deploy', roles: %w{web app}
+server '162.243.44.145', user: 'deploy', roles: %w{web app db}
 
 # you can set custom ssh options
 # it's possible to pass any option but you need to keep in mind that net/ssh understand limited list of options
