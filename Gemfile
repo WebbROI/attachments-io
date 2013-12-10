@@ -13,7 +13,8 @@ group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
 
-  gem 'capistrano'
+  # Profiler
+  gem 'rack-mini-profiler'
 end
 
 # Production gems
@@ -22,11 +23,8 @@ group :production do
   gem 'pg'
 
   # For Heroku assets manager
-  gem 'rails_12factor', group: :production
+  # gem 'rails_12factor', group: :production
 end
-
-# Profiler
-gem 'rack-mini-profiler'
 
 # Admin-panel
 gem 'activeadmin', github: 'gregbell/active_admin'
@@ -92,10 +90,11 @@ end
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
 # Use unicorn as the app server
-# gem 'unicorn'
+gem 'unicorn', group: :production
 
 # Use Capistrano for deployment
-# gem 'capistrano', group: :development
+gem 'capistrano', '~> 3.0.0', group: :development
+gem 'capistrano-rails', '~> 1.1.0', group: :development
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
