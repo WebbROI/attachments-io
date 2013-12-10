@@ -43,7 +43,7 @@ module Synchronization
         puub: true,
         thread: true,
         debug: false,
-        logging: false
+        logging: true
     }
 
     def start
