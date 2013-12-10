@@ -22,6 +22,7 @@ production:
   adapter: postgresql
   encoding: unicode
   database: attachments_production
+  host: localhost
   pool: 500
   username: attachments
   password: Chargers36!
