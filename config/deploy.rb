@@ -6,13 +6,13 @@ set :deploy_to, '/home/rails'
 set :scm, :git
 
 # set :format, :pretty
-set :log_level, :info
+# set :log_level, :info
 # set :pty, true
 
 # set :linked_files, %w{config/database.yml}
 # set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
 
-set :default_env, { rvm_bin_path: '~/.rvm/bin' }
+set :default_env, { rvm_bin_path: '/usr/local/rvm/bin' }
 set :keep_releases, 1
 
 set :rails_env, 'production'
