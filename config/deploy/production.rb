@@ -3,6 +3,10 @@ set :stage, :production
 # RVM settings
 set :rvm_type, :system
 
+# Assets
+set :rails_env, 'production'
+set :assets_roles, [:web, :app]
+
 # Bundler
 set :bundle_gemfile, -> { release_path.join('Gemfile') }
 set :bundle_dir, -> { shared_path.join('bundle') }
