@@ -15,6 +15,7 @@ AttachmentsIO::Application.routes.draw do
   match '/admin/emails/:id' => 'admin/emails#show', via: :get
 
   # Pages
+  # match '/welcome' => redirect('http://attachments.io/'), via: :get, as: :welcome
   match '/welcome' => 'pages#home', via: :get, as: :welcome
 
   # User profile
