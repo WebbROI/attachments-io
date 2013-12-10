@@ -3,8 +3,14 @@ set :stage, :production
 # RVM settings
 set :rvm_type, :system
 
-# Assets compile
-set :normalize_asset_timestamps, %w{public/images public/javascripts public/stylesheets}
+# Bundler
+set :bundle_gemfile, -> { release_path.join('Gemfile') }
+set :bundle_dir, -> { shared_path.join('bundle') }
+set :bundle_flags, '--deployment --quiet'
+set :bundle_without, %w{development test}.join(' ')
+set :bundle_binstubs, -> { shared_path.join('bin') }
+set :bundle_roles, :all
+set :bundle_bins, %w(gem rake rails)
 
 # Simple Role Syntax
 # ==================
