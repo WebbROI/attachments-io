@@ -1,51 +1,47 @@
-<div class="main-menu">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-4">
-        <div id="logo">
-            <%= link_to '@ttachments.io', root_path, title: '@ttachments.io' %>
-          </div>
+<header id="header" class="pagewidth">
+  <nav class="navbar navbar-default navbar-static-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+          <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="<%= root_path %>">@ttachments.io</a>
       </div>
-      <div class="col-md-8">
-        <% if user_signed_in? %>
-          <div class="nav nav-pills pull-right">
-            <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                <%= "#{current_user.first_name} #{current_user.last_name}" %>
-                <span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu">
-                <li>
-                  <%= link_to 'Settings', user_settings_path %>
-                  <%= link_to 'Sign out', sign_out_path %>
-                </li>
-              </ul>
-            </li>
-          </div>
-        <% else %>
-          <ul class="nav nav-pills pull-right">
-            <li><a href="#">Pricing</a></li>
-            <li><a href="#">Blog</a></li>
-            <li><a href="#">DaaS</a></li>
-            <li><a href="#">For enterprise</a></li>
-
-            <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                Sign In / Sign Out
-                <span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu">
-                <li>
-                  <%= link_to 'Google Account', sign_in_google_path %>
-                  <%= link_to 'Google Apps', sign_in_apps_path %>
-                </li>
-              </ul>
-            </li>
-
-            <li><a href="#">Google Apps</a></li>
-          </ul>
-        <% end %>
+      <div class="collapse navbar-collapse navbar-ex1-collapse">
+        <ul id="main-nav" class="nav navbar-nav navbar-right">
+          <li><a href="http://attachments.io/pricing/">Pricing</a></li>
+          <li><a href="http://attachments.io/blog/">Blog</a></li>
+          <li><a href="http://attachments.io/about-us/">About Us</a></li>
+          <% if user_signed_in? %>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                  <%= "#{current_user.first_name} #{current_user.last_name}" %>
+                  <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <%= link_to 'Settings', user_settings_path %>
+                    <%= link_to 'Sign out', sign_out_path %>
+                  </li>
+                </ul>
+              </li>
+          <% else %>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                  Sign In / Sign Out
+                  <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <%= link_to 'Google Account', sign_in_google_path %>
+                    <%= link_to 'Google Apps', sign_in_apps_path %>
+                  </li>
+                </ul>
+              </li>
+          <% end %>
+        </ul>
       </div>
     </div>
-  </div>
-</div>
+  </nav>
+</header>
+
