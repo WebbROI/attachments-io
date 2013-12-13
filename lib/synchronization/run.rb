@@ -25,6 +25,9 @@ module Synchronization
       if @params[:logging]
         #@logger = Logger.new('log/synchronization.log')
         @logger = Logger.new("log/synchronizations_#{@user.email}.log")
+
+        @logger.debug '========================================'
+        @logger.debug '========================================'
         @logger.debug "START: #{Time.now.to_formatted_s(:long)}"
       end
 
