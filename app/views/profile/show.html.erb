@@ -53,7 +53,7 @@
 	      </tr>
       </thead>
       <tbody ng-repeat='email in emails' ng-if="email.files.length > 0">
-		<tr data-toggle="collapse"  data-parent="#emailsAndFiles" data-target="#collapse-{{ email.id }}">
+		<tr data-toggle="collapse"  data-parent="#emailsAndFiles" data-target="#collapse-{{ email.id }}" class="email-header">
 			<td class="text-center"><i class="glyphicon glyphicon-collapse-down"></i></td>
 			<td>{{ email.from }}</td>
 			<td>{{ email.subject }}</td>
