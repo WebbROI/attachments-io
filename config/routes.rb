@@ -12,7 +12,11 @@ AttachmentsIO::Application.routes.draw do
   # Admin-Panel
   ActiveAdmin.routes(self)
   devise_for :admin_users, ActiveAdmin::Devise.config
-  match '/admin/emails/:id' => 'admin/emails#show', via: :get
+
+  # Resque web
+  authenticate do
+    mount Resque::Server, at: '/resque'
+  end
 
   # Pages
   # match '/welcome' => redirect('http://attachments.io/'), via: :get, as: :welcome

@@ -3,27 +3,28 @@ module Synchronization
   require 'benchmark'
   require 'transliteration'
 
+  # Statuses of synchronizations
+  WAITING = 0
+  INPROCESS = 1
+  ERROR = 2
+  SUCCESS = 3
+
   # List of convertible extensions for google drive
   CONVERT_EXTENSIONS = %w(.doc .docx .html .txt .rtf .xls .xlsx .ods .csv .tsv .tab .ppt .pps .pptx)
 
   class Run
 
     def initialize(user, params = {})
-      return if Synchronization::Process.check(user.id)
-      Synchronization::Process.add(user.id, { status: Synchronization::INPROCESS })
-
       @started_at = Time.now
 
       @user = user
       @params = DEFAULT_PARAMS.merge(params)
 
       if @params[:debug]
-        @params[:thread] = false
         @params[:logging] = true
       end
 
       if @params[:logging]
-        #@logger = Logger.new('log/synchronization.log')
         @logger = Logger.new("log/synchronizations_#{@user.email}.log")
 
         @logger.debug '========================================'
@@ -31,20 +32,13 @@ module Synchronization
         @logger.debug "START: #{Time.now.to_formatted_s(:long)}"
       end
 
-      if @params[:thread]
-        Thread.new do
-          start
-        end
-      else
-        start
-      end
+      start
     end
 
     private
 
     DEFAULT_PARAMS = {
         puub: true,
-        thread: true,
         debug: false,
         logging: true
     }
@@ -58,7 +52,9 @@ module Synchronization
         end
 
         update_last_sync
-        return finish
+        finish
+
+        return
       end
 
       @user_settings = @user.settings
@@ -83,7 +79,7 @@ module Synchronization
         @logger.error "ERROR: #{e.message}"
       end
 
-      finish
+      finish(true)
     end
 
     def imap_get_emails
@@ -115,7 +111,7 @@ module Synchronization
         email_count += emails.count
       end
 
-      Synchronization::Process.update(@user.id, :email_count, email_count)
+      @user.sync.update_attribute(:email_count, email_count)
 
       if @params[:puub]
         Puub.instance.publish_for_user(@user, { event: :update_email_count, data: { email_count: email_count } })
@@ -405,8 +401,13 @@ module Synchronization
       @user.update_attribute(:last_sync, @started_at.to_i)
     end
 
-    def finish
-      Synchronization::Process.remove(@user.id)
+    def finish(error: false)
+      if error
+        @user.sync.update_attributes(status: Synchronization::WAITING, previous_status: Synchronization::ERROR)
+      else
+        @user.sync.update_attributes(status: Synchronization::WAITING, previous_status: Synchronization::SUCCESS)
+      end
+
       if @imap && !@imap.disconnected?
         @imap.disconnect
       end

@@ -3,13 +3,13 @@
 one:
   user_id: 1
   status: 1
-  started_at: 1
-  finished_at: 1
-  file_count: 1
+  email_count: 1
+  email_parsed: 1
+  previous_status: 1
 
 two:
   user_id: 1
   status: 1
-  started_at: 1
-  finished_at: 1
-  file_count: 1
+  email_count: 1
+  email_parsed: 1
+  previous_status: 1

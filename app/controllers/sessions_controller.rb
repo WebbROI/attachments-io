@@ -28,6 +28,7 @@ class SessionsController < ApplicationController
       user.initialize_profile
       user.initialize_settings
       user.initialize_filters
+      user.initialize_synchronization
 
       # push user to mailchimp
       gb = Gibbon::API.new('fd15479bff9f2f46d331f063dc69f506-us3')
@@ -40,7 +41,7 @@ class SessionsController < ApplicationController
                              send_welcome: true
                          })
 
-      redirect_to sync_start_path, flash: { success: 'Thank you for using our service! Synchronization was started!' }
+      #redirect_to sync_start_path, flash: { success: 'Thank you for using our service! Synchronization was started!' }
     else
       redirect_to root_path, flash: { success: 'You successful login!' }
     end

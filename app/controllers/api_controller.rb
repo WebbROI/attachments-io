@@ -2,8 +2,8 @@ class ApiController < ApplicationController
   before_filter :authenticate_user!
 
   def sync
-    if Synchronization::Process.check(current_user.id)
-      sync = Synchronization::Process.get(current_user.id)
+    if current_user.now_synchronizes?
+      sync = current_user.sync
     else
       sync = { status: 'waiting' }
     end

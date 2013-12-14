@@ -1,14 +1,21 @@
 class User < ActiveRecord::Base
+  require 'start_synchronization'
   require 'synchronization/run'
-  require 'synchronization/process'
 
   has_one :user_tokens, dependent: :destroy
   has_one :user_profile, dependent: :destroy
   has_one :user_settings, dependent: :destroy
+  has_one :user_synchronization, dependent: :destroy
   has_one :filter, dependent: :destroy
   has_many :emails, dependent: :destroy
 
   acts_as_authentic
+
+  alias :tokens :user_tokens
+  alias :settings :user_settings
+  alias :profile :user_profile
+  alias :filters :filter
+  alias :sync :user_synchronization
 
   def to_s
     email
@@ -62,24 +69,8 @@ class User < ActiveRecord::Base
     create_filter
   end
 
-  #
-  # Aliases
-  #
-
-  def tokens
-    user_tokens
-  end
-
-  def settings
-    user_settings
-  end
-
-  def profile
-    user_profile
-  end
-
-  def filters
-    filter
+  def initialize_synchronization
+    create_user_synchronization({ status: Synchronization::WAITING })
   end
 
   def files_for_sync
@@ -127,12 +118,15 @@ class User < ActiveRecord::Base
   # Synchronization
   #
 
-  def start_synchronization(params = {})
-    Synchronization::Run.new(self, params)
+  def start_synchronization(params = {}, force = false)
+    return if now_synchronizes? && !force
+    sync.inprocess!
+
+    Resque.enqueue_to("sync_user_#{self.id}_queue", StartSynchronization, self.id, params)
   end
 
   def now_synchronizes?
-    Synchronization::Process.check(id)
+    sync.inprocess?
   end
 
   #

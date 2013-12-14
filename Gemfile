@@ -12,9 +12,6 @@ group :development do
   # Better errors
   gem 'better_errors'
   gem 'binding_of_caller'
-
-  # Profiler
-  gem 'rack-mini-profiler'
 end
 
 # Production gems
@@ -25,6 +22,10 @@ group :production do
   # For Heroku assets manager
   # gem 'rails_12factor', group: :production
 end
+
+# Resque
+gem 'resque', require: 'resque/server'
+gem 'resque-scheduler'
 
 # Admin-panel
 gem 'activeadmin', github: 'gregbell/active_admin'

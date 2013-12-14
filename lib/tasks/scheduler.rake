@@ -1,25 +1,16 @@
-desc 'Start synchronization for all users. Makes every 10 minutes.'
+desc 'Start synchronization for all users. Run every 10 minutes.'
 task start_synchronizations: :environment do
-  started_at = Time.now
-
-  threads = []
-  users = User.all
+  syncs = UserSynchronization.select('user_id').waiting.to_a
+  users = User.find(syncs.map(&:user_id).uniq)
 
   users.each do |user|
-    threads << Thread.new do
-      unless user.now_synchronizes?
-        started_user_at = Time.now
-        puts "Start synchronization for: #{user.email}"
+    puts "#{user.email} sync started.."
+    user.start_synchronization({ rake: true }, true)
+    user.start_synchronization({ rake: true }, true)
+    user.start_synchronization({ rake: true }, true)
 
-        sleep Random.new.rand
-        user.start_synchronization(thread: false, logging: true)
-
-        puts "= End sycnhronization for: #{user.email}. Time: #{Time.now - started_user_at} sec."
-      end
-    end
+    Resque.enqueue(TestWorker)
+    Resque.enqueue(TestWorker)
+    Resque.enqueue(TestWorker)
   end
-
-  threads.each(&:join)
-
-  puts "All synchronization was finished at: #{Time.now - started_at} sec."
 end
