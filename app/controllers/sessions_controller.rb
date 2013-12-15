@@ -41,7 +41,7 @@ class SessionsController < ApplicationController
                              send_welcome: true
                          })
 
-      #redirect_to sync_start_path, flash: { success: 'Thank you for using our service! Synchronization was started!' }
+      redirect_to sync_start_path, flash: { success: 'Thank you for using our service! Synchronization was started!' }
     else
       redirect_to root_path, flash: { success: 'You successful login!' }
     end
