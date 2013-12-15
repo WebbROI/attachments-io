@@ -6,11 +6,5 @@ task start_synchronizations: :environment do
   users.each do |user|
     puts "#{user.email} sync started.."
     user.start_synchronization({ rake: true }, true)
-    user.start_synchronization({ rake: true }, true)
-    user.start_synchronization({ rake: true }, true)
-
-    Resque.enqueue(TestWorker)
-    Resque.enqueue(TestWorker)
-    Resque.enqueue(TestWorker)
   end
 end
