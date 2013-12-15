@@ -23,12 +23,14 @@ group :production do
   # gem 'rails_12factor', group: :production
 end
 
-# Resque
-gem 'resque', require: 'resque/server'
-gem 'resque-scheduler'
-
 # Admin-panel
 gem 'activeadmin', github: 'gregbell/active_admin'
+
+# Resque
+gem 'resque', require: 'resque/server'
+
+# Foreman
+gem 'foreman'
 
 # Authentication
 gem 'authlogic', '~> 3.3.0'

@@ -1,2 +1,1 @@
-worker: bundle exec rake resque:work RAILS_ENV=production QUEUE=*
-clock:  bundle exec rake resque:scheduler RAILS_ENV=production
+worker: bundle exec rake environment resque:work QUEUE=* COUNT=10
