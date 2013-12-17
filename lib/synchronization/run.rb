@@ -325,7 +325,7 @@ module Synchronization
                         parent_id: folder[:id],
                         convert: convert_file,
                         temp_file: temp,
-                        email: @current_mail_object}
+                        email: @current_mail_object }
 
       @files[filename] = { label: @current_label, size: @current_attachment.body.decoded.size }
     end
@@ -338,6 +338,8 @@ module Synchronization
         threads << Thread.new do
 
           result = @user_api.upload_file(attachment)
+          @files[attachment[:title]][:link] = result.data.alternate_link
+
           file = attachment[:email].files.create({
                                         filename: attachment[:title],
                                         size: @files[attachment[:title]][:size],
@@ -346,7 +348,6 @@ module Synchronization
                                         status: EmailFile::UPLOADED
                                     })
 
-          @files[attachment[:title]][:link] = result.data.alternate_link
           attachment[:temp_file].unlink
 
           if @params[:puub]
@@ -401,12 +402,14 @@ module Synchronization
       @user.update_attribute(:last_sync, @started_at.to_i)
     end
 
-    def finish(error: false)
+    def finish(error = false)
       if error
-        @user.sync.update_attributes(status: Synchronization::WAITING, previous_status: Synchronization::ERROR)
+        previous_status = Synchronization::ERROR
       else
-        @user.sync.update_attributes(status: Synchronization::WAITING, previous_status: Synchronization::SUCCESS)
+        previous_status = Synchronization::SUCCESS
       end
+
+      @user.sync.update_attributes(status: Synchronization::WAITING, previous_status: previous_status)
 
       if @imap && !@imap.disconnected?
         @imap.disconnect
