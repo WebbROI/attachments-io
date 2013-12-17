@@ -2,27 +2,36 @@
   {{ $log.log(emails) }}
 
 <% if @user.now_synchronizes? %>
-  <div class="alert alert-success">
-    <p><strong>Synchronization in process. Please, wait..</strong></p>
+  <h4>Current status: <strong class="text-success">Synchronizes</strong></h4>
+
+  <% if @sync.email_count.zero? %>
+    <small>Getting emails...</small>
+  <% elsif @sync.email_count.to_i == @sync.email_count.to_i %>
+    <smal>Finishing synchronization...</smal>
+  <% else %>
+    <small>Uploading attachments. Uploaded <%= @sync.email_parsed.to_i %> of <%= @sync.email_count.to_i %> emails..</small>
+  <% end %>
+  <div class="progress progress-striped active">
+    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="<%= @progressbar[:percent] %>" aria-valuemin="0" aria-valuemax="100" style="width: <%= @progressbar[:percent] %>%;">
+      <div class="sr-only"><%= @progressbar[:percent] %>% complete</div>
+    </div>
   </div>
 <% else %>
-  <p>
-    <%= link_to sync_start_path, class: 'btn btn-success' do %>
-      <span class="glyphicon glyphicon-play"></span>
-      Start synchronization
+  <h4>
+    Current status: <strong class="text-warning">Waiting</strong> <small>~ <%= 10 - Time.now.min % 10 %> min.</small>
+    <%= link_to sync_start_path, class: 'btn btn-success btn-xs' do %>
+      START
     <% end %>
-    <%= link_to resync_start_path, class: 'btn btn-danger', confirm: 'Reallly? O_o' do %>
-      <span class="glyphicon glyphicon-play"></span>
-      Re-synchronize all emails
+    <%= link_to resync_start_path, class: 'btn btn-danger btn-xs', data: { confirm: 'Okay :(' } do %>
+      RESYNC
     <% end %>
-  </p>
+  </h4>
 <% end %>
 
 <% unless @user.last_sync.nil? %>
-  <p>Last synchronized at: <%= Time.at(@user.last_sync).to_formatted_s(:long) %></p>
+  <p><small>Last synchronized at: <%= Time.at(@user.last_sync).to_formatted_s(:long) %></small></p>
 <% end %>
 
-<p>Time for next synchronization: ~ <%= 10 - Time.now.min % 10 %> min.</p>
 
 <% if @emails.empty? %>
   <% if @user.now_synchronizes? %>

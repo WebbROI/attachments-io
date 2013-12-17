@@ -261,6 +261,8 @@ module Synchronization
                                                       date: @current_email.date.to_i
                                                   })
 
+      @user.sync.increment!(:email_parsed)
+
       if @params[:puub]
         Puub.instance.publish_for_user(@user, { event: :process_email, data: @current_mail_object.to_json })
       end
@@ -415,7 +417,10 @@ module Synchronization
         previous_status = Synchronization::SUCCESS
       end
 
-      @user.sync.update_attributes(status: Synchronization::WAITING, previous_status: previous_status)
+      @user.sync.update_attributes(status: Synchronization::WAITING,
+                                   email_count: 0,
+                                   email_parsed: 0,
+                                   previous_status: previous_status)
 
       if @imap && !@imap.disconnected?
         @imap.disconnect

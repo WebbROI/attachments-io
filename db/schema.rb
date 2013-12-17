@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131213183021) do
+ActiveRecord::Schema.define(version: 20131217181644) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "namespace"
@@ -105,8 +105,8 @@ ActiveRecord::Schema.define(version: 20131213183021) do
   create_table "user_synchronizations", force: true do |t|
     t.integer "user_id"
     t.integer "status"
-    t.integer "email_count"
-    t.integer "email_parsed"
+    t.integer "email_count",     default: 0
+    t.integer "email_parsed",    default: 0
     t.integer "previous_status"
   end
 

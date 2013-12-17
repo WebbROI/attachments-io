@@ -5,6 +5,17 @@ class ProfileController < ApplicationController
     @user = current_user
     @emails = @user.emails.includes(:email_files).all
 
+    if @user.now_synchronizes?
+      @sync = @user.sync
+      @progressbar = {}
+
+      if @sync.email_count.zero?
+        @progressbar[:percent] = 100
+      else
+        @progressbar[:percent] = @sync.email_parsed.to_i / @sync.email_count.to_f * 100
+      end
+    end
+
     if @user.token_expire? && !@user.has_refresh_token?
       flash[:error] = render_to_string partial: 'partials/messages/token_expire'
     end
