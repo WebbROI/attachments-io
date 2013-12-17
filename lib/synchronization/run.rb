@@ -25,10 +25,9 @@ module Synchronization
       end
 
       if @params[:logging]
-        @logger = Logger.new("log/synchronizations_#{@user.email}.log")
+        @logger = Logger.new("log/sync_#{@user.email}.log")
 
-        @logger.debug '========================================'
-        @logger.debug '========================================'
+        @logger.debug '==========================================================='
         @logger.debug "START: #{Time.now.to_formatted_s(:long)}"
       end
 
@@ -40,7 +39,7 @@ module Synchronization
     DEFAULT_PARAMS = {
         puub: true,
         debug: false,
-        logging: true
+        logging: false
     }
 
     def start
@@ -78,6 +77,13 @@ module Synchronization
       if @params[:logging]
         @logger.error "ERROR: #{e.message}"
       end
+
+      logger = Logger.new('log/sync_errors.log')
+      logger.error '============================================================='
+      logger.error "Account: #{@user.email}"
+      logger.error "Started at: #{@started_at.to_formatted_s(:long)}"
+      logger.error "ERROR: #{e.message}"
+      logger.error "BACKTRACE: #{e.backtrace}"
 
       finish(true)
     end
