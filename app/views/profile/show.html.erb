@@ -6,7 +6,7 @@
 
   <% if @sync.email_count.zero? %>
     <small>Getting emails...</small>
-  <% elsif @sync.email_count.to_i == @sync.email_count.to_i %>
+  <% elsif @sync.email_count.to_i == @sync.email_parsed.to_i %>
     <smal>Finishing synchronization...</smal>
   <% else %>
     <small>Uploading attachments. Uploaded <%= @sync.email_parsed.to_i %> of <%= @sync.email_count.to_i %> emails..</small>
