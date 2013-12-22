@@ -7,7 +7,7 @@ AttachmentsIO::Application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  root 'profile#show'
+  root 'pages#home'
 
   # Admin-Panel
   ActiveAdmin.routes(self)
@@ -20,10 +20,10 @@ AttachmentsIO::Application.routes.draw do
 
   # Pages
   # match '/welcome' => redirect('http://attachments.io/'), via: :get, as: :welcome
-  match '/welcome' => 'pages#home', via: :get, as: :welcome
+  match '/' => 'pages#home', via: :get, as: :welcome
 
   # User profile
-  match '/' => 'profile#show', via: :get, as: :profile
+  match '/account' => 'profile#show', via: :get, as: :profile
   match '/profile/edit' => 'profile#edit', via: [:get, :patch], as: :user_edit
   match '/profile/settings' => 'profile#settings', via: [:get, :patch], as: :user_settings
   match '/profile/token/update' => 'profile#update_token', via: [:get, :post], as: :user_update_token
