@@ -7,12 +7,18 @@ ActiveAdmin.register User do
   filter :last_name
   filter :created_at
 
+  sidebar 'User emails', only: [:show, :edit] do
+    para do
+      link_to pluralize(user.emails.size, 'email'), admin_user_emails_path(user)
+    end
+  end
+
   index do
     selectable_column
     column :email
     column :first_name
     column :last_name
-    column 'Emails' do |user|
+    column :emails do |user|
       link_to pluralize(user.emails.size, 'email'), admin_user_emails_path(user)
     end
     column 'Registered at', :created_at

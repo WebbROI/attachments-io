@@ -46,6 +46,9 @@ app.controller('MainPageCtrl', [
 			console.log $scope
 
 
+  source.addEventListener('message', (event) ->
+    console.log(JSON.parse(event.data))
+  )
 
 #		API.sync.get {id: $routeParams.id}, (response) ->
 #			$scope.files = response.files

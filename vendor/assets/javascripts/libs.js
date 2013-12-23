@@ -6,8 +6,6 @@
 //= require twitter/bootstrap/dropdown
 //= require twitter/bootstrap/collapse
 
-// FIXME: Max, please fix this ;)
-// fix dropdown
 $('.dropdown').dropdown();
 
 $(document).ready(function() {

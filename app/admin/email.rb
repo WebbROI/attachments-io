@@ -1,15 +1,13 @@
 ActiveAdmin.register Email, as: 'Email' do
 
   belongs_to :user
-  menu false
-  navigation_menu false
 
   index do
     selectable_column
     column :label
     column :subject
 
-    column :attachments do |email|
+    column :files do |email|
       link_to pluralize(email.files.size, 'file'), admin_email_files_path(email)
     end
 
@@ -20,14 +18,31 @@ ActiveAdmin.register Email, as: 'Email' do
     actions
   end
 
-  controller do
-    def permitted_params
-      params.permit user: [ :first_name, :last_name, :email, :picture ]
+  show do
+    attributes_table do
+      row :label
+      row :subject
+      row :from
+      row :to
     end
 
-    # TODO: fix it (слетают фильтры)
-    #def scoped_collection
-    #  resource_class.includes(:email_files)
-    #end
+    active_admin_comments
+  end
+
+  form do |f|
+    f.inputs do
+      f.input :label
+      f.input :subject
+      f.input :from
+      f.input :to
+    end
+
+    f.actions
+  end
+
+  controller do
+    def permitted_params
+      params.permit email: [ :label, :subject, :from, :to ]
+    end
   end
 end

@@ -23,25 +23,15 @@
       START
     <% end %>
     <%= link_to resync_start_path, class: 'btn btn-danger btn-xs', data: { confirm: 'Okay :(' } do %>
+      <!-- TODO: REMOVE THIS ON PRODUCTION -->
       RESYNC
     <% end %>
   </h4>
-<% end %>
 
-<% unless @user.last_sync.nil? %>
-  <!-- TODO: create more powerful date -->
-  <p>
-    <small>
-      Last synchronization:
-      <% if (Time.now.to_i - @user.last_sync) / 60 <= 1 %>
-        <strong>just now</strong>
-      <% else %>
-        <strong><%= pluralize((Time.now.to_i - @user.last_sync) / 60, 'minute') %> ago</strong>
-      <% end %>
-    </small>
-  </p>
+  <% unless @user.last_sync.nil? %>
+    <p><small>Last synchronization: <strong><%= time_ago_in_words(Time.at(@user.last_sync)) %> ago</strong></small></p>
+  <% end %>
 <% end %>
-
 
 <% if @emails.empty? %>
   <% if @user.now_synchronizes? %>

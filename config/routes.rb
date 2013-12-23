@@ -13,7 +13,7 @@ AttachmentsIO::Application.routes.draw do
   ActiveAdmin.routes(self)
   devise_for :admin_users, ActiveAdmin::Devise.config
 
-  # Resque web
+  # Resque web-interface
   authenticate do
     mount Resque::Server, at: '/resque'
   end

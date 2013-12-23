@@ -2,59 +2,75 @@
 
 <%= form_for @settings, url: user_settings_path do |f| %>
 
-  <h2 class="ui header">
-    <i class="settings icon"></i>
+  <h2>
+    <i class="glyphicon glyphicon-cog"></i>
     Application Settings
   </h2>
 
-  <div class="ui form segment">
-    <div class="inline field">
-      <%= f.check_box :subject_in_filename %>
-      <%= f.label :subject_in_filename, 'Add Email Subject to synced file names (eg. "Email Subject - File Name")' %>
+  <div class="well">
+    <div class="checkbox">
+      <%= f.label :subject_in_filename do %>
+        <%= f.check_box :subject_in_filename %>
+        Add Email Subject to synced file names (eg. "Email Subject - File Name")
+      <% end %>
     </div>
-    <div class="inline field">
-      <%= f.check_box :convert_files %>
-      <%= f.label :convert_files, 'Convert files to Google Drive format (eg. Excel to Google Spreadsheets)' %>
-      <p><%= link_to 'More abouts this', 'https://support.google.com/drive/answer/2407404', target: '_blank' %></p>
+    <div class="checkbox">
+      <%= f.label :convert_files do %>
+        <%= f.check_box :convert_files %>
+        Convert files to Google Drive format (eg. Excel to Google Spreadsheets)
+      <% end %>
+      <small><%= link_to 'more abouts this', 'https://support.google.com/drive/answer/2407404', target: '_blank' %></small>
     </div>
   </div>
 
-  <%= f.submit 'Update settings', class: 'ui blue submit button' %>
+  <%= f.submit 'Update settings', class: 'btn btn-primary' %>
 <% end %>
 
 <%= form_for @profile, url: user_settings_path do |f| %>
 
-  <h2 class="ui header">
-    <i class="settings icon"></i>
+  <h2>
+    <i class="glyphicon glyphicon-user"></i>
     Profile information
   </h2>
 
-  <div class="ui form segment">
-    <div class="field">
-      <%= f.label :gender %>
-      <%= f.select :gender, options_for_select([['Male', :male], ['Female', :female]], @profile.gender.to_sym) %>
+  <div class="well form-horizontal">
+    <div class="form-group">
+      <%= f.label :gender, class: 'col-sm-2 control-label' %>
+      <div class="col-sm-10">
+        <%= f.select :gender, options_for_select([['Male', :male], ['Female', :female]], @profile.gender.to_sym) %>
+      </div>
     </div>
-    <div class="field">
-      <%= f.label :organization %>
-      <%= f.text_field :organization %>
+    <div class="form-group">
+      <%= f.label :organization, class: 'col-sm-2 control-label' %>
+      <div class="col-sm-10">
+        <%= f.text_field :organization, class: 'form-control' %>
+      </div>
     </div>
-    <div class="field">
-      <%= f.label :location %>
-      <%= f.text_field :location %>
+    <div class="form-group">
+      <%= f.label :location, class: 'col-sm-2 control-label' %>
+      <div class="col-sm-10">
+        <%= f.text_field :location, class: 'form-control' %>
+      </div>
     </div>
-    <div class="field">
-      <%= f.label :plus, 'Google Plus' %>
-      <%= f.text_field :plus %>
+    <div class="form-group">
+      <%= f.label :plus, 'Google Plus', class: 'col-sm-2 control-label' %>
+      <div class="col-sm-10">
+        <%= f.text_field :plus, class: 'form-control' %>
+      </div>
     </div>
-    <div class="field">
-      <%= f.label :twitter %>
-      <%= f.text_field :twitter %>
+    <div class="form-group">
+      <%= f.label :twitter, class: 'col-sm-2 control-label' %>
+      <div class="col-sm-10">
+        <%= f.text_field :twitter, class: 'form-control' %>
+      </div>
     </div>
-    <div class="field">
-      <%= f.label :facebook %>
-      <%= f.text_field :facebook %>
+    <div class="form-group">
+      <%= f.label :facebook, class: 'col-sm-2 control-label' %>
+      <div class="col-sm-10">
+        <%= f.text_field :facebook, class: 'form-control' %>
+      </div>
     </div>
   </div>
 
-  <%= f.submit 'Update profile', class: 'ui blue submit button' %>
+  <%= f.submit 'Update profile', class: 'btn btn-primary' %>
 <% end %>

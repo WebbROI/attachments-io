@@ -28,6 +28,7 @@ gem 'activeadmin', github: 'gregbell/active_admin'
 
 # Resque
 gem 'resque', require: 'resque/server'
+gem 'redis'
 
 # Foreman
 gem 'foreman'
