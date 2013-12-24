@@ -1,49 +1,56 @@
-require 'singleton'
-
 class Puub
-  include Singleton
-
-  def initialize
-    super
-
-    @publish ||= {}
-  end
 
   def publish(channel, data)
-    @publish[channel] ||= []
-    @publish[channel] << data
-  end
+    messages = $redis.get(channel_name(channel))
 
-  def publish_for_user(user, data)
-    publish("user_#{user.id}", data)
+    if messages.nil?
+      messages = []
+    else
+      messages = decode_data(messages)
+    end
+
+    messages << [data, Time.now.to_i]
+    $redis.set(channel_name(channel), encode_data(messages))
   end
 
   def subscribe(channel, &block)
-    if @publish[channel].nil? || @publish[channel].empty?
-      return nil
-    end
+    messages = $redis.get(channel_name(channel))
+    return if messages.nil?
 
-    @publish[channel].each do |data|
-      block.call(data)
+    messages = decode_data(messages)
+    messages.each do |message|
+      next if Time.now.to_i - message.last > 3.seconds
+      block.call(message.first)
     end
+  ensure
+    clear_channel(channel_name(channel))
+  end
 
-    @publish[channel].clear
+  def publish_for_user(user, data)
+    publish("user:#{user.id}", data)
   end
 
   def subscribe_to_user(user, &block)
-    subscribe("user_#{user.id}", &block);
+    subscribe("user:#{user.id}", &block);
   end
 
   def clear_channel(channel)
-    @publish[channel].clear unless @publish[channel].empty?
-  end
-
-  def clear_all
-    @publish.clear
+    $redis.del(channel)
   end
 
   private
 
-  @publish
+  PREFIX = 'streaming'
 
+  def encode_data(value)
+    ActiveSupport::JSON.encode(value)
+  end
+
+  def decode_data(value)
+    ActiveSupport::JSON.decode(value)
+  end
+
+  def channel_name(channel)
+    "#{PREFIX}:#{channel}"
+  end
 end

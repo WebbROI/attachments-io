@@ -120,7 +120,7 @@ module Synchronization
       @user.sync.update_attribute(:email_count, email_count)
 
       if @params[:puub]
-        Puub.instance.publish_for_user(@user, { event: :update_email_count, data: { email_count: email_count } })
+        $puub.publish_for_user(@user, { event: :update_email_count, data: { email_count: email_count } })
       end
 
       if @params[:logging]
@@ -174,7 +174,7 @@ module Synchronization
       @files = @user.files_for_sync
 
       if @params[:puub]
-        Puub.instance.publish_for_user(@user, { event: :drive_folders_loaded })
+        $puub.publish_for_user(@user, { event: :drive_folders_loaded })
       end
 
       if @params[:logging]
@@ -197,6 +197,10 @@ module Synchronization
 
     def process_label(label)
       started_at = Time.now
+
+      if @params[:puub]
+        $puub.publish_for_user(@user, { event: :loading_label, data: { label: @current_label } })
+      end
 
       @attachments = []
       @imap.examine(label)
@@ -226,10 +230,6 @@ module Synchronization
       end
 
       threads.each(&:join)
-
-      if @params[:puub]
-        Puub.instance.publish_for_user(@user, { event: :process_label, data: { label: @current_label } })
-      end
 
       if @params[:logging]
         @logger.debug "IMAP: Emails for label \"#{@current_label}\" downloaded. Time: #{Time.now - started_at} sec."
@@ -264,7 +264,7 @@ module Synchronization
       @user.sync.increment!(:email_parsed)
 
       if @params[:puub]
-        Puub.instance.publish_for_user(@user, { event: :process_email, data: @current_mail_object.to_json })
+        $puub.publish_for_user(@user, { event: :process_email, data: @current_mail_object.to_json })
       end
 
       @current_email.attachments.each do |attachment|
@@ -290,7 +290,7 @@ module Synchronization
                                           })
 
         if @params[:puub]
-          Puub.instance.publish_for_user(@user, { event: :attachment_upload, data: file.to_json })
+          $puub.publish_for_user(@user, { event: :attachment_upload, data: file.to_json })
         end
 
         if @params[:logging]
@@ -359,7 +359,7 @@ module Synchronization
           attachment[:temp_file].unlink
 
           if @params[:puub]
-            Puub.instance.publish_for_user(@user, { event: :attachment_upload, data: file.to_json })
+            $puub.publish_for_user(@user, { event: :attachment_upload, data: file.to_json })
           end
 
           if @params[:logging]
@@ -427,7 +427,7 @@ module Synchronization
       end
 
       if @params[:puub]
-        Puub.instance.publish_for_user(@user, { event: :finish })
+        $puub.publish_for_user(@user, { event: :finish, data: { status: previous_status } })
       end
 
       if @params[:logging]

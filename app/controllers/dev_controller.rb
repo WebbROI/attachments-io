@@ -1,5 +1,4 @@
 class DevController < ApplicationController
-  include ActionController::Live
 
   #def flush_all
   #  User.destroy_all
@@ -7,15 +6,8 @@ class DevController < ApplicationController
   #end
 
   def pub
-    Puub.instance.publish('time', 'Time.now')
+    $puub.clear_channel("user:#{current_user.id}")
+    $puub.publish_for_user(current_user, { event: 'message', data: { message: "hello, guys, now #{Time.now}" } })
     render text: :hello
-  end
-
-  def sub
-    Puub.instance.subscribe 'time' do |message|
-      puts message.inspect
-    end
-
-    render text: :world
   end
 end

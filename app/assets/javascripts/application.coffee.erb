@@ -46,8 +46,9 @@ app.controller('MainPageCtrl', [
 			console.log $scope
 
 
-  source.addEventListener('message', (event) ->
-    console.log(JSON.parse(event.data))
+  source.addEventListener('attachment_upload', (event) ->
+    data = JSON.parse event.data
+    console.log data
   )
 
 #		API.sync.get {id: $routeParams.id}, (response) ->
