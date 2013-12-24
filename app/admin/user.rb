@@ -18,9 +18,19 @@ ActiveAdmin.register User do
     column :email
     column :first_name
     column :last_name
+
     column :emails do |user|
       link_to pluralize(user.emails.size, 'email'), admin_user_emails_path(user)
     end
+
+    column 'Last synchronization' do |user|
+      if user.last_sync.nil?
+        'Not yet'
+      else
+        Time.at(user.last_sync).to_formatted_s(:long)
+      end
+    end
+
     column 'Registered at', :created_at
     actions
   end
@@ -32,6 +42,14 @@ ActiveAdmin.register User do
       row :email
       row :picture do
         image_tag(user.picture)
+      end
+
+      row 'Last synchronization' do
+        if user.last_sync.nil?
+          'Not yet'
+        else
+          Time.at(user.last_sync).to_formatted_s(:long)
+        end
       end
 
       if user.profile.plus
