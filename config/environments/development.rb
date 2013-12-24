@@ -30,8 +30,9 @@ AttachmentsIO::Application.configure do
   # number of complex assets.
   config.assets.debug = false
 
-  # Level of messages in log
-  config.log_level = :error
+  # Logger
+  config.logger = Logger.new('log/app_errors.log')
+  config.logger.level = Logger::ERROR
 
   config.middleware.delete Rack::Lock
 end

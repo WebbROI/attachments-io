@@ -45,11 +45,7 @@ ActiveAdmin.register User do
       end
 
       row 'Last synchronization' do
-        if user.last_sync.nil?
-          'Not yet'
-        else
-          Time.at(user.last_sync).to_formatted_s(:long)
-        end
+        Time.at(user.last_sync).to_formatted_s(:long)
       end
 
       if user.profile.plus

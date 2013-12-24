@@ -1,4 +1,12 @@
 GIT
+  remote: git://github.com/binarylogic/authlogic.git
+  revision: abc09970ed1fad98c6c12f4ca64d1670d37d11db
+  specs:
+    authlogic (3.3.0)
+      activerecord (>= 3.2)
+      activesupport (>= 3.2)
+
+GIT
   remote: git://github.com/gregbell/active_admin.git
   revision: b24bc14ee9c3d6e2d90a9116ee34470af5f868a3
   specs:
@@ -19,6 +27,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
+    SyslogLogger (2.0)
     actionmailer (4.0.0)
       actionpack (= 4.0.0)
       mail (~> 2.5.3)
@@ -51,9 +60,6 @@ GEM
       activesupport (>= 3.0.0)
     arel (4.0.1)
     atomic (1.1.14)
-    authlogic (3.3.0)
-      activerecord (>= 3.2)
-      activesupport (>= 3.2)
     autoparse (0.3.3)
       addressable (>= 2.3.1)
       extlib (>= 0.9.15)
@@ -293,9 +299,10 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  SyslogLogger
   activeadmin!
   anjlab-bootstrap-rails (~> 3.0.2.0)
-  authlogic (~> 3.3.0)
+  authlogic!
   better_errors
   binding_of_caller
   bootstrap-sass (~> 2.3.2.2)

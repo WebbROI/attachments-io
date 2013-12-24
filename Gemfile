@@ -34,7 +34,7 @@ gem 'redis'
 gem 'foreman'
 
 # Authentication
-gem 'authlogic', '~> 3.3.0'
+gem 'authlogic', github: 'binarylogic/authlogic'
 
 # Google OAuth2
 gem 'oauth', '~> 0.4.7'
@@ -106,3 +106,5 @@ end
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
+
+gem 'SyslogLogger'
