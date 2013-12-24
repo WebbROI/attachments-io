@@ -19,10 +19,8 @@ namespace :deploy do
 
   desc 'Restart application'
   task :restart do
-    on roles(:app), in: :sequence, wait: 5 do
-      run 'service unicorn restart'
-      run 'service attachments-io restart'
-    end
+    run 'service unicorn restart'
+    run 'service attachments-io restart'
   end
 
   after :restart, :clear_cache do
