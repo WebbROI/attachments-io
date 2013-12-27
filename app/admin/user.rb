@@ -1,27 +1,17 @@
 ActiveAdmin.register User do
 
-  menu priority: 1
+  menu priority: 2
 
   filter :email
   filter :first_name
   filter :last_name
   filter :created_at
 
-  sidebar 'User emails', only: [:show, :edit] do
-    para do
-      link_to pluralize(user.emails.size, 'email'), admin_user_emails_path(user)
-    end
-  end
-
   index do
     selectable_column
     column :email
     column :first_name
     column :last_name
-
-    column :emails do |user|
-      link_to pluralize(user.emails.size, 'email'), admin_user_emails_path(user)
-    end
 
     column 'Last synchronization' do |user|
       if user.last_sync.nil?

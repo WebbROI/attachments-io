@@ -1,15 +1,11 @@
 ActiveAdmin.register Email, as: 'Email' do
 
-  belongs_to :user
+  menu priority: 3
 
   index do
     selectable_column
     column :label
     column :subject
-
-    column :files do |email|
-      link_to pluralize(email.files.size, 'file'), admin_email_files_path(email)
-    end
 
     column :date do |email|
       Time.at(email.date).to_formatted_s(:short)

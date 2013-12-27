@@ -13,13 +13,6 @@ module Google
       @client.authorization.client_id = GOOGLE_API_KEY
       @client.authorization.client_secret = GOOGLE_API_SECRET
 
-      #@client.authorization.scope = %w[
-      #    https://www.googleapis.com/auth/userinfo.email
-      #    https://www.googleapis.com/auth/userinfo.profile
-      #    https://www.googleapis.com/auth/plus.me
-      #    https://mail.google.com/
-      #]
-
       @apis = Hash.new
 
       if params[:tokens]
@@ -38,13 +31,17 @@ module Google
         @client.authorization.update_token!(tokens)
       end
 
-      if !!@client.authorization.refresh_token && (@client.authorization.issued_at + @client.authorization.expires_in).to_i < Time.now.to_i
+      if need_update_token?
         @client.authorization.fetch_access_token!
 
         return true
       end
 
       false
+    end
+
+    def need_update_token?
+      !!@client.authorization.refresh_token && (@client.authorization.issued_at + @client.authorization.expires_in).to_i < Time.now.to_i
     end
 
     def tokens
@@ -57,6 +54,10 @@ module Google
     end
 
     def execute(options = nil)
+      if need_update_token?
+        update_token!
+      end
+
       @client.execute(options)
     end
 

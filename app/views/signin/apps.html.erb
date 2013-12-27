@@ -1,10 +1,16 @@
-<%= form_tag nil, class: 'ui form segment', id: 'sign-in-apps' do %>
-  <p class="text-center"><%= image_tag 'google_logo.png', width: '300px' %></p>
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <div class="well">
+      <%= form_tag nil, id: 'sign-in-apps' do %>
+        <p class="text-center"><%= image_tag 'google_logo.png', width: '300px' %></p>
 
-  <div class="field">
-    <%= label_tag :domain %>
-    <%= text_field_tag :domain, nil, placeholder: 'example.com' %>
+        <div class="form-group">
+          <%= label_tag :domain %>
+          <%= text_field_tag :domain, nil, placeholder: 'ex.: webbroi.com', class: 'form-control' %>
+        </div>
+
+        <%= submit_tag 'Continue', class: 'btn btn-danger' %>
+      <% end %>
+    </div>
   </div>
-
-  <%= submit_tag 'Continue', class: 'ui blue submit button' %>
-<% end %>
+</div>

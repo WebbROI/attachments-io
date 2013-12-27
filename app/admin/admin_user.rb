@@ -1,6 +1,6 @@
 ActiveAdmin.register AdminUser, as: 'Administrator' do
 
-  menu priority: 4
+  menu priority: 6
 
   filter :email
 

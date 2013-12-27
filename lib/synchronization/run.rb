@@ -8,6 +8,7 @@ module Synchronization
   INPROCESS = 1
   ERROR = 2
   SUCCESS = 3
+  FIXED = 4
 
   # List of convertible extensions for google drive
   CONVERT_EXTENSIONS = %w(.doc .docx .html .txt .rtf .xls .xlsx .ods .csv .tsv .tab .ppt .pps .pptx)
@@ -19,6 +20,10 @@ module Synchronization
 
       @user = user
       @params = DEFAULT_PARAMS.merge(params)
+
+      if Rails.env.development?
+        @params[:debug] = true
+      end
 
       if @params[:debug]
         @params[:logging] = true

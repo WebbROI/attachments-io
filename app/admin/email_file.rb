@@ -1,6 +1,6 @@
 ActiveAdmin.register EmailFile, as: 'File' do
 
-  belongs_to :email
+  menu priority: 4
 
   index do
     selectable_column

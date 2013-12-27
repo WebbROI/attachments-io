@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   require 'google/API'
 
   protect_from_forgery with: :exception
-  before_filter :initialize_user
+
   helper_method :current_user_session, :current_user, :user_signed_in?
 
   private
@@ -17,19 +17,15 @@ class ApplicationController < ActionController::Base
       @current_user = current_user_session && current_user_session.user
     end
 
-    def initialize_user
-		@user ||= current_user_session && current_user_session.user
-    end
-
     def user_signed_in?
       !!current_user
     end
 
     def authenticate_user!
-      redirect_to welcome_path unless user_signed_in?
+      redirect_to root_path, flash: { error: 'You need sign in to view this page' } unless user_signed_in?
     end
 
     def not_authenticated_user!
-      redirect_to welcome_path, flash: { error: 'This page only for guests' } if user_signed_in?
+      redirect_to root_path, flash: { error: 'This page only for guests' } if user_signed_in?
     end
 end

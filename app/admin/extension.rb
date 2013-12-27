@@ -1,6 +1,6 @@
 ActiveAdmin.register Extension do
 
-  menu priority: 3
+  menu priority: 5
 
   filter :extension
   filter :file_type

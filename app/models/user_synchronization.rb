@@ -19,4 +19,23 @@ class UserSynchronization < ActiveRecord::Base
   def waiting?
     status == Synchronization::WAITING
   end
+
+  def self.problematic
+    problematic = []
+
+    where(status: Synchronization::INPROCESS).includes(:user).each do |sync|
+      if sync.user.last_sync.to_i - Time.now.to_i > 2.hours
+        problematic << sync
+      end
+    end
+
+    problematic
+  end
+
+  def self.fix_problematic
+    problematic.each do |sync|
+      sync.update_attributes({ status: Synchronization::WAITING,
+                               previous_status: Synchronization::FIXED })
+    end
+  end
 end

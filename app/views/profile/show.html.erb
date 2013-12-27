@@ -25,6 +25,7 @@
       <% end %>
       <% if Rails.env.development? %>
         <%= link_to resync_start_path, class: 'btn btn-danger btn-xs', data: { confirm: 'Okay :(' } do %>
+          <i class="glyphicon glyphicon-refresh"></i>
           RESYNC
         <% end %>
       <% end %>
@@ -64,8 +65,8 @@
           </div>
         </div>
         <div ng-repeat='email in emails' ng-if="email.files.length > 0" class="email">
-          <div data-toggle="collapse"  data-parent="#emailsAndFiles" data-target="#collapse-{{ email.id }}" class="email-header">
-            <div class="row">
+          <div class="email-header">
+            <div data-toggle="collapse"  data-parent="#emailsAndFiles" data-target="#collapse-{{ email.id }}" class="row">
               <div class="col-md-1 text-center"><i class="glyphicon glyphicon-collapse-down"></i></div>
               <div class="col-md-3">{{ email.from }}</div>
               <div class="col-md-5">{{ email.subject }}</div>
