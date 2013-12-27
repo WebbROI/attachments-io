@@ -156,9 +156,35 @@ a:hover {
 }
 
 #emailsAndFiles {
-  .email-header {
-    cursor: pointer;
+
+  .emails-and-files-header {
+    font-weight: 900;
+    padding: 10px 0;
+    background: #fafafa;
+    border-bottom: 1px solid #ccc;
   }
+
+  .email {
+    font-size: 13px;
+    cursor: pointer;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+
+    &:hover {
+      background: #fbfbfb;
+    }
+
+    .email-collapse {
+      cursor: default;
+      margin: 10px 0 0;
+    }
+
+    .email-files {
+      width: 80%;
+      margin: 10px auto 0;
+    }
+  }
+
 }
 
 //

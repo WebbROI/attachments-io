@@ -22,7 +22,6 @@ namespace :deploy do
     on roles(:app), in: :sequence, wait: 5 do
       #execute "cd #{current_path} && sudo service unicorn restart"
       #execute "cd #{current_path} && sudo service attachments-io restart"
-      execute "chmod 777 #{current_path}/log/production.log"
     end
   end
 
