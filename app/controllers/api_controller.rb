@@ -36,9 +36,14 @@ class ApiController < ApplicationController
   def emails
     @emails = current_user.emails
 
-    @emails = @emails.limit(params[:limit].to_i) unless params[:limit].nil?
-    @emails = @emails.offset(params[:offset].to_i) unless params[:offset].nil?
+    unless params[:limit].nil?
+      @emails = @emails.limit(params[:limit].to_i)
+    end
 
-    @emails = @emails.includes(:email_files)
+    unless params[:offset].nil?
+      @emails = @emails.offset(params[:offset].to_i)
+    end
+
+    @emails.includes(:email_files)
   end
 end
