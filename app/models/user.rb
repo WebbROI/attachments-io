@@ -129,6 +129,11 @@ class User < ActiveRecord::Base
     sync.inprocess?
   end
 
+  def fix_sync
+    sync.update_attributes({ status: Synchronization::WAITING,
+                             previous_status: Synchronization::FIXED })
+  end
+
   #
   # Helpers
   #

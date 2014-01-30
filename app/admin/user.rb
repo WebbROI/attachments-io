@@ -7,6 +7,10 @@ ActiveAdmin.register User do
   filter :last_name
   filter :created_at
 
+  action_item only: :show do
+    link_to 'Fix synchronization', "/admin/users/#{user.id}/fix"
+  end
+
   index do
     selectable_column
     column :email
@@ -35,7 +39,11 @@ ActiveAdmin.register User do
       end
 
       row 'Last synchronization' do
-        Time.at(user.last_sync).to_formatted_s(:long)
+        if user.last_sync.nil?
+          'Not synchonized'
+        else
+          Time.at(user.last_sync).to_formatted_s(:long)
+        end
       end
 
       if user.profile.plus
@@ -58,6 +66,11 @@ ActiveAdmin.register User do
     end
 
     active_admin_comments
+  end
+
+  member_action :fix, method: :get do
+    User.find(params[:id]).fix_sync
+    redirect_to "/admin/users/#{params[:id]}", notice: 'Synchronization fixed!'
   end
 
   form do |f|

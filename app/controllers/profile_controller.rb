@@ -50,7 +50,7 @@ class ProfileController < ApplicationController
   private
 
   def settings_params
-    params.require(:user_settings).permit(:convert_files, :subject_in_filename)
+    params.require(:user_settings).permit(:convert_files, :subject_in_filename, :active)
   end
 
   def profile_params

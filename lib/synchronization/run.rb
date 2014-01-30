@@ -160,6 +160,8 @@ module Synchronization
         return
       end
 
+      return if folders.empty?
+
       helper_folders = {}
       folders.each do |folder|
         if folder.parents[0].id == @main_folder[:id]

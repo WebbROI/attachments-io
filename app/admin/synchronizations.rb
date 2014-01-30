@@ -23,5 +23,4 @@ ActiveAdmin.register_page 'Synchronizations' do
       span link_to 'fix it', admin_synchronizations_fix_path, method: :post
     end
   end
-
 end
