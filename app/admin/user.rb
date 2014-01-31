@@ -11,6 +11,10 @@ ActiveAdmin.register User do
     link_to 'Fix synchronization', "/admin/users/#{user.id}/fix"
   end
 
+  action_item only: :show do
+    link_to 'Start synchronization', "/admin/users/#{user.id}/start"
+  end
+
   index do
     selectable_column
     column :email
@@ -71,6 +75,11 @@ ActiveAdmin.register User do
   member_action :fix, method: :get do
     User.find(params[:id]).fix_sync
     redirect_to "/admin/users/#{params[:id]}", notice: 'Synchronization fixed!'
+  end
+
+  member_action :start, method: :get do
+    User.find(params[:id]).start_synchronization
+    redirect_to "/admin/users/#{params[:id]}", notice: 'Synchronization started!'
   end
 
   form do |f|

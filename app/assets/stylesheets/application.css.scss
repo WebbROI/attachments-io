@@ -25,6 +25,16 @@
 }
 
 //
+// Bootstrap overwrite
+//
+
+.btn {
+  border-radius: .25em;
+  -webkit-box-shadow: 0 0 0 1px rgba(0,0,0,.08) inset;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.08) inset;
+}
+
+//
 // Main styles
 //
 
@@ -101,6 +111,25 @@ a:hover {
   font-family: 'Lobster', cursive!important;
   font-size: 46px;
   color: #0140CA!important;
+}
+
+//
+// Home page
+//
+.sign-in-block-home {
+  text-align: center;
+
+  padding: 100px 0;
+
+  .btn-lg {
+    font-size: 21px;
+    padding: 18px 26px;
+  }
+
+  p > a {
+    font-size: 12px;
+    font-weight: 100;
+  }
 }
 
 

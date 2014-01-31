@@ -160,11 +160,9 @@ module Synchronization
         return
       end
 
-      return if folders.empty?
-
       helper_folders = {}
       folders.each do |folder|
-        if folder.parents[0].id == @main_folder[:id]
+        if !folder.parents[0].nil? && folder.parents[0].id == @main_folder[:id]
           @folders[folder.title] = { id: folder.id, link: folder.alternate_link, sub_folders: {} }
           helper_folders[folder.id] = folder.title
         end
@@ -172,7 +170,7 @@ module Synchronization
 
       unless @folders.empty?
         folders.each do |folder|
-          if helper_folders[folder.parents[0].id]
+          if !folder.parents[0].nil? && helper_folders[folder.parents[0].id]
             @folders[helper_folders[folder.parents[0].id]][:sub_folders][folder.title] = { id: folder.id, link: folder.alternate_link }
           end
         end
@@ -260,13 +258,20 @@ module Synchronization
         to = @current_email.to.to_s
       end
 
-      @current_mail_object = @user.emails.create({
-                                                      label: @current_label,
-                                                      subject: @current_email.subject,
-                                                      from: from,
-                                                      to: to,
-                                                      date: @current_email.date.to_i
-                                                  })
+      email = Email.where(subject: @current_email.subject, user_id: @user.id).limit(1).first
+
+      if email.nil?
+        @current_mail_object = @user.emails.create({
+                                                       label: @current_label,
+                                                       subject: @current_email.subject,
+                                                       from: from,
+                                                       to: to,
+                                                       date: @current_email.date.to_i
+                                                   })
+      else
+        email.update_attribute(:date, @current_email.date.to_i)
+        @current_mail_object = email
+      end
 
       @user.sync.increment!(:email_parsed)
 

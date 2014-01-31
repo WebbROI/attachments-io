@@ -1,12 +1,10 @@
-
 <div class="container">
-	<div class="row">
-		<div class="col-md-8 col-md-offset-2">
-		    <div class="text-center" style="margin: 100px 100px 200px; ">
-		      <a href="<%= sign_in_google_url %>">
-           <%= image_tag 'sign-in-with-google.png', alt: 'Sign In with Google' %>
-		      </a>
-		    </div>
-		</div>
-	</div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="sign-in-block-home">
+        <%= link_to 'Sign In with Google', sign_in_google_path, class: 'btn btn-danger btn-lg' %>
+        <p><%= link_to 'or Sign In with Google Apps', sign_in_apps_path %></p>
+      </div>
+    </div>
+  </div>
 </div>
