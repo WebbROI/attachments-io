@@ -58,7 +58,7 @@ gem 'gibbon', '~> 1.0.4'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.0'
-gem 'anjlab-bootstrap-rails', '~> 3.0.3.0', require: 'bootstrap-rails'
+gem 'anjlab-bootstrap-rails', '~> 3.0.2.0', :require => 'bootstrap-rails'
 
 # Use Semantic-UI
 # gem 'therubyracer', platforms: :ruby # or any other runtime
