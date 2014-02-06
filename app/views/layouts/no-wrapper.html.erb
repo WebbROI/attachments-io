@@ -5,7 +5,14 @@
 
 <%= render 'partials/navbar' %>
 
-<%= render 'partials/flash_messages' %>
+<% unless flash.empty? %>
+    <div class="container flash-messages-no-wrapper">
+      <div class="row">
+        <div class="col-md-12"><%= render 'partials/flash_messages' %></div>
+      </div>
+    </div>
+<% end %>
+
 <div class="screen"><%= yield %></div>
 
 <%= render 'partials/footer' %>
