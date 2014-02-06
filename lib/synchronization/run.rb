@@ -19,6 +19,7 @@ module Synchronization
       @started_at = Time.now
 
       @user = user
+      @user_settings = @user.settings
       @params = DEFAULT_PARAMS.merge(params)
 
       if Rails.env.development?
@@ -29,7 +30,7 @@ module Synchronization
         @params[:logging] = true
       end
 
-      if @params[:logging]
+      if @params[:logging] || @user_settings.logging
         @logger = Logger.new("log/sync_#{@user.email}.log")
 
         @logger.debug '==========================================================='
@@ -60,8 +61,6 @@ module Synchronization
 
         return
       end
-
-      @user_settings = @user.settings
 
       drive_get_folders
 

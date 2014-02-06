@@ -90,12 +90,31 @@ ActiveAdmin.register User do
       f.input :picture
     end
 
+    f.inputs 'Settings', for: [ :user_settings, f.object.user_settings || f.object.create_user_settings  ] do |fs|
+      fs.input :convert_files
+      fs.input :subject_in_filename
+      fs.input :active
+      fs.input :logging
+    end
+
     f.actions
   end
 
   controller do
+    def new
+      @user = User.new
+      @user.build_user_settings
+    end
+
+    def edit
+      @user = User.find(params[:id])
+      if @user.settings.nil?
+        @user.build_user_settings
+      end
+    end
+
     def permitted_params
-      params.permit user: [ :first_name, :last_name, :email, :picture ]
+      params.permit(user: [ :first_name, :last_name, :email, :picture, :user_settings ])
     end
 
     def scoped_collection
