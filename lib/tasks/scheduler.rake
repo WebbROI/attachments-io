@@ -14,3 +14,8 @@ task start_synchronizations: :environment do
     end
   end
 end
+
+desc 'Fix broken synchronizations'
+task fix_synchronizations: :environment do
+  UserSynchronization.fix_problematic
+end

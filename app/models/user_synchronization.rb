@@ -32,8 +32,12 @@ class UserSynchronization < ActiveRecord::Base
     problematic
   end
 
-  def self.fix_problematic
-    problematic.each do |sync|
+  def self.fix_problematic(users = nil)
+    if users.nil?
+      users = self.problematic
+    end
+
+    users.each do |sync|
       sync.update_attributes({ status: Synchronization::WAITING,
                                previous_status: Synchronization::FIXED })
     end
