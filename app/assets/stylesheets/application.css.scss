@@ -133,6 +133,9 @@ a:hover {
   }
 }
 
+.flash-messages-no-wrapper {
+  padding-top: 20px;
+}
 
 //
 // Main menu
@@ -167,9 +170,7 @@ a:hover {
 //
 
 .screen {
-  background-color: #F8F8F8;
   border-bottom: 1px solid #D9D9D9;
-  border-top: 1px solid #D9D9D9;
 }
 
 .screenshots-block {
