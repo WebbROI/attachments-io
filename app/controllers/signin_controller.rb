@@ -10,4 +10,8 @@ class SigninController < ApplicationController
       redirect_to "/auth/google?hd=#{params[:domain]}"
     end
   end
+
+  def error
+
+  end
 end

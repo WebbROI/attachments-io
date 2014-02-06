@@ -1,0 +1,11 @@
+<div class="row">
+  <div class="col-md-12">
+    <h1>Authroization Error</h1>
+    <p>
+      Sorry, we have an error.
+      <% unless params[:error].nil? %>
+          Error information: <%= params[:error] %>
+      <% end %>
+    </p>
+  </div>
+</div>

@@ -15,21 +15,19 @@ class SessionsController < ApplicationController
     end
 
     unless auth[:credentials].empty?
-      issued_at = Time.now.to_i
-      expires_in = auth[:credentials][:expires_at].to_i - issued_at
+      tokens = {}
+      tokens[:issued_at] = Time.now.to_i
+      tokens[:expires_in] = auth[:credentials][:expires_at].to_i - tokens[:issued_at]
+      tokens[:access_token] = auth[:credentials][:token]
 
-      user.update_tokens({ access_token: auth[:credentials][:token],
-                           refresh_token: auth[:credentials][:refresh_token],
-                           issued_at: issued_at,
-                           expires_in: expires_in })
+      if auth[:credentials][:refresh_token]
+        tokens[:refresh_token] = auth[:credentials][:refresh_token]
+      end
+
+      user.update_tokens(tokens)
     end
 
     if first_login
-      user.initialize_profile
-      user.initialize_settings
-      user.initialize_filters
-      user.initialize_synchronization
-
       # push user to mailchimp
       gb = Gibbon::API.new('fd15479bff9f2f46d331f063dc69f506-us3')
       gb.throws_exceptions = false

@@ -22,13 +22,18 @@ class User < ActiveRecord::Base
   end
 
   def self.create_with_omniauth(auth)
-    create! do |user|
+    user = create! do |user|
       user.uid = auth[:uid]
       user.first_name = auth[:info][:first_name]
       user.last_name = auth[:info][:last_name]
       user.email = auth[:info][:email]
       user.picture = auth[:info][:image]
     end
+
+    user.initialize_profile
+    user.initialize_settings
+    user.initialize_filters
+    user.initialize_synchronization
   end
 
   def initialize_profile

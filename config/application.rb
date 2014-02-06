@@ -7,9 +7,9 @@ require 'syslog/logger'
 IO_ROOT_FOLDER = 'Attachments.IO'
 
 # Google constants
-GOOGLE_API_KEY = '613215852608'
-GOOGLE_API_SECRET = 'IR0NrvPqgVHXe80XrkRI8n04'
-GOOGLE_APPLICATION_NAME = 'Attachments.IO'
+GOOGLE_API_KEY = '606265733457-ttl3kk4hvo6b5b1oep5glovesc2tamuq.apps.googleusercontent.com'
+GOOGLE_API_SECRET = 'pq5LlMPapvBw07z62obIsY33'
+GOOGLE_APPLICATION_NAME = '@ttachments.io'
 GOOGLE_APPLICATION_VERSION = '1.0.0'
 
 # Require the gems listed in Gemfile, including any gems
