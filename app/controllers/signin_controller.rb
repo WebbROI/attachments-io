@@ -12,6 +12,9 @@ class SigninController < ApplicationController
   end
 
   def error
-
+    logger = Logger.new('log/auth_errors.log')
+    logger.error '============================================================='
+    logger.error "Date: #{Time.now.to_formatted_s(:long)}"
+    logger.error "Parameters: #{params.inspect}"
   end
 end
