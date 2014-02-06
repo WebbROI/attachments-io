@@ -54,22 +54,24 @@ body, p, a, img {
   -o-transition: all 0.5s ease;
   -ms-transition: all 0.5s ease;
 }
+
 .container {
   -webkit-transition: all 0.5s ease;
   -moz-transition: all 0.5s ease;
   -o-transition: all 0.5s ease;
   -ms-transition: all 0.5s ease;
 }
+
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
-  font-family: 'Open Sans',sans-serif;
   font-weight: 700;
   line-height: 1.1;
 }
+
 p {
-  font-family: 'Open Sans',sans-serif;
   font-weight: 600;
 }
+
 a:hover {
   text-decoration: none;
 }
@@ -77,40 +79,39 @@ a:hover {
 .container.padded {
   padding: 20px 0 60px;
 }
-
-.nav,
-.navbar-nav,
-.navbar-right {
-  font-family: 'Open Sans',sans-serif;
+#header {
   font-weight: 700;
-}
 
-.navbar {
-  min-height: 80px;
-  padding-top: 15px;
-  margin-bottom: 0;
-}
+  .navbar {
+    min-height: 80px;
+    padding-top: 15px;
+    margin-bottom: 0;
+  }
 
-.navbar-nav {
-  &>li {
-    transition:all .2s linear;
-    -o-transition:all .2s linear;
-    -moz-transition:all .2s linear;
-    -webkit-transition:all .2s linear;
-    &:hover {
-      background-color: #ccc;
-      transition:all .2s linear;
-      -o-transition:all .2s linear;
-      -moz-transition:all .2s linear;
-      -webkit-transition:all .2s linear;
+  .navbar-brand {
+    font-family: 'Lobster', cursive !important;
+    font-size: 46px;
+    color: #0140CA !important;
+  }
+
+  #main-nav {
+    li a {
+      padding-bottom: 0;
+
+      .navbar-profile-img {
+        width: 32px;
+        margin: 0 8px 0 0;
+      }
+    }
+
+    li.profile-image a {
+      padding-top: 10px;
+    }
+
+    li.dropdown.open a {
+      background: none;
     }
   }
-}
-
-.navbar-brand {
-  font-family: 'Lobster', cursive!important;
-  font-size: 46px;
-  color: #0140CA!important;
 }
 
 //

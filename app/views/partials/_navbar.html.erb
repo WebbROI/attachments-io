@@ -13,8 +13,11 @@
           <li><a href="http://attachments.io/blog/">Blog</a></li>
           <li><a href="http://attachments.io/about-us/">About Us</a></li>
           <% if user_signed_in? %>
-              <li class="dropdown">
+              <li class="dropdown<%= ' profile-image' unless current_user.picture.empty? %>">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                  <% unless current_user.picture.empty? %>
+                      <img src="<%= current_user.picture %>" class="img-circle navbar-profile-img">
+                  <% end %>
                   <%= "#{current_user.first_name} #{current_user.last_name}" %>
                   <span class="caret"></span>
                 </a>
