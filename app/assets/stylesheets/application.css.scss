@@ -95,7 +95,7 @@ a:hover {
   }
 
   #main-nav {
-    li a {
+    &> li > a {
       padding-bottom: 0;
 
       .navbar-profile-img {
