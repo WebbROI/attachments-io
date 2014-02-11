@@ -29,11 +29,6 @@ class User < ActiveRecord::Base
       user.email = auth[:info][:email]
       user.picture = auth[:info][:image]
     end
-
-    user.initialize_profile
-    user.initialize_settings
-    user.initialize_filters
-    user.initialize_synchronization
   end
 
   def initialize_profile

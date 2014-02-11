@@ -28,6 +28,11 @@ class SessionsController < ApplicationController
     end
 
     if first_login
+      user.initialize_profile
+      user.initialize_settings
+      user.initialize_filters
+      user.initialize_synchronization
+
       # push user to mailchimp
       gb = Gibbon::API.new('fd15479bff9f2f46d331f063dc69f506-us3')
       gb.throws_exceptions = false
