@@ -51,10 +51,10 @@ app.controller('MainPageCtrl', [
     console.log data
   )
 
-#		API.sync.get {id: $routeParams.id}, (response) ->
-#			$scope.files = response.files
-#			$scope.sync = response.sync
-#
+		API.sync.get {id: $routeParams.id}, (response) ->
+			$scope.files = response.files
+			$scope.sync = response.sync
+
 #			source.addEventListener('progressbar', (event) ->
 #				data = JSON.parse event.data
 #				console.log('progressbar', data)
@@ -70,5 +70,30 @@ app.controller('MainPageCtrl', [
 #				console.log('synchronization_update', data)
 #
 #			);
+
+			source.addEventListener('drive_folders_loaded', (event) ->
+				data = JSON.parse(event.data)
+				console.log('drive_folders_loaded', data)
+			);
+
+			source.addEventListener('loading_label', (event) ->
+				data = JSON.parse(event.data)
+				console.log('loading_label', data)
+			);
+
+			source.addEventListener('process_email', (event) ->
+				data = JSON.parse(event.data)
+				console.log('process_email', data)
+			);
+
+			source.addEventListener('attachment_upload', (event) ->
+				data = JSON.parse(event.data)
+				console.log('attachment_upload', data)
+			);
+
+			source.addEventListener('finish', (event) ->
+				data = JSON.parse(event.data)
+				console.log('finish', data)
+			);
 
 ])
