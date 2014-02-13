@@ -1,8 +1,5 @@
 AttachmentsIO::Application.routes.draw do
 
-  get 'streaming/events'
-  get 'dev/flush_all'
-
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
@@ -39,6 +36,9 @@ AttachmentsIO::Application.routes.draw do
   # Synchronization
   match '/sync/start' => 'sync#start', via: :get, as: :sync_start
   match '/sync/resync' => 'sync#resync', via: :get, as: :resync_start
+
+  # Streaming
+  get 'streaming/events'
 
   # API
   match '/(:action).json', controller: 'api', defaults: { format: :json }, via: :get, as: :api
