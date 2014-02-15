@@ -219,6 +219,10 @@ module Synchronization
         end
       end
 
+      if @params[:puub]
+        $puub.publish_for_user(@user, { event: :start_fetching_emails, data: {} })
+      end
+
       threads = []
       @current_label_emails = []
 
@@ -234,6 +238,10 @@ module Synchronization
       end
 
       threads.each(&:join)
+
+      if @params[:puub]
+        $puub.publish_for_user(@user, { event: :finish_fetching_emails, data: {} })
+      end
 
       if @params[:logging]
         @logger.debug "IMAP: Emails for label \"#{@current_label}\" downloaded. Time: #{Time.now - started_at} sec."
@@ -272,8 +280,6 @@ module Synchronization
         @current_mail_object = email
       end
 
-      @user.sync.increment!(:email_parsed)
-
       if @params[:puub]
         $puub.publish_for_user(@user, { event: :process_email, data: @current_mail_object.to_json })
       end
@@ -281,6 +287,8 @@ module Synchronization
       @current_email.attachments.each do |attachment|
         process_attachment(attachment)
       end
+
+      @user.sync.increment!(:email_parsed)
 
       if @params[:logging]
         @logger.debug "EMAIL: Processed: #{@current_email.subject}. Time: #{Time.now - started_at} sec."

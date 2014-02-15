@@ -9,6 +9,9 @@ group :development do
   # Use sqlite3 as the database for Active Record
   gem 'sqlite3'
 
+  # Pumpumpumaa
+  gem 'puma'
+
   # Better errors
   gem 'better_errors'
   gem 'binding_of_caller'
@@ -26,7 +29,7 @@ end
 # Admin-panel
 gem 'activeadmin', github: 'gregbell/active_admin'
 
-# Resque
+# Resque & Redis
 gem 'resque', require: 'resque/server'
 gem 'redis'
 

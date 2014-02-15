@@ -7,7 +7,7 @@ class StreamingController < ApplicationController
     if user_signed_in?
       $puub.subscribe_to_user current_user do |message|
         response.stream.write "event: #{message['event']}\n"
-        response.stream.write "data: #{message['data'].to_json}\n\n"
+        response.stream.write "data: #{message['data']}\n\n"
       end
     end
   ensure
