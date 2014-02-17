@@ -44,6 +44,10 @@ class ApiController < ApplicationController
       @emails = @emails.offset(params[:offset].to_i)
     end
 
+    unless params[:query].nil?
+      @emails = @emails.where('subject LIKE ?', "%#{params[:query].to_s}%")
+    end
+
     @emails.includes(:email_files)
   end
 end
