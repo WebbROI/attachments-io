@@ -375,6 +375,8 @@ module Synchronization
                                         status: EmailFile::UPLOADED
                                     })
 
+          EmailFile.where(filename: attachment[:title], size: @files[attachment[:title]][:size]).update_all(link: @files[attachment[:title]][:link])
+
           attachment[:temp_file].unlink
 
           if @params[:puub]
