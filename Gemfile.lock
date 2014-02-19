@@ -291,6 +291,7 @@ DEPENDENCIES
   better_errors
   binding_of_caller
   bootstrap-sass (~> 2.3.2.2)
+  bundler
   coffee-rails (~> 4.0.0)
   foreman
   gibbon (~> 1.0.4)

@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.3'
+gem 'bundler'
 
 # Mixed gems
 gem 'pg', '0.17.1', group: [:production, :test]
