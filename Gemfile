@@ -4,9 +4,13 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.2'
 
+# Production gems
+group :production do
+  gem 'pg', '0.17.1'
+end
+
 # Development gems
 group :development do
-  # Use sqlite3 as the database for Active Record
   gem 'sqlite3'
 
   # Pum pum puma
@@ -17,10 +21,12 @@ group :development do
   gem 'binding_of_caller'
 end
 
-# Production gems
-group :production do
-  # Use PostrgreSQL for production
+group :test do
   gem 'pg', '0.17.1'
+
+  # Better errors
+  gem 'better_errors'
+  gem 'binding_of_caller'
 end
 
 # Admin-panel
@@ -93,7 +99,7 @@ end
 gem 'unicorn'
 
 # Use Capistrano for deployment
-group :development do
+group :development, :test do
   gem 'capistrano', '~> 3.1.0'
   gem 'capistrano-rails', '~> 1.1.1'
 
