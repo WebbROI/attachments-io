@@ -4,7 +4,6 @@ lock '3.1.0'
 set :application, 'attachments.io'
 set :repo_url, 'git@github.com:WebbROI/attachments-io.git'
 set :default_stage, :production
-set :rvm_type, :system
 
 role :web, %w{deploy@162.243.44.145}
 role :app, %w{deploy@162.243.44.145}
@@ -36,8 +35,7 @@ server '162.243.44.145', user: 'deploy', roles: %w{web app db}
 # set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
 
 # Default value for default_env is {}
-set :default_env, { path: '/opt/ruby/bin:$PATH',
-                    rvm_bin_path: '~/.rvm/bin' }
+# set :default_env, { path: '/opt/ruby/bin:$PATH' }
 
 # Default value for keep_releases is 5
 set :keep_releases, 1
