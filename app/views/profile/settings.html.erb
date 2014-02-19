@@ -19,64 +19,15 @@
         <%= f.check_box :convert_files %>
         Convert files to Google Drive format (eg. Excel to Google Spreadsheets)
       <% end %>
-      <small><%= link_to 'more abouts this', 'https://support.google.com/drive/answer/2407404', target: '_blank' %></small>
+      <small><%= link_to 'read more', 'https://support.google.com/drive/answer/2407404', target: '_blank' %></small>
     </div>
     <div class="checkbox">
       <%= f.label :active do %>
         <%= f.check_box :active %>
-        Active auto-synchronization every 10 minutes
+        Active auto-sync for every 10 minutes
       <% end %>
     </div>
   </div>
 
   <%= f.submit 'Update settings', class: 'btn btn-primary' %>
-<% end %>
-
-<%= form_for @profile, url: user_settings_path do |f| %>
-
-  <h2>
-    <i class="glyphicon glyphicon-user"></i>
-    Profile information
-  </h2>
-
-  <div class="well form-horizontal">
-    <div class="form-group">
-      <%= f.label :gender, class: 'col-sm-2 control-label' %>
-      <div class="col-sm-10">
-        <%= f.select :gender, options_for_select([['Male', :male], ['Female', :female]], @profile.gender.to_sym) %>
-      </div>
-    </div>
-    <div class="form-group">
-      <%= f.label :organization, class: 'col-sm-2 control-label' %>
-      <div class="col-sm-10">
-        <%= f.text_field :organization, class: 'form-control' %>
-      </div>
-    </div>
-    <div class="form-group">
-      <%= f.label :location, class: 'col-sm-2 control-label' %>
-      <div class="col-sm-10">
-        <%= f.text_field :location, class: 'form-control' %>
-      </div>
-    </div>
-    <div class="form-group">
-      <%= f.label :plus, 'Google Plus', class: 'col-sm-2 control-label' %>
-      <div class="col-sm-10">
-        <%= f.text_field :plus, class: 'form-control' %>
-      </div>
-    </div>
-    <div class="form-group">
-      <%= f.label :twitter, class: 'col-sm-2 control-label' %>
-      <div class="col-sm-10">
-        <%= f.text_field :twitter, class: 'form-control' %>
-      </div>
-    </div>
-    <div class="form-group">
-      <%= f.label :facebook, class: 'col-sm-2 control-label' %>
-      <div class="col-sm-10">
-        <%= f.text_field :facebook, class: 'form-control' %>
-      </div>
-    </div>
-  </div>
-
-  <%= f.submit 'Update profile', class: 'btn btn-primary' %>
 <% end %>

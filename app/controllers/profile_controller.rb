@@ -29,7 +29,7 @@ class ProfileController < ApplicationController
       if (params[:user_settings] && @settings.update_attributes(settings_params)) ||
          (params[:user_profile] && @profile.update_attributes(profile_params))
 
-        redirect_to profile_path, flash: { success: 'Settings was successful updated' }
+        redirect_to profile_path, flash: { success: 'Your settings were successfully updated.' }
       else
         flash[:error] = 'Sorry, something was wrong'
       end
