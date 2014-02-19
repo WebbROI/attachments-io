@@ -16,7 +16,8 @@ class ApiController < ApplicationController
   def me
     @user = current_user
     user = @user.as_json
-    user[:sync_status] = @user.now_synchronizes? ? true : false
+    #user[:sync_status] = @user.now_synchronizes? ? true : false
+    user[:sync] = @user.now_synchronizes? ? @user.sync : false
 
     user.delete('uid')
     user.delete('persistence_token')

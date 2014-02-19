@@ -1,4 +1,4 @@
-
+#= require angular-ui-bootstrap-tpls
 #= require services
 #= require directives
 #= require filters
@@ -13,7 +13,9 @@ deps = [
 	'ngRoute',
 	'attachments.filters',
 	'attachments.services',
-	'attachments.directives'
+	'attachments.directives',
+	'ui.bootstrap',
+	'angularMoment'
 ]
 
 app = angular.module 'attachments', deps
@@ -22,78 +24,111 @@ app.run ([
 	'$rootScope', '$location', '$window',
 	(self, $location, $window)->
 		console.log("Attachments.IO - Started")
-
 ])
 
-
 app.value "Config",
-	SYNC_STATUS_FINISHED: 2
-	SYNC_STATUS_INPROCESS: 1
-	SYNC_STATUS_ERROR: 0
+#	SYNC_STATUS_FINISHED: 2
+#	SYNC_STATUS_INPROCESS: 1
+#	SYNC_STATUS_ERROR: 0
+	SYNC_STATUS_WAITING     : 0
+	SYNC_STATUS_INPROCESS   : 1
+	SYNC_STATUS_ERROR       : 2
+	SYNC_STATUS_SUCCESS     : 3
+	SYNC_STATUS_FIXED       : 4
 
 app.controller('MainPageCtrl', [
-	'$scope', 'EventSource', '$routeParams', 'API', 'Config',
-	($scope, EventSource, $routeParams, API, Config) ->
+	'$scope', 'EventSource', '$routeParams', 'API', 'Config', '$q',
+	($scope, EventSource, $routeParams, API, Config, $q) ->
 
+		deferred = $q.defer();
+
+		$scope.emails = window.emails = [];
+		$scope.loading = true;
 		source = EventSource
 		$scope.config = Config
 
-		API.me.get (me) ->
+		me = API.me.get (me) ->
 			$scope.me = me
+			console.log('got Me', me)
 
-		API.emails.get (emails) ->
-			$scope.emails = emails
-			console.log $scope
+		emails = API.emails.get (emails) ->
+			for e in emails
+				$scope.emails[e.id] = e  #keep an email id refference to push according files
+			console.log('got emails', emails)
 
+		$q.all([ me.$promise, emails.$promise]).then( ( response ) ->
+			$scope.loaded = true;
+			console.log('got everything', arguments)
+		)
 
-  source.addEventListener('attachment_upload', (event) ->
-    data = JSON.parse event.data
-    console.log data
-  )
+		source.addEventListener('update_email_count', (event) ->
+			data = JSON.parse(event.data || {})
+			$scope.$apply ->
+				$scope.me.sync.email_count = data.email_count
 
-		API.sync.get {id: $routeParams.id}, (response) ->
-			$scope.files = response.files
-			$scope.sync = response.sync
+			console.log('update_email_count', data, event)
+		)
 
-#			source.addEventListener('progressbar', (event) ->
-#				data = JSON.parse event.data
-#				console.log('progressbar', data)
-#			)
-#
-#			source.addEventListener('synchronization_add_file', (event) ->
-#				data = JSON.parse(event.data);
-#				console.log('synchronization_add_file', data)
-#			)
-#
-#			source.addEventListener('synchronization_update', (event) ->
-#				data = JSON.parse(event.data)
-#				console.log('synchronization_update', data)
-#
-#			);
+		source.addEventListener('drive_folders_loaded', (event) ->
+			console.log('drive_folders_loaded', event)
+		);
 
-			source.addEventListener('drive_folders_loaded', (event) ->
-				data = JSON.parse(event.data)
-				console.log('drive_folders_loaded', data)
-			);
+		source.addEventListener('loading_label', (event) ->
+			data = event.data && JSON.parse(event.data)
+			$scope.$apply ->
+				$scope.label = data
+			console.log('loading_label', data, event)
 
-			source.addEventListener('loading_label', (event) ->
-				data = JSON.parse(event.data)
-				console.log('loading_label', data)
-			);
+			#console.log event
+		);
 
-			source.addEventListener('process_email', (event) ->
-				data = JSON.parse(event.data)
-				console.log('process_email', data)
-			);
+		source.addEventListener('process_email', (event) ->
+			data = JSON.parse(event.data)
+			$scope.$apply ->
+				# asynchronously add an email. Ordered by date
+				data.files = []; # create an array to push files then
+				$scope.emails[data.id] = data
+				++$scope.me.sync.email_parsed
+				#console.log($scope.emails[data.id], $scope.emails)
 
-			source.addEventListener('attachment_upload', (event) ->
-				data = JSON.parse(event.data)
-				console.log('attachment_upload', data)
-			);
+			console.log('process_email: got email', $scope.emails[data.id]) #, data, event);
+		);
 
-			source.addEventListener('finish', (event) ->
-				data = JSON.parse(event.data)
-				console.log('finish', data)
-			);
+		source.addEventListener('attachment_upload', (event) ->
+#			console.log event
+			data = JSON.parse(event.data)
+			console.log("attachment_upload: got file for [#{data.id}] email. ", data, event);
+			$scope.$apply ->
+				$scope.emails[data.email_id]?.files?.push(data)
+		);
+
+		source.addEventListener('attachment_upload', (event) ->
+			data = JSON.parse event.data
+			console.log data, event
+#			console.log event
+		);
+
+		source.addEventListener('finish', (event) ->
+			data = JSON.parse(event.data)
+
+			$scope.$apply ->
+				$scope.me.sync = false
+
+			console.log('finish', data, event)
+#				window.location.reload();
+		);
+
 
 ])
+
+app.directive("timeAgo", () ->
+	restrict: "C"
+	link: (scope, element, attrs) ->
+		jQuery(element).timeago();
+
+);
+
+app.filter("timeAgo", () ->
+	(date) ->
+		jQuery.timeago(date);
+);

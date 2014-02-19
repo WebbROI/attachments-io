@@ -124,7 +124,7 @@ module Synchronization
       @user.sync.update_attribute(:email_count, email_count)
 
       if @params[:puub]
-        $puub.publish_for_user(@user, { event: :update_email_count, data: { email_count: email_count } })
+        $puub.publish_for_user(@user, { event: :update_email_count, data: { email_count: email_count }.to_json })
       end
 
       if @params[:logging]
@@ -203,7 +203,7 @@ module Synchronization
       started_at = Time.now
 
       if @params[:puub]
-        $puub.publish_for_user(@user, { event: :loading_label, data: { label: @current_label } })
+        $puub.publish_for_user(@user, { event: :loading_label, data: { label: @current_label }.to_json })
       end
 
       @attachments = []
@@ -220,7 +220,7 @@ module Synchronization
       end
 
       if @params[:puub]
-        $puub.publish_for_user(@user, { event: :start_fetching_emails, data: {} })
+        $puub.publish_for_user(@user, { event: :start_fetching_emails, data: {}.to_json })
       end
 
       threads = []
@@ -240,7 +240,7 @@ module Synchronization
       threads.each(&:join)
 
       if @params[:puub]
-        $puub.publish_for_user(@user, { event: :finish_fetching_emails, data: {} })
+        $puub.publish_for_user(@user, { event: :finish_fetching_emails, data: {}.to_json })
       end
 
       if @params[:logging]
@@ -446,7 +446,7 @@ module Synchronization
       end
 
       if @params[:puub]
-        $puub.publish_for_user(@user, { event: :finish, data: { status: previous_status } })
+        $puub.publish_for_user(@user, { event: :finish, data: { status: previous_status }.to_json })
       end
 
       if @params[:logging]
