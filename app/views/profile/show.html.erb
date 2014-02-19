@@ -23,12 +23,12 @@
         <i class="glyphicon glyphicon-play"></i>
         START NOW
       <% end %>
-      <% if Rails.env.development? %>
+      <% # if Rails.env.development? %>
         <%= link_to resync_start_path, class: 'btn btn-danger btn-xs', data: { confirm: 'Okay :(' } do %>
           <i class="glyphicon glyphicon-refresh"></i>
           RESYNC
         <% end %>
-      <% end %>
+      <% # end %>
     </h4>
 
     <% unless @user.last_sync.nil? %>
