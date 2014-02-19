@@ -46,13 +46,13 @@ class SessionsController < ApplicationController
 
       redirect_to sync_start_path, flash: { success: 'Thanks for singing up for @ttachments.io! We are syncing your attachments.' }
     else
-      redirect_to root_path, flash: { success: 'You successful login!' }
+      redirect_to root_path, flash: { success: "You have singed in as #{user.first_name} #{user.last_name} (#{user.email})" }
     end
   end
 
   def destroy
     current_user_session.destroy
-    flash[:notice] = 'You successful logout!'
+    flash[:notice] = 'You have successfully logged out!'
     redirect_to root_path
   end
 
