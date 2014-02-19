@@ -3,7 +3,6 @@ lock '3.1.0'
 
 set :application, 'attachments.io'
 set :repo_url, 'git@github.com:WebbROI/attachments-io.git'
-set :default_stage, :production
 
 role :web, %w{deploy@162.243.44.145}
 role :app, %w{deploy@162.243.44.145}
@@ -23,7 +22,7 @@ server '162.243.44.145', user: 'deploy', roles: %w{web app db}
 # set :format, :pretty
 
 # Default value for :log_level is :debug
-# set :log_level, :debug
+set :log_level, :info
 
 # Default value for :pty is false
 # set :pty, true
