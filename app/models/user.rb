@@ -122,7 +122,7 @@ class User < ActiveRecord::Base
     return if now_synchronizes? && !force
     sync.inprocess!
 
-    Resque.enqueue_to("sync_user_#{self.id}_queue", StartSynchronization, self.id, params)
+    Resque.enqueue_to("#{Rails.env}_sync_user_#{self.id}_queue", StartSynchronization, self.id, params)
   end
 
   def now_synchronizes?

@@ -1,15 +1,15 @@
-ruby '2.0.0'
+ruby '2.1.0'
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.0.0'
+gem 'rails', '4.0.2'
 
 # Development gems
 group :development do
   # Use sqlite3 as the database for Active Record
   gem 'sqlite3'
 
-  # Pumpumpumaa
+  # Pum pum puma
   gem 'puma'
 
   # Better errors
@@ -20,10 +20,7 @@ end
 # Production gems
 group :production do
   # Use PostrgreSQL for production
-  gem 'pg'
-
-  # For Heroku assets manager
-  # gem 'rails_12factor', group: :production
+  gem 'pg', '0.17.1'
 end
 
 # Admin-panel
@@ -60,12 +57,8 @@ gem 'russian', '~> 0.6.0'
 gem 'gibbon', '~> 1.0.4'
 
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 4.0.0'
-gem 'anjlab-bootstrap-rails', '~> 3.0.2.0', :require => 'bootstrap-rails'
-
-# Use Semantic-UI
-# gem 'therubyracer', platforms: :ruby # or any other runtime
-# gem 'less-rails'
+gem 'sass-rails', '~> 4.0.1'
+gem 'anjlab-bootstrap-rails', '~> 3.0.3.0', require: 'bootstrap-rails'
 
 # Retina images
 gem 'retina_tag'
@@ -101,13 +94,14 @@ gem 'unicorn'
 
 # Use Capistrano for deployment
 group :development do
-  gem 'capistrano', '~> 3.0.0'
-  # gem 'capistrano-rvm', github: 'capistrano/rvm'
+  gem 'capistrano', '~> 3.1.0'
+  gem 'capistrano-rails', '~> 1.1.1'
+
   gem 'capistrano-bundler'
-  gem 'capistrano-rails', '~> 1.1.0'
 end
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
+# Log system
 gem 'SyslogLogger'

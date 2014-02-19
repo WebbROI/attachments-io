@@ -21,7 +21,9 @@ class SyncController < ApplicationController
     items = current_user.api.load_files(title: IO_ROOT_FOLDER, is_root: true).data.items
 
     unless items.empty?
-      current_user.api.delete_file(items.first.id)
+      items.each do |item|
+        current_user.api.delete_file(item.id)
+      end
     end
 
     redirect_to sync_start_path

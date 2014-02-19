@@ -51,6 +51,6 @@ class Puub
   end
 
   def channel_name(channel)
-    "#{PREFIX}:#{channel}"
+    "#{Rails.env}:#{PREFIX}:#{channel}"
   end
 end
