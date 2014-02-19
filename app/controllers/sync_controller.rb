@@ -11,9 +11,9 @@ class SyncController < ApplicationController
   end
 
   def resync
-    #if Rails.env.production?
-    #  redirect_to profile_path
-    #end
+    if Rails.env.production?
+      redirect_to profile_path
+    end
 
     current_user.emails.destroy_all
     current_user.update_attribute(:last_sync, nil)
