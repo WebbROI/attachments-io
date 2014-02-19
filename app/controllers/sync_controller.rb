@@ -11,13 +11,15 @@ class SyncController < ApplicationController
   end
 
   def resync
+    if Rails.env.production?
+      redirect_to profile_path
+    end
+
     current_user.emails.destroy_all
     current_user.update_attribute(:last_sync, nil)
 
-    # load Attachments.IO folder
     items = current_user.api.load_files(title: IO_ROOT_FOLDER, is_root: true).data.items
 
-    # if Attachments.IO not exist, create it!
     unless items.empty?
       current_user.api.delete_file(items.first.id)
     end

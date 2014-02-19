@@ -103,11 +103,12 @@ module Synchronization
       @imap.authenticate('XOAUTH2', @user.email, @user_api.tokens[:access_token])
 
       if @user.last_sync.nil?
-        search_query = 'X-GM-RAW has:attachment'
+        time = Time.now - 2.weeks
       else
         time = Time.at(@user.last_sync)
-        search_query =  "X-GM-RAW \"has:attachment after:#{time.to_i}\""
       end
+
+      search_query = "X-GM-RAW \"has:attachment after:#{time.to_i}\""
 
       @imap.list('', '%').to_a.each do |label|
         next if label.attr.include?(:Noselect)
@@ -120,6 +121,8 @@ module Synchronization
         @emails[label.name] = emails
         email_count += emails.count
       end
+
+      puts "EMAIL COUNT: #{email_count}"
 
       @user.sync.update_attribute(:email_count, email_count)
 
@@ -423,8 +426,14 @@ module Synchronization
     end
 
     def generate_filename_for_current
-      filename = @current_attachment.filename
-      Transliteration.transliterate(filename)
+      filename = Transliteration.transliterate(@current_attachment.filename)
+
+      if @user_settings.subject_in_filename && !@current_email.subject.empty?
+        subject = Transliteration.transliterate(@current_email.subject)
+        filename = "#{subject} - #{filename}"
+      end
+
+      filename
     end
 
     def update_last_sync
