@@ -4,10 +4,10 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.2'
 
-# Production gems
-group :production do
-  gem 'pg', '0.17.1'
-end
+# Mixed gems
+gem 'pg', '0.17.1', group: [:production, :test]
+gem 'better_errors', group: [:production, :test]
+gem 'binding_of_caller', group: [:production, :test]
 
 # Development gems
 group :development do
@@ -15,18 +15,6 @@ group :development do
 
   # Pum pum puma
   gem 'puma'
-
-  # Better errors
-  gem 'better_errors'
-  gem 'binding_of_caller'
-end
-
-group :test do
-  gem 'pg', '0.17.1'
-
-  # Better errors
-  gem 'better_errors'
-  gem 'binding_of_caller'
 end
 
 # Admin-panel
@@ -103,6 +91,7 @@ group :development, :test do
   gem 'capistrano', '~> 3.1.0'
   gem 'capistrano-rails', '~> 1.1.1'
 
+  gem 'capistrano-rvm'
   gem 'capistrano-bundler'
 end
 
