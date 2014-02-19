@@ -6,8 +6,8 @@ gem 'rails', '4.0.2'
 
 # Mixed gems
 gem 'pg', '0.17.1', group: [:production, :test]
-gem 'better_errors', group: [:production, :test]
-gem 'binding_of_caller', group: [:production, :test]
+gem 'better_errors', group: [:development, :test]
+gem 'binding_of_caller', group: [:development, :test]
 
 # Development gems
 group :development do
