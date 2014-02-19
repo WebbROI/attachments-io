@@ -22,7 +22,7 @@ server '162.243.44.145', user: 'deploy', roles: %w{web app db}
 # set :format, :pretty
 
 # Default value for :log_level is :debug
-set :log_level, :info
+# set :log_level, :info
 
 # Default value for :pty is false
 # set :pty, true
