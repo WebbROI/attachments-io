@@ -2,7 +2,7 @@ worker_processes 3
 working_directory '/home/rails/current'
 timeout 30
 
-user 'rails'
+user 'deploy'
 
 pid '/home/unicorn/pids/unicorn.pid'
 listen '/home/unicorn/sockets/unicorn.sock'
