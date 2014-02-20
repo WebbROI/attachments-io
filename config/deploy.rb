@@ -4,10 +4,10 @@ lock '3.1.0'
 set :application, 'attachments.io'
 set :repo_url, 'git@github.com:WebbROI/attachments-io.git'
 
-role :web, %w{deploy@162.243.44.145}
-role :app, %w{deploy@162.243.44.145}
-role :db, %w{deploy@162.243.44.145}
-server '162.243.44.145', user: 'deploy', roles: %w{web app db}
+role :web, %w{root@162.243.44.145}
+role :app, %w{root@162.243.44.145}
+role :db, %w{root@162.243.44.145}
+server '162.243.44.145', user: 'root', roles: %w{web app db}
 
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
