@@ -53,6 +53,7 @@ gem 'gibbon', '~> 1.0.4'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.1'
 gem 'anjlab-bootstrap-rails', '~> 3.0.3.0', require: 'bootstrap-rails'
+gem 'angular-ui-bootstrap-rails'
 
 # Retina images
 gem 'retina_tag'

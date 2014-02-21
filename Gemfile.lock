@@ -53,6 +53,7 @@ GEM
       thread_safe (~> 0.1)
       tzinfo (~> 0.3.37)
     addressable (2.3.5)
+    angular-ui-bootstrap-rails (0.10.0)
     anjlab-bootstrap-rails (3.0.3.0)
       railties (>= 3.0)
       sass (>= 3.2)
@@ -286,6 +287,7 @@ PLATFORMS
 DEPENDENCIES
   SyslogLogger
   activeadmin!
+  angular-ui-bootstrap-rails
   anjlab-bootstrap-rails (~> 3.0.3.0)
   authlogic!
   better_errors

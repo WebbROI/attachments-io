@@ -1,97 +1,104 @@
 <div ng-controller="MainPageCtrl">
-  {{ $log.log(emails) }}
+  <div ng-show="me">
+    <div ng-if="me.sync">
+      <h4>Current status: <strong class="text-success">Synchronizing</strong></h4>
+      <div ng-if="me.sync.email_count == 0 && emails.length == 0">
+        <small>Getting emails...</small>
+      </div>
+      <div ng-show="me.sync.email_count == me.sync.email_parsed && me.sync.email_count != 0">
+        <smal>Finishing synchronization...</smal>
+      </div>
 
-  <% if @user.now_synchronizes? %>
-    <h4>Current status: <strong class="text-success">Synchronizing</strong></h4>
+      <div ng-if="me.sync.email_count">
+	      <progressbar max="me.sync.email_count" value="me.sync.email_parsed">
+	        <p class="text-center">
+	            <span style="color:black; white-space:nowrap;">
+	              Uploading attachments. Uploaded {{ me.sync.email_parsed }} of {{ me.sync.email_count }} emails...
+	            </span>
+	        </p>
+	      </progressbar>
+      </div>
 
-    <% if @sync.email_count.zero? %>
-      <small>Getting emails...</small>
-    <% elsif @sync.email_count.to_i == @sync.email_parsed.to_i %>
-      <smal>Finishing synchronization...</smal>
-    <% else %>
-      <small>Uploading attachments. Uploaded <%= @sync.email_parsed.to_i %> of <%= @sync.email_count.to_i %> emails..</small>
-    <% end %>
-    <div class="progress progress-striped active">
-      <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="<%= @progressbar[:percent] %>" aria-valuemin="0" aria-valuemax="100" style="width: <%= @progressbar[:percent] %>%;">
-        <div class="sr-only"><%= @progressbar[:percent] %>% complete</div>
+      <!--<div class="text-center">-->
+        <h3>Please wait a minute while we sync all your attachments.</h3>
+      <!--</div>-->
+
+    </div>
+
+    <div ng-if="!me.sync">
+      <h4 ng-if="loaded && emails.length">
+        Current status: <strong class="text-warning">Waiting</strong> <small>~ <%= 10 - Time.now.min % 10 %> min.</small>
+
+        <%= link_to sync_start_path, class: 'btn btn-success btn-xs' do %>
+            <i class="glyphicon glyphicon-play"></i>
+            START NOW
+        <% end %>
+        <% unless Rails.env.production? %>
+            <%= link_to resync_start_path, class: 'btn btn-danger btn-xs', data: { confirm: 'Okay :(' } do %>
+                <i class="glyphicon glyphicon-refresh"></i>
+                RESYNC
+            <% end %>
+        <% end %>
+
+        <p ng-if="me.last_sync"><small>Last synchronization: <strong>{{ me.last_sync * 1000 | timeAgo }}</strong></small></p>
+      </h4>
+
+      <div ng-if="loaded && !emails.length" class="text-center">
+          <h3>You don't have synchronized emails. But you can fix it ;)</h3>
+          <%= link_to sync_start_path, class: 'btn btn-success btn-large' do %>
+              <span class="glyphicon glyphicon-play"></span>
+              Start synchronizations
+          <% end %>
       </div>
     </div>
-  <% else %>
-    <h4>
-      Current status: <strong class="text-warning">Waiting</strong> <small>~ <%= 10 - Time.now.min % 10 %> min.</small>
-      <%= link_to sync_start_path, class: 'btn btn-success btn-xs' do %>
-        <i class="glyphicon glyphicon-play"></i>
-        START NOW
-      <% end %>
-      <% unless Rails.env.production? %>
-        <%= link_to resync_start_path, class: 'btn btn-danger btn-xs', data: { confirm: 'Okay :(' } do %>
-          <i class="glyphicon glyphicon-refresh"></i>
-          RESYNC
-        <% end %>
-      <% end %>
-    </h4>
 
-    <% unless @user.last_sync.nil? %>
-      <p><small>Last synchronization: <strong><%= time_ago_in_words(Time.at(@user.last_sync)) %> ago</strong></small></p>
-    <% end %>
-  <% end %>
-
-  <% if @emails.empty? %>
-    <% if @user.now_synchronizes? %>
-      <div class="text-center">
-        <h3>Wow! You are popular. Please wait a minute while we sync all your attachments.</h3>
-      </div>
-    <% else %>
-      <div class="text-center">
-        <h3>You don't have synchronized emails. But you can fix it ;)</h3>
-        <%= link_to sync_start_path, class: 'btn btn-success btn-large' do %>
-          <span class="glyphicon glyphicon-play"></span>
-          Start synchronizations
-        <% end %>
-      </div>
-    <% end %>
-  <% else %>
-      <div id="emailsAndFiles">
-        <div class="emails-and-files-header">
-          <div class="row">
-            <div class="col-md-1 text-center">
-              <i class="glyphicon glyphicon-collapse-up"    data-toggle="collapse" data-parent="#emailsAndFiles" data-target=".in"      ></i>
-              <i class="glyphicon glyphicon-collapse-down"  data-toggle="collapse" data-parent="#emailsAndFiles" data-target=".collapse"></i>
-            </div>
-            <div class="col-md-3">From</div>
-            <div class="col-md-5">Subject</div>
-            <div class="col-md-2">Label</div>
-            <div class="col-md-1">Files</div>
+    <div class="emails-and-files">
+      <div class="emails-and-files-header">
+        <div class="row">
+          <div class="col-md-1 text-center">
+            <i class="glyphicon glyphicon-collapse-up"    data-toggle="collapse" data-parent="#emailsAndFiles" data-target=".in"      ></i>
+            <i class="glyphicon glyphicon-collapse-down"  data-toggle="collapse" data-parent="#emailsAndFiles" data-target=".collapse"></i>
           </div>
-        </div>
-        <div ng-repeat='email in emails' ng-if="email.files.length > 0" class="email">
-          <div class="email-header">
-            <div data-toggle="collapse"  data-parent="#emailsAndFiles" data-target="#collapse-{{ email.id }}" class="row">
-              <div class="col-md-1 text-center"><i class="glyphicon glyphicon-collapse-down"></i></div>
-              <div class="col-md-3">{{ email.from }}</div>
-              <div class="col-md-5">{{ email.subject }}</div>
-              <div class="col-md-2">{{ email.label }}</div>
-              <div class="col-md-1">
-                <ng-pluralize count="email.files.length"
-                              when="{  '0': 'No files.', 'one': '1 file.', 'other': '{} files.'}"></ng-pluralize>
-              </div>
-            </div>
-          </div>
-          <div id="collapse-{{ email.id }}" class="email-collapse panel-collapse collapse">
-            <table class="email-files table table-condensed">
-              <tr ng-repeat="file in email.files">
-                <td class="col-md-1">
-                  <span ng-if="file.status == <%= EmailFile::UPLOADED %>" class="label label-success">New</span>
-                  <span ng-if="file.status == <%= EmailFile::ALREADY_UPLOADED %>" class="label label-warning">Uploaded</span>
-                </td>
-                <td col-md-10>
-                  <a href="{{ file.link }}" target="_blank">{{ file.filename }}</a>
-                </td>
-                <td class="col-md-1"> {{ file.size | bytes }} </td>
-              </tr>
-            </table>
-          </div>
+          <div class="col-md-2">From</div>
+          <div class="col-md-4">Subject</div>
+          <div class="col-md-2">Label</div>
+          <div class="col-md-1">Files</div>
+          <div class="col-md-2">Date</div>
         </div>
       </div>
-  <% end %>
+      <div ng-repeat='email in emails | orderBy:"-date":false track by $index' ng-if="email.files.length > 0" class="email">
+        <div class="email-header">
+          <div data-toggle="collapse"  data-parent="#emailsAndFiles" data-target="#collapse-{{ email.id }}" class="row">
+            <div class="col-md-1 text-center"><i class="glyphicon glyphicon-collapse-down"></i></div>
+            <div class="col-md-2">{{ email.from }}</div>
+            <div class="col-md-4">{{ email.subject }}</div>
+            <div class="col-md-2">{{ email.label }}</div>
+            <div class="col-md-1">
+              <ng-pluralize count="email.files.length"
+                            when="{  '0': 'No files.', 'one': '1 file.', 'other': '{} files.'}"></ng-pluralize>
+            </div>
+            <div class="col-md-2"><small>{{ email.date * 1000 | timeAgo }}</small></div>
+          </div>
+        </div>
+        <div id="collapse-{{ email.id }}" class="email-collapse panel-collapse collapse">
+          <table class="email-files table table-condensed">
+            <tr ng-repeat="file in email.files">
+              <td class="col-md-1">
+                <span ng-if="file.status == <%= EmailFile::UPLOADED %>" class="label label-success">New</span>
+                <span ng-if="file.status == <%= EmailFile::ALREADY_UPLOADED %>" class="label label-warning">Uploaded</span>
+              </td>
+              <td col-md-10>
+                <a href="{{ file.link }}" target="_blank">{{ file.filename }}</a>
+              </td>
+              <td class="col-md-1"> {{ file.size | bytes }} </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2 ng-show="!me" class="alert alert-info text-center">
+    <i class="icon-spin icon-spinner"></i> Loading...
+  </h2>
 </div>
