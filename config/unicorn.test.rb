@@ -1,14 +1,14 @@
 worker_processes 1
-working_directory '/var/www/apps/app.attachments.io/current'
+working_directory '/var/www/apps/test.attachments.io/current'
 
-listen '/var/www/apps/app.attachments.io/socket/unicorn.sock', backlog: 64
+listen '/var/www/apps/test.attachments.io/socket/unicorn.sock', backlog: 64
 
 timeout 30
 
-pid '/var/www/apps/app.attachments.io/run/unicorn.pid'
+pid '/var/www/apps/test.attachments.io/run/unicorn.pid'
 
-stderr_path '/var/www/apps/app.attachments.io/log/unicorn.stderr.log'
-stdout_path '/var/www/apps/app.attachments.io/log/unicorn.stdout.log'
+stderr_path '/var/www/apps/test.attachments.io/log/unicorn.stderr.log'
+stdout_path '/var/www/apps/test.attachments.io/log/unicorn.stdout.log'
 
 check_client_connection false
 
