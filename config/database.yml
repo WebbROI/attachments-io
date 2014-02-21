@@ -18,8 +18,8 @@ test:
   database: attachments_test
   host: localhost
   pool: 500
-  username: attachments
-  password: Chargers36!
+  username: rails
+  password: Chargers36@
 
 production:
   adapter: postgresql
@@ -27,5 +27,5 @@ production:
   database: attachments_production
   host: localhost
   pool: 500
-  username: attachments
-  password: Chargers36!
+  username: rails
+  password: Chargers36@
