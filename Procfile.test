@@ -1,0 +1,2 @@
+web: bundle exec unicorn -D -c config/unicorn.test.rb -E test
+worker: bundle exec rake environment resque:work QUEUE=* COUNT=10 RAILS_ENV=test
