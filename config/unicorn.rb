@@ -1,4 +1,4 @@
-worker_processes 1
+worker_processes 2
 working_directory '/var/www/apps/app.attachments.io/current'
 
 listen '/var/www/apps/app.attachments.io/socket/unicorn.sock', backlog: 64
