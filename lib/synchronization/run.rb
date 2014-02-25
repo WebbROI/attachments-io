@@ -20,7 +20,13 @@ module Synchronization
 
       @user = user
       @user_settings = @user.settings
-      @params = DEFAULT_PARAMS.merge(params)
+      @user.sync.update_attribute(:started_at, @started_at)
+
+      @params = {}
+      params.each do |key, value|
+        @params[key.to_sym] = value
+      end
+      @params = DEFAULT_PARAMS.merge(@params)
 
       if Rails.env.development?
         @params[:debug] = true
@@ -38,6 +44,20 @@ module Synchronization
       end
 
       start
+
+    rescue => e
+      if @params[:logging]
+        @logger.error "ERROR: #{e.message}"
+      end
+
+      logger = Logger.new('log/sync_errors.log', 10, 1024000)
+      logger.error '============================================================='
+      logger.error "Account: #{@user.email}"
+      logger.error "Started at: #{@started_at.to_formatted_s(:long)}"
+      logger.error "ERROR: #{e.message}"
+      logger.error "BACKTRACE: #{e.backtrace}"
+
+      finish(true)
     end
 
     private
@@ -76,20 +96,6 @@ module Synchronization
 
       update_last_sync
       finish
-
-    rescue => e
-      if @params[:logging]
-        @logger.error "ERROR: #{e.message}"
-      end
-
-      logger = Logger.new('log/sync_errors.log')
-      logger.error '============================================================='
-      logger.error "Account: #{@user.email}"
-      logger.error "Started at: #{@started_at.to_formatted_s(:long)}"
-      logger.error "ERROR: #{e.message}"
-      logger.error "BACKTRACE: #{e.backtrace}"
-
-      finish(true)
     end
 
     def imap_get_emails
@@ -102,13 +108,17 @@ module Synchronization
       @imap = Net::IMAP.new('imap.gmail.com', 993, usessl = true, certs = nil, verify = false)
       @imap.authenticate('XOAUTH2', @user.email, @user_api.tokens[:access_token])
 
-      if @user.last_sync.nil?
-        time = Time.now - 2.weeks
+      if @params[:before_date]
+        search_query = "X-GM-RAW \"has:attachment before:#{@params[:before_date].to_i}\""
       else
-        time = Time.at(@user.last_sync)
-      end
+        if @user.last_sync.nil?
+          time = Time.now - 2.weeks
+        else
+          time = Time.at(@user.last_sync)
+        end
 
-      search_query = "X-GM-RAW \"has:attachment after:#{time.to_i}\""
+        search_query = "X-GM-RAW \"has:attachment after:#{time.to_i}\""
+      end
 
       @imap.list('', '%').to_a.each do |label|
         next if label.attr.include?(:Noselect)
@@ -121,8 +131,6 @@ module Synchronization
         @emails[label.name] = emails
         email_count += emails.count
       end
-
-      puts "EMAIL COUNT: #{email_count}"
 
       @user.sync.update_attribute(:email_count, email_count)
 
@@ -378,6 +386,7 @@ module Synchronization
                                         status: EmailFile::UPLOADED
                                     })
 
+          # TODO: fix it (not connected to user)
           EmailFile.where(filename: attachment[:title], size: @files[attachment[:title]][:size]).update_all(link: @files[attachment[:title]][:link])
 
           attachment[:temp_file].unlink
@@ -437,6 +446,7 @@ module Synchronization
     end
 
     def update_last_sync
+      @user.update_attribute(:first_sync_at, @started_at.to_i) if @user.last_sync.nil?
       @user.update_attribute(:last_sync, @started_at.to_i)
     end
 
@@ -450,7 +460,8 @@ module Synchronization
       @user.sync.update_attributes(status: Synchronization::WAITING,
                                    email_count: 0,
                                    email_parsed: 0,
-                                   previous_status: previous_status)
+                                   previous_status: previous_status,
+                                   started_at: nil)
 
       if @imap && !@imap.disconnected?
         @imap.disconnect

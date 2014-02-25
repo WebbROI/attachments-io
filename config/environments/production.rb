@@ -46,8 +46,9 @@ AttachmentsIO::Application.configure do
   # config.log_tags = [ :subdomain, :uuid ]
 
   # Use a different logger for distributed setups.
-  config.logger = Logger.new('log/app_errors.log')
-  config.logger.level = Logger::ERROR
+  config.logger = Logger.new('log/app_errors.log', 10, 1024000)
+  config.logger.level = Logger::WARN
+  config.logger.sev_threshold = Logger::WARN
 
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store

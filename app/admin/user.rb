@@ -8,12 +8,16 @@ ActiveAdmin.register User do
   filter :created_at
 
   action_item only: :show do
-    link_to 'Fix synchronization', "/admin/users/#{user.id}/fix"
+    link_to 'Fix sync', "/admin/users/#{user.id}/sync_fix"
   end
 
   action_item only: :show do
-    link_to 'Start synchronization', "/admin/users/#{user.id}/start"
+    link_to 'Start sync', "/admin/users/#{user.id}/sync_start"
   end
+
+  #action_item only: :show do
+  #  link_to 'Sync all files', "/admin/users/#{user.id}/sync_all"
+  #end
 
   index do
     selectable_column
@@ -72,14 +76,22 @@ ActiveAdmin.register User do
     active_admin_comments
   end
 
-  member_action :fix, method: :get do
+  member_action :sync_fix, method: :get do
     User.find(params[:id]).fix_sync
     redirect_to "/admin/users/#{params[:id]}", notice: 'Synchronization fixed!'
   end
 
-  member_action :start, method: :get do
+  member_action :sync_start, method: :get do
     User.find(params[:id]).start_synchronization
     redirect_to "/admin/users/#{params[:id]}", notice: 'Synchronization started!'
+  end
+
+  member_action :sync_all, method: :get do
+    if User.find(params[:id]).start_sync_all_files
+      redirect_to "/admin/users/#{params[:id]}", notice: 'Synchronization started!'
+    else
+      redirect_to "/admin/users/#{params[:id]}", error: 'Sorry, we have an error!'
+    end
   end
 
   form do |f|

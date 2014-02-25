@@ -23,8 +23,8 @@ class UserSynchronization < ActiveRecord::Base
   def self.problematic
     problematic = []
 
-    where(status: Synchronization::INPROCESS).includes(:user).each do |sync|
-      if sync.user.last_sync.to_i - Time.now.to_i > 1.hours
+    where(status: Synchronization::INPROCESS).each do |sync|
+      if sync.started_at.to_i - Time.now.to_i > 1.hours
         problematic << sync
       end
     end
@@ -38,8 +38,13 @@ class UserSynchronization < ActiveRecord::Base
     end
 
     users.each do |sync|
-      sync.update_attributes({ status: Synchronization::WAITING,
-                               previous_status: Synchronization::FIXED })
+      sync.update_attributes(status: Synchronization::WAITING,
+                             email_count: 0,
+                             email_parsed: 0,
+                             previous_status: Synchronization::FIXED,
+                             started_at: nil)
+
+      puts "[#{Time.now.to_formatted_s(:long)}]: #{sync.user.email} fixed."
     end
   end
 end

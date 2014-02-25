@@ -27,7 +27,6 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    SyslogLogger (2.0)
     actionmailer (4.0.3)
       actionpack (= 4.0.3)
       mail (~> 2.5.4)
@@ -285,7 +284,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  SyslogLogger
   activeadmin!
   angular-ui-bootstrap-rails
   anjlab-bootstrap-rails (~> 3.0.3.0)

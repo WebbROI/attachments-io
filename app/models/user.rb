@@ -22,7 +22,7 @@ class User < ActiveRecord::Base
   end
 
   def self.create_with_omniauth(auth)
-    user = create! do |user|
+    create! do |user|
       user.uid = auth[:uid]
       user.first_name = auth[:info][:first_name]
       user.last_name = auth[:info][:last_name]
@@ -123,6 +123,17 @@ class User < ActiveRecord::Base
     sync.inprocess!
 
     Resque.enqueue_to("#{Rails.env}_sync_user_#{self.id}_queue", StartSynchronization, self.id, params)
+  end
+
+  def start_sync_all_files
+    if first_sync_at
+      before_date = first_sync_at - 2.weeks
+      self.start_synchronization(before_date: before_date)
+
+      return true
+    end
+
+    false
   end
 
   def now_synchronizes?

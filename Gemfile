@@ -90,6 +90,3 @@ gem 'unicorn-rails'
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
-
-# Log system
-gem 'SyslogLogger'

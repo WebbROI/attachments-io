@@ -7,18 +7,18 @@ namespace :sync do
     users = User.find((syncs.map(&:user_id) + not_active.map(&:user_id)).uniq)
 
     if users.empty?
-      puts 'Nothing to synchronize..'
+      puts "[#{Time.now.to_formatted_s(:long)}]: Nothing to synchronize.."
     else
+      puts "[#{Time.now.to_formatted_s(:long)}]: Synchronized:"
       users.each do |user|
-        puts "#{user.email} sync started.."
         user.start_synchronization({ rake: true }, true)
+        puts "        #{user.email}"
       end
     end
   end
 
   desc 'Fix broken synchronizations'
   task fix: :environment do
-    puts 'Fixed..'
     UserSynchronization.fix_problematic
   end
 end

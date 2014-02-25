@@ -197,6 +197,11 @@ a:hover {
     .row {
       padding: 10px 0;
     }
+
+    .glyphicon-collapse-up,
+    .glyphicon-collapse-down {
+      cursor: pointer;
+    }
   }
 
   .email {
