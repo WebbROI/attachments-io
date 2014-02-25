@@ -1,12 +1,10 @@
 <%= render partial: 'partials/errors', locals: { model: @settings } %>
 
 <%= form_for @settings, url: user_settings_path do |f| %>
-
   <h2>
     <i class="glyphicon glyphicon-cog"></i>
     Application Settings
   </h2>
-
   <div class="well">
     <div class="checkbox">
       <%= f.label :subject_in_filename do %>
@@ -28,6 +26,14 @@
       <% end %>
     </div>
   </div>
-
   <%= f.submit 'Update settings', class: 'btn btn-primary' %>
+
+  <h2>
+    <i class="glyphicon glyphicon-refresh"></i>
+    Synchronization
+  </h2>
+  <div class="well">
+    <p>For first time we sync only 2 first week. Bla bla bla...</p>
+    <div><%= link_to 'Synchronize all files', '#', class: 'btn btn-danger' %></div>
+  </div>
 <% end %>
