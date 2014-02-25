@@ -15,12 +15,13 @@ module Synchronization
 
   class Run
 
-    def initialize(user, params = {})
+    def initialize(user_id, params = {})
       @started_at = Time.now
 
-      @user = user
+      @user = User.find(user_id)
       @user_settings = @user.settings
-      @user.sync.update_attribute(:started_at, @started_at)
+      @user.sync.update_attributes({ started_at: @started_at,
+                                     status: Synchronization::INPROCESS })
 
       @params = {}
       params.each do |key, value|

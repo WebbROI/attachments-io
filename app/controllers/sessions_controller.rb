@@ -44,7 +44,7 @@ class SessionsController < ApplicationController
                              send_welcome: true
                          })
 
-      redirect_to sync_start_path, flash: { success: 'Thanks for singing up for @ttachments.io! We are syncing your attachments.' }
+      redirect_to sync_start_path, flash: { success: 'Welcome to Attachments.io! We are syncing your emails and attachments from the last 2 weeks, and all future emails and attachments. To sync all past emails and attachments, please <a href="http://attachments.io/about-us/">contact us</a>.' }
     else
       redirect_to root_path, flash: { success: "You have singed in as #{user.first_name} #{user.last_name} (#{user.email})" }
     end
