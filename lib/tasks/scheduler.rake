@@ -11,7 +11,7 @@ namespace :sync do
     else
       puts "[#{Time.now.to_formatted_s(:long)}]: Synchronized:"
       users.each do |user|
-        user.start_synchronization({ rake: true }, true)
+        user.start_synchronization({ rake: true })
         puts "        #{user.email}"
       end
     end
