@@ -24,7 +24,7 @@ class UserSynchronization < ActiveRecord::Base
     problematic = []
 
     where(status: Synchronization::INPROCESS).each do |sync|
-      if sync.started_at.nil? || sync.started_at.to_i - Time.now.to_i > 1.hours
+      if sync.started_at.nil? || Time.now.to_i - sync.started_at.to_i > 1.hours.to_i
         problematic << sync
       end
     end
