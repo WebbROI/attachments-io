@@ -39,4 +39,4 @@ server '162.243.44.145', user: 'rails', roles: %w{web app db}
 # set :default_env, { path: '/opt/ruby/bin:$PATH' }
 
 # Default value for keep_releases is 5
-set :keep_releases, 1
+set :keep_releases, 3
