@@ -6,9 +6,7 @@ AttachmentsIO::Application.routes.draw do
   # You can have the root of your site routed with "root"
   root 'pages#home'
 
-  # Admin-Panel
-  ActiveAdmin.routes(self)
-  devise_for :admin_users, ActiveAdmin::Devise.config
+  mount RailsAdmin::Engine => '/admin', :as => 'rails_admin'
 
   # Resque web-interface
   authenticate do
@@ -16,7 +14,6 @@ AttachmentsIO::Application.routes.draw do
   end
 
   # Pages
-  # match '/welcome' => redirect('http://attachments.io/'), via: :get, as: :welcome
   match '/' => 'pages#home', via: :get, as: :welcome
 
   # User profile

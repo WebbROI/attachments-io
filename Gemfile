@@ -18,7 +18,8 @@ group :development do
 end
 
 # Admin-panel
-gem 'activeadmin', github: 'gregbell/active_admin'
+gem 'devise'
+gem 'rails_admin'
 
 # Resque & Redis
 gem 'resque', require: 'resque/server'
