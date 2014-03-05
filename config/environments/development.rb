@@ -32,8 +32,7 @@ AttachmentsIO::Application.configure do
 
   # Logger
   config.logger = Logger.new('log/app_errors.log', 10, 1024000)
-  config.logger.level = Logger::FATAL
-  config.logger.sev_threshold = Logger::FATAL
+  config.log_level = :error
 
   config.middleware.delete Rack::Lock
 end

@@ -36,6 +36,5 @@ AttachmentsIO::Application.configure do
 
   # Use a different logger for distributed setups.
   config.logger = Logger.new('log/app_errors.log', 10, 1024000)
-  config.logger.level = Logger::WARN
-  config.logger.sev_threshold = Logger::WARN
+  config.log_level = :error
 end
