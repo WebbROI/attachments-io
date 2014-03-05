@@ -2,27 +2,12 @@
   <div ng-show="me">
     <div ng-if="me.sync">
       <h4>Current status: <strong class="text-success">Synchronizing</strong></h4>
-      <div ng-if="me.sync.email_count == 0 && emails.length == 0">
-        <small>Getting emails...</small>
-      </div>
-      <div ng-show="me.sync.email_count == me.sync.email_parsed && me.sync.email_count != 0">
-        <smal>Finishing synchronization...</smal>
-      </div>
-
       <div ng-if="me.sync.email_count">
-	      <progressbar max="me.sync.email_count" value="me.sync.email_parsed">
-	        <p class="text-center">
-	            <span style="color:black; white-space:nowrap;">
-	              Uploading attachments. Uploaded {{ me.sync.email_parsed }} of {{ me.sync.email_count }} emails...
-	            </span>
-	        </p>
+	      <progressbar max="me.sync.email_count" value="me.sync.email_parsed" id="sync-bar" type="success">
+          <div class="bar-description">Uploading attachments. Uploaded {{ me.sync.email_parsed }} of {{ me.sync.email_count }} emails...</div>
 	      </progressbar>
       </div>
-
-      <!--<div class="text-center">-->
-        <h3>Please wait a minute while we sync all your attachments.</h3>
-      <!--</div>-->
-
+      <h3>Please wait a minute while we sync all your attachments.</h3>
     </div>
 
     <div ng-if="!me.sync">
