@@ -57,9 +57,9 @@
             <div class="col-md-1 text-center">
               <i class="glyphicon glyphicon-collapse-down"></i>
             </div>
-            <div class="col-md-2">{{ email.from }}</div>
-            <div class="col-md-4">{{ email.subject }}</div>
-            <div class="col-md-2">{{ email.label }}</div>
+            <div class="col-md-2"><div tooltip="{{ email.from }}" class="trim-data">{{ email.from }}</div></div>
+            <div class="col-md-4"><div tooltip="{{ email.subject }}" class="trim-data">{{ email.subject }}</div></div>
+            <div class="col-md-2"><div tooltip="{{ email.label }}" class="trim-data">{{ email.label }}</div></div>
             <div class="col-md-1">
               <ng-pluralize count="email.files.length"
                             when="{  '0': 'No files.', 'one': '1 file.', 'other': '{} files.'}"></ng-pluralize>
