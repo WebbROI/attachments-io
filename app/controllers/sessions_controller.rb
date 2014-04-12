@@ -46,7 +46,7 @@ class SessionsController < ApplicationController
 
       redirect_to sync_start_path, flash: { success: 'Welcome to Attachments.io! We are syncing your emails and attachments for the last 2 weeks, and all future emails. <a href="https://mail.google.com/mail/u/0/#search/attachments.io" target="_blank">Please verify your account</a>. And for more information on syncing your emails from the beginning of time, <a href="http://attachments.io/contact/" target="_blank">please contact us</a>.' }
     else
-      redirect_to root_path, flash: { success: "You have singed in as #{user.first_name} #{user.last_name} (#{user.email})" }
+      redirect_to root_path, flash: { success: "You have signed in as #{user.first_name} #{user.last_name} (#{user.email})" }
     end
   end
 
