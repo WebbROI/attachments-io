@@ -6,12 +6,6 @@ require 'syslog/logger'
 # Google Drive root folder
 IO_ROOT_FOLDER = 'Attachments.IO'
 
-# Google constants
-GOOGLE_API_KEY = '606265733457-ttl3kk4hvo6b5b1oep5glovesc2tamuq.apps.googleusercontent.com'
-GOOGLE_API_SECRET = 'pq5LlMPapvBw07z62obIsY33'
-GOOGLE_APPLICATION_NAME = '@ttachments.io'
-GOOGLE_APPLICATION_VERSION = '1.0.0'
-
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(:default, Rails.env)

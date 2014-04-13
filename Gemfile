@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.0.3'
+gem 'rails', '4.1.0'
 
 # Mixed gems
 gem 'pg', '0.17.1', group: [:production, :test]
@@ -11,9 +11,8 @@ gem 'binding_of_caller', group: [:development, :test]
 # Development gems
 group :development do
   gem 'sqlite3'
-
-  # Pum pum puma
   gem 'puma'
+  gem 'spring'
 end
 
 # Admin-panel
@@ -87,6 +86,8 @@ end
 # Use unicorn as the app server
 gem 'unicorn'
 gem 'unicorn-rails'
+
+gem 'scrypt'
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]

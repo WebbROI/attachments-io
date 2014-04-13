@@ -7,11 +7,11 @@ module Google
 
     def initialize(params = nil)
       @client = Google::APIClient.new(
-          application_name: GOOGLE_APPLICATION_NAME,
-          application_version: GOOGLE_APPLICATION_VERSION
+          application_name: Rails.application.secrets.google_application_name,
+          application_version: Rails.application.secrets.google_application_version
       )
-      @client.authorization.client_id = GOOGLE_API_KEY
-      @client.authorization.client_secret = GOOGLE_API_SECRET
+      @client.authorization.client_id = Rails.application.secrets.google_api_key
+      @client.authorization.client_secret = Rails.application.secrets.google_api_secret
 
       @apis = Hash.new
 
