@@ -15,6 +15,7 @@ AttachmentsIO::Application.routes.draw do
 
   # Pages
   match '/' => 'pages#home', via: :get, as: :welcome
+  match '/une' => 'pages#une', via: [:get, :post], as: :une
 
   # User profile
   match '/account' => 'profile#show', via: :get, as: :profile
