@@ -26,6 +26,6 @@ class ApplicationController < ActionController::Base
     end
 
     def not_authenticated_user!
-      redirect_to root_path, flash: { error: 'This page only for guests' } if user_signed_in?
+      redirect_to profile_path if user_signed_in?
     end
 end
