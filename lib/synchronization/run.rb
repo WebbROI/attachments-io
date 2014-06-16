@@ -438,7 +438,7 @@ module Synchronization
     def generate_filename_for_current
       filename = Transliteration.transliterate(@current_attachment.filename)
 
-      if @user_settings.subject_in_filename && !@current_email.subject.empty?
+      if @user_settings.subject_in_filename && @current_email.subject && !@current_email.subject.empty?
         subject = Transliteration.transliterate(@current_email.subject)
         filename = "#{subject} - #{filename}"
       end

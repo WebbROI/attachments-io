@@ -4,6 +4,9 @@ class Email < ActiveRecord::Base
 
   default_scope -> { order(date: :desc) }
 
+  # Filters
+  before_validation :cut_subject
+
   alias :files :email_files
 
   def to_s
@@ -12,5 +15,10 @@ class Email < ActiveRecord::Base
     else
       'No subject'
     end
+  end
+
+  private
+  def cut_subject
+    self.subject = self.subject[0..254]
   end
 end
