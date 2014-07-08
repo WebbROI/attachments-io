@@ -12,7 +12,7 @@ gem 'binding_of_caller', group: [:development, :test]
 group :development do
   gem 'sqlite3'
   gem 'puma'
-  gem 'spring'
+  gem 'jazz_hands'
 end
 
 # Admin-panel
@@ -56,9 +56,6 @@ gem 'angular-ui-bootstrap-rails'
 
 # Retina images
 gem 'retina_tag'
-
-# Twitter Bootstrap
-gem 'bootstrap-sass', '~> 2.3.2.2'
 
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'

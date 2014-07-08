@@ -188,11 +188,12 @@ a:hover {
   }
 }
 
-#sync-bar {
+.progress {
   position: relative;
 
-  .bar-description {
-    color: #333;
+  .progress-text {
+    color: #444;
+    font-size: 12px;
     font-weight: 600;
     text-align: center;
 
@@ -200,7 +201,7 @@ a:hover {
     height: 100%;
     position: absolute;
     left: 0;
-    top: 0;
+    top: 1px;
   }
 }
 
