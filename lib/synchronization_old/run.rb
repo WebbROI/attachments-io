@@ -1,4 +1,4 @@
-module Synchronization
+module Sync
   require 'puub'
   require 'benchmark'
   require 'transliteration'
@@ -21,7 +21,7 @@ module Synchronization
       @user = User.find_by_id(user_id)
       @user_settings = @user.settings
       @user.sync.update_attributes({ started_at: @started_at,
-                                     status: Synchronization::INPROCESS })
+                                     status: Sync::INPROCESS })
 
       @params = {}
       params.each do |key, value|
@@ -453,12 +453,12 @@ module Synchronization
 
     def finish(error = false)
       if error
-        previous_status = Synchronization::ERROR
+        previous_status = Sync::ERROR
       else
-        previous_status = Synchronization::SUCCESS
+        previous_status = Sync::SUCCESS
       end
 
-      @user.sync.update_attributes(status: Synchronization::WAITING,
+      @user.sync.update_attributes(status: Sync::WAITING,
                                    email_count: 0,
                                    email_parsed: 0,
                                    previous_status: previous_status,

@@ -1,21 +1,21 @@
 class User < ActiveRecord::Base
   require 'start_synchronization'
-  require 'synchronization/run'
+  require 'sync'
 
   has_one :user_tokens, dependent: :destroy
   has_one :user_profile, dependent: :destroy
   has_one :user_settings, dependent: :destroy
-  has_one :user_synchronization, dependent: :destroy
+  has_one :synchronization, dependent: :destroy
   has_one :filter, dependent: :destroy
   has_many :emails, dependent: :destroy
 
   acts_as_authentic
 
-  alias :tokens :user_tokens
+  alias :tokens   :user_tokens
   alias :settings :user_settings
-  alias :profile :user_profile
-  alias :filters :filter
-  alias :sync :user_synchronization
+  alias :profile  :user_profile
+  alias :filters  :filter
+  alias :sync     :synchronization
 
   def to_s
     email
@@ -89,14 +89,14 @@ class User < ActiveRecord::Base
   #
 
   def api
-    return @user_api if defined? @user_api
-    @user_api = Google::API.new(tokens: tokens.formatted)
+    return user_api if defined? user_api
+    user_api = Google::API.new(tokens: tokens.formatted)
 
-    if @user_api.update_token!
-      tokens.update_attributes(@user_api.tokens)
+    if user_api.update_token!
+      tokens.update_attributes(user_api.tokens)
     end
 
-    @user_api
+    user_api
   end
 
   def load_info
@@ -120,9 +120,13 @@ class User < ActiveRecord::Base
 
   def start_synchronization(params = {}, force = false)
     return if now_synchronizes? && !force
-    sync.inprocess!
 
-    Resque.enqueue_to("#{Rails.env}_sync_user_#{self.id}_queue", StartSynchronization, self.id, params)
+    # TODO: check first user synchronization
+    params[:after_date] = Time.now - 2.weeks
+
+    synchronization.inprocess!
+    # Resque.enqueue_to("#{Rails.env}_sync_user_#{self.id}_queue", StartSynchronization, self.id, params)
+    Sync::Run.new(self.id, params)
   end
 
   def start_sync_all_files
@@ -137,12 +141,11 @@ class User < ActiveRecord::Base
   end
 
   def now_synchronizes?
-    sync.inprocess?
+    synchronization.inprocess?
   end
 
   def fix_sync
-    sync.update_attributes({ status: Synchronization::WAITING,
-                             previous_status: Synchronization::FIXED })
+    synchronization.update_attribute(:status, Sync::WAITING)
   end
 
   #

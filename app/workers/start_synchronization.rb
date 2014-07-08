@@ -1,9 +1,9 @@
 class StartSynchronization
-  require 'synchronization/run'
+  require 'sync'
 
   @queue = :sync_queue
 
   def self.perform(user_id, params)
-    Synchronization::Run.new(user_id, params)
+    Sync::Run.new(user_id, params)
   end
 end

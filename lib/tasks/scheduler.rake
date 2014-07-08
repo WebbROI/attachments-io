@@ -1,7 +1,7 @@
 namespace :sync do
   desc 'Start synchronization for all users. Run every 10 minutes.'
   task start: :environment do
-    syncs = UserSynchronization.select('user_id').waiting.to_a
+    syncs = Synchronization.select('user_id').waiting.to_a
     not_active = UserSettings.select('user_id').not_active.to_a
 
     users = User.find((syncs.map(&:user_id) + not_active.map(&:user_id)).uniq)
@@ -19,6 +19,6 @@ namespace :sync do
 
   desc 'Fix broken synchronizations'
   task fix: :environment do
-    UserSynchronization.fix_problematic
+    Synchronization.fix_problematic
   end
 end

@@ -3,10 +3,11 @@ class SyncController < ApplicationController
 
   def start
     if current_user.now_synchronizes?
-      redirect_to profile_path, flash: { error: 'You already have synchronization in process..' } and return
+      redirect_to profile_path, flash: { error: 'You already have synchronization in process..' }
+      return
     end
 
-    current_user.start_synchronization(debug: true)
+    current_user.start_synchronization(debug: Rails.env.development?)
     redirect_to profile_path
   end
 

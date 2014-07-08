@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_id: 
+  status: 1
+  email_count: 1
+  file_count: 1
+  started_at: 2014-06-17 13:32:08
+  finished_at: 2014-06-17 13:32:08
+
+two:
+  user_id: 
+  status: 1
+  email_count: 1
+  file_count: 1
+  started_at: 2014-06-17 13:32:08
+  finished_at: 2014-06-17 13:32:08

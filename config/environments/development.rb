@@ -31,8 +31,11 @@ AttachmentsIO::Application.configure do
   config.assets.debug = false
 
   # Logger
-  config.logger = Logger.new('log/app_errors.log', 10, 1024000)
-  config.log_level = :error
+  config.logger = Logger.new('log/app_errors.log', 3, 1024000)
+  config.log_level = :warn
 
   config.middleware.delete Rack::Lock
 end
+
+# fix logging
+$stdout.sync = true

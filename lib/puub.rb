@@ -1,5 +1,4 @@
 class Puub
-
   def publish(channel, data)
     messages = $redis.get(channel_name(channel))
 
@@ -31,7 +30,7 @@ class Puub
   end
 
   def subscribe_to_user(user, &block)
-    subscribe("user:#{user.id}", &block);
+    subscribe("user:#{user.id}", &block)
   end
 
   def clear_channel(channel)
