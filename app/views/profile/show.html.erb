@@ -27,7 +27,7 @@
         <div class="progress-bar progress-bar-success" id="sync-progress-bar"></div>
         <div class="progress-text" ng-show="me.sync.email_count == 0">Search for new messages with attachments..</div>
         <div class="progress-text" ng-show="me.sync.email_count != 0">Processed {{ me.sync.email_parsed }} of {{ me.sync.email_count }} messages</div>
-        <div class="progress-text" ng-show="me.sync.email_count == me.sync.email_parsed">Finish him!</div>
+        <div class="progress-text" ng-show="me.sync.email_count == me.sync.email_parsed && me.sync.email_count != 0">Finish him!</div>
       </div>
     </div>
   </div>
