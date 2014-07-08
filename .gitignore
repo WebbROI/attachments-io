@@ -21,3 +21,6 @@
 
 # Ignore Redis files
 /dump.rdb
+
+# Ignore db structure
+/db/schema.rb
